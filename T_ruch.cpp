@@ -2,23 +2,20 @@
 #include <vector>
 #include <algorithm>
 #include "T_ruch.h"
-#include "T_silnik.h"//?????????
+
 using namespace std;
 using T_wsk_szachownica = char(*)[8];
 
-
-
-
-
 T_ruch::T_ruch()
 {
-    //cout<<"tworze obiekt klasy T_ruch"<<endl;////!!!!!!!!!!!!!!!!
     pokolenie_klasy = 0;
 
     polozenie_mojego_krola_x      = kolor?3:4;
-    polozenie_mojego_krola_y      = 7;
+    polozenie_mojego_krola_y      =         7;
     polozenie_krola_przeciwnika_x = kolor?3:4;
-    polozenie_krola_przeciwnika_y = 0;
+    polozenie_krola_przeciwnika_y =         0;
+
+    najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow = 100.0;
 
     czy_moj_krol_sie_ruszyl                  = false;
     czy_moja_lewa_wierza_sie_ruszyla         = false;
@@ -27,10 +24,15 @@ T_ruch::T_ruch()
     czy_lewa_wierza_przeciwnika_sie_ruszyla  = false;
     czy_prawa_wierza_przeciwnika_sie_ruszyla = false;
 }
-double T_ruch::oblicz_nastepny_ruch(T_wsk_szachownica wsk_X)
+T_ruch::~T_ruch()
+{
+    wyzeruj_wektor_na_ruchy();
+}
+double T_ruch::oblicz_nastepny_ruch(T_wsk_szachownica &wsk_X)
 {
     zweryfikuj_polozenia_krolow(wsk_X);
     sprawdz_czy_wieze_i_krole_byly_ruszane(wsk_X);
+    sprawdz_moj_krol_jest_szachowany(wsk_X);
     wykonaj_moj_ruch(wsk_X);
     return znajdz_najleprze_z_posuniec(wsk_X);
 }
@@ -62,17 +64,21 @@ double T_ruch::oblicz_nastepny_ruch(T_wsk_szachownica wsk_X)
     if(kolor? wsk_X[7][3]!='K': wsk_X[7][4]!='K') czy_moj_krol_sie_ruszyl         =true;
     if(kolor? wsk_X[0][3]!='k': wsk_X[0][4]!='k') czy_krol_przeciwnika_sie_ruszyl =true;
 }
-    double T_ruch::znajdz_najleprze_z_posuniec(T_wsk_szachownica wsk_X)
+    void T_ruch::sprawdz_moj_krol_jest_szachowany(T_wsk_szachownica wsk_X)
 {
+    czy_moj_krol_jest_szachowany = czy_moje_pole_jest_bite(polozenie_mojego_krola_x, polozenie_mojego_krola_y, wsk_X);
+}
+    double T_ruch::znajdz_najleprze_z_posuniec(T_wsk_szachownica &wsk_X)////!!!!!!!!!!!!!!!!!!!!!!
+{
+    double najleprzy_z_najgorszych_status_materialny = -100;
     if(pokolenie_klasy < ostatnie_pokolenie)
     {
-        double najleprzy_z_najgorszych_status_materialny = -100;
         int index_najleprzego_z_najgorszych_ruchow;
-        for(int i=0; i<ile_ruchow_rozpatrywac[pokolenie_klasy] && i<wektor_na_ruchy.size(); i++)
+        for(int i=0; i<wektor_na_ruchy.size() && i<ile_ruchow_rozpatrywac[pokolenie_klasy]; i++)
         {
             double najgorszy_status_malerialny_po_ruchu_przeciwnika = 100,
                    bierzacy_status_malerialny_przeciwnika;
-            for(int j=1; j<=ile_ruchow_przeciwnika_rozpatrywac[pokolenie_klasy] && j<wektor_na_ruchy[i].size(); j++)
+            for(int j=1; j<wektor_na_ruchy[i].size() && j<=ile_ruchow_przeciwnika_rozpatrywac[pokolenie_klasy]; j++)
             {
                 T_ruch(this, bierzacy_status_malerialny_przeciwnika, wektor_na_ruchy[i][j], pokolenie_klasy + 1);
                 if(bierzacy_status_malerialny_przeciwnika < najgorszy_status_malerialny_po_ruchu_przeciwnika)
@@ -89,17 +95,29 @@ double T_ruch::oblicz_nastepny_ruch(T_wsk_szachownica wsk_X)
             delete[] wsk_X;
             wsk_X = skopiuj_szachownice(wektor_na_ruchy[index_najleprzego_z_najgorszych_ruchow][0]);
         }
+////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        //for(auto element: wektor_na_ruchy)
+        //wypisz_szachownice(element[0]);
+
+////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
         wyzeruj_wektor_na_ruchy();
         return najleprzy_z_najgorszych_status_materialny;
     }
-
-    if(pokolenie_klasy == ostatnie_pokolenie)
+    if(pokolenie_klasy == ostatnie_pokolenie)// koniec drzewa poszukiwan
     {
-        double najleprzy_z_najgorszych_status_materialny = -100;
         for(auto element: statusy_materialne_rozpatrywanych_rochow)
             if(najleprzy_z_najgorszych_status_materialny < element)
                 najleprzy_z_najgorszych_status_materialny = element;
+////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        //for(auto element: wektor_na_ruchy)
+         //wypisz_szachownice(element[0]);
+
+////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         wyzeruj_wektor_na_ruchy();
+
         return najleprzy_z_najgorszych_status_materialny;
     }
 }
@@ -112,12 +130,14 @@ double T_ruch::oblicz_nastepny_ruch(T_wsk_szachownica wsk_X)
     }
     wektor_na_ruchy.clear();
 }
-    T_ruch::T_ruch(T_ruch* wskaznik, double &status_materialny, T_wsk_szachownica wsk_X, int iteracja): pokolenie_klasy {iteracja}
+        T_ruch::T_ruch(T_ruch* wskaznik, double &status_materialny, T_wsk_szachownica wsk_X, int iteracja): pokolenie_klasy {iteracja}
 {
+    najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow = 100.0;
+
     przepisz_dane_o_ruchach_krolow_i_wiez(wskaznik);
     status_materialny = oblicz_nastepny_ruch(wsk_X);
 }
-        void T_ruch::przepisz_dane_o_ruchach_krolow_i_wiez(T_ruch* wsk)
+            void T_ruch::przepisz_dane_o_ruchach_krolow_i_wiez(T_ruch* wsk)
 {
     czy_moj_krol_sie_ruszyl                  = wsk->czy_moj_krol_sie_ruszyl;
     czy_moja_lewa_wierza_sie_ruszyla         = wsk->czy_moja_lewa_wierza_sie_ruszyla;
@@ -126,12 +146,9 @@ double T_ruch::oblicz_nastepny_ruch(T_wsk_szachownica wsk_X)
     czy_lewa_wierza_przeciwnika_sie_ruszyla  = wsk->czy_lewa_wierza_przeciwnika_sie_ruszyla;
     czy_prawa_wierza_przeciwnika_sie_ruszyla = wsk->czy_prawa_wierza_przeciwnika_sie_ruszyla;
 }
+//***********************************************************************************************************************************************
 void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
 {
-    bool czy_moj_krol_jest_szachowany = czy_moje_pole_jest_bite(polozenie_mojego_krola_x, polozenie_mojego_krola_y, wsk_X);
-    int numer_mojego_ruchu=-1,
-        index_najgorszego_ruchu=0;
-    double najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow = 100.0;
     for(int i=0; i<8; i++)
         for(int j=0; j<8; j++)
         {
@@ -147,28 +164,28 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i-1][j]='P';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         }
                         if(i==6 && wsk_X[5][j]==' ' && wsk_X[4][j]==' ')                    //POSUNIECIE O 2 W PRZOD
                         {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[4][j]='P';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         }
                         if(j!=0 && 'g'<=wsk_X[i-1][j-1] && wsk_X[i-1][j-1]<='w')                //BICIE W LEWO
                         {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i-1][j-1]='P';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         }
                         if(j!=7 && 'g'<=wsk_X[i-1][j+1] && wsk_X[i-1][j+1]<='w')                //BICIE W PRAWO
                         {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i-1][j+1]='P';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         }
                     }
                     if(i==1)                                                       //PROMOCJA
@@ -179,25 +196,25 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM SKOCZKA
                             kopia[1][j]=' ';
                             kopia[0][j]='S';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             }
                             {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM GONCA
                             kopia[1][j]=' ';
                             kopia[0][j]='G';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             }
                             {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM WIERZY
                             kopia[1][j]=' ';
                             kopia[0][j]='W';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             }
                             {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM HETMANA
                             kopia[1][j]=' ';
                             kopia[0][j]='H';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             }
                         }
                         if(j!=0 && 'g'<=wsk_X[0][j-1] && wsk_X[0][j-1]<='w')                //PROMOCJA W LEWO
@@ -206,25 +223,25 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM SKOCZKA
                             kopia[1][j]=' ';
                             kopia[0][j-1]='S';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             }
                             {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM GONCA
                             kopia[1][j]=' ';
                             kopia[0][j-1]='G';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             }
                             {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM WIERZY
                             kopia[1][j]=' ';
                             kopia[0][j-1]='W';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             }
                             {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM HETMANA
                             kopia[1][j]=' ';
                             kopia[0][j-1]='H';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             }
                         }
                         if(j!=7 && 'g'<=wsk_X[0][j+1] && wsk_X[0][j+1]<='w')                //PROMOCJA W PRAWO
@@ -233,25 +250,25 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM SKOCZKA
                             kopia[1][j]=' ';
                             kopia[0][j+1]='S';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             }
                             {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM GOÑCA
                             kopia[1][j]=' ';
                             kopia[0][j+1]='G';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             }
                             {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM WIERZY
                             kopia[1][j]=' ';
                             kopia[0][j+1]='W';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             }
                             {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM HETMANA
                             kopia[1][j]=' ';
                             kopia[0][j+1]='H';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             }
                         }
                     }
@@ -264,56 +281,56 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
                         kopia[i-2][j+1]='S';
-                        wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                        wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                     }
                     if(0<=i-1 && j+2<=7 && (wsk_X[i-1][j+2]<'G' || 'W'<wsk_X[i-1][j+2]))
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
                         kopia[i-1][j+2]='S';
-                        wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                        wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                     }
                     if(i+1<=7 && j+2<=7 && (wsk_X[i+1][j+2]<'G' || 'W'<wsk_X[i+1][j+2]))
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
                         kopia[i+1][j+2]='S';
-                        wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                        wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                     }
                     if(i+2<=7 && j+1<=7 && (wsk_X[i+2][j+1]<'G' || 'W'<wsk_X[i+2][j+1]))
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
                         kopia[i+2][j+1]='S';
-                        wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                        wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                     }
                     if(i+2<=7 && 0<=j-1 && (wsk_X[i+2][j-1]<'G' || 'W'<wsk_X[i+2][j-1]))
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
                         kopia[i+2][j-1]='S';
-                        wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                        wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                     }
                     if(i+1<=7 && 0<=j-2 && (wsk_X[i+1][j-2]<'G' || 'W'<wsk_X[i+1][j-2]))
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
                         kopia[i+1][j-2]='S';
-                        wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                        wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                     }
                     if(0<=i-1 && 0<=j-2 && (wsk_X[i-1][j-2]<'G' || 'W'<wsk_X[i-1][j-2]))
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
                         kopia[i-1][j-2]='S';
-                        wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                        wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                     }
                     if(0<=i-2 && 0<=j-1 && (wsk_X[i-2][j-1]<'G' || 'W'<wsk_X[i-2][j-1]))
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
                         kopia[i-2][j-1]='S';
-                        wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                        wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                     }
                     break;
                 }
@@ -328,7 +345,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='G';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][x]==' ')
@@ -336,7 +353,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='G';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int y=i+1, x=j+1; y<=7 && x<=7; y++, x++)                   //RUCH NA 4:30
@@ -348,7 +365,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='G';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][x]==' ')
@@ -356,7 +373,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='G';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int y=i+1, x=j-1; y<=7 && 0<=x; y++, x--)                   //RUCH NA 7:30
@@ -368,7 +385,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='G';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][x]==' ')
@@ -376,7 +393,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='G';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int y=i-1, x=j-1; 0<=y && 0<=x; y--, x--)                   //RUCH NA 10:30
@@ -388,7 +405,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='G';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][x]==' ')
@@ -396,7 +413,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='G';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         }
                     }
                     break;
@@ -412,7 +429,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][j]='W';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][j]==' ')
@@ -420,7 +437,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][j]='W';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int x=j+1; x<=7; x++)                                       //RUCH NA 3:00
@@ -432,7 +449,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i][x]='W';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[i][x]==' ')
@@ -440,7 +457,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i][x]='W';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int y=i+1; y<=7; y++)                                       //RUCH NA 6:00
@@ -452,7 +469,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][j]='W';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][j]==' ')
@@ -460,7 +477,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][j]='W';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int x=j-1; 0<=x; x--)                                       //RUCH NA 9:00
@@ -472,7 +489,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i][x]='W';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[i][x]==' ')
@@ -480,7 +497,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i][x]='W';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         }
                     }
                     break;
@@ -496,7 +513,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][j]='H';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][j]==' ')
@@ -504,7 +521,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][j]='H';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int y=i-1, x=j+1; 0<=y && x<=7; y--, x++)                   //RUCH NA 1:30
@@ -516,7 +533,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='H';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][x]==' ')
@@ -524,7 +541,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='H';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int x=j+1; x<=7; x++)                                       //RUCH NA 3:00
@@ -536,7 +553,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i][x]='H';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[i][x]==' ')
@@ -544,7 +561,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i][x]='H';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int y=i+1, x=j+1; y<=7 && x<=7; y++, x++)                   //RUCH NA 4:30
@@ -556,7 +573,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='H';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][x]==' ')
@@ -564,7 +581,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='H';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int y=i+1; y<=7; y++)                                       //RUCH NA 6:00
@@ -576,7 +593,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][j]='H';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][j]==' ')
@@ -584,7 +601,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][j]='H';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int y=i+1, x=j-1; y<=7 && 0<=x; y++, x--)                   //RUCH NA 7:30
@@ -596,7 +613,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='H';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][x]==' ')
@@ -604,7 +621,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='H';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int x=j-1; 0<=x; x--)                                       //RUCH NA 9:00
@@ -616,7 +633,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i][x]='H';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[i][x]==' ')
@@ -624,7 +641,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i][x]='H';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int y=i-1, x=j-1; 0<=y && 0<=x; y--, x--)                   //RUCH NA 10:30
@@ -636,7 +653,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='H';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][x]==' ')
@@ -644,7 +661,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='H';
-                            wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                            wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         }
                     }
                     break;
@@ -658,7 +675,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                         kopia[i][j]=' ';
                         kopia[i-1][j]='K';
                         polozenie_mojego_krola_y--;
-                        wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                        wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         polozenie_mojego_krola_y++;
                     }
                     if(0<=i-1 && j+1<=7 && (wsk_X[i-1][j+1]<'G' || 'W'<wsk_X[i-1][j+1]))      //RUCH NA 1:30
@@ -669,7 +686,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                         kopia[i-1][j+1]='K';
                         polozenie_mojego_krola_x++;
                         polozenie_mojego_krola_y--;
-                        wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                        wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         polozenie_mojego_krola_x--;
                         polozenie_mojego_krola_y++;
                     }
@@ -680,7 +697,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                         kopia[i][j]=' ';
                         kopia[i][j+1]='K';
                         polozenie_mojego_krola_x++;
-                        wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                        wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         polozenie_mojego_krola_x--;
                     }
                     if(i+1<=7 && j+1<=7 && (wsk_X[i+1][j+1]<'G' || 'W'<wsk_X[i+1][j+1]))      //RUCH NA 4:30
@@ -691,7 +708,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                         kopia[i+1][j+1]='K';
                         polozenie_mojego_krola_x++;
                         polozenie_mojego_krola_y++;
-                        wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                        wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         polozenie_mojego_krola_x--;
                         polozenie_mojego_krola_y--;
                     }
@@ -702,7 +719,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                         kopia[i][j]=' ';
                         kopia[i+1][j]='K';
                         polozenie_mojego_krola_y++;
-                        wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                        wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         polozenie_mojego_krola_y--;
                     }
                     if(i+1<=7 && 0<=j-1 && (wsk_X[i+1][j-1]<'G' || 'W'<wsk_X[i+1][j-1]))      //RUCH NA 7:30
@@ -714,7 +731,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                         if(czy_moje_pole_jest_bite(polozenie_mojego_krola_x-1, polozenie_mojego_krola_y+1, kopia)==false)
                         polozenie_mojego_krola_x--;
                         polozenie_mojego_krola_y++;
-                        wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                        wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         polozenie_mojego_krola_x++;
                         polozenie_mojego_krola_y--;
                     }
@@ -725,7 +742,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                         kopia[i][j]=' ';
                         kopia[i][j-1]='K';
                         polozenie_mojego_krola_x--;
-                        wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                        wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         polozenie_mojego_krola_x++;
                     }
                     if(0<=i-1 && 0<=j-1 && (wsk_X[i-1][j-1]<'G' || 'W'<wsk_X[i-1][j-1]))      //RUCH NA 10:30
@@ -736,7 +753,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                         kopia[i-1][j-1]='K';
                         polozenie_mojego_krola_x--;
                         polozenie_mojego_krola_y--;
-                        wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                        wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                         polozenie_mojego_krola_x++;
                         polozenie_mojego_krola_y++;
                     }
@@ -752,7 +769,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                                 kopia[7][2]='K';
                                 kopia[7][3]='W';
                                 polozenie_mojego_krola_x-=2;
-                                wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                                wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                                 polozenie_mojego_krola_x+=2;
                             }
                             else delete[]kopia;
@@ -767,7 +784,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                                 kopia[7][6]='K';
                                 kopia[7][5]='W';
                                 polozenie_mojego_krola_x+=2;
-                                wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                                wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                                 polozenie_mojego_krola_x-=2;
                             }
                             else delete[]kopia;
@@ -785,7 +802,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                                 kopia[7][5]='K';
                                 kopia[7][4]='W';
                                 polozenie_mojego_krola_x+=2;
-                                wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                                wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                                 polozenie_mojego_krola_x-=2;
                             }
                             else delete[]kopia;
@@ -800,7 +817,7 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
                                 kopia[7][1]='K';
                                 kopia[7][2]='W';
                                 polozenie_mojego_krola_x-=2;
-                                wykonaj_moj_ruch_jak_mozna(czy_moj_krol_jest_szachowany, numer_mojego_ruchu, i, j, kopia, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+                                wykonaj_moj_ruch_jak_mozna(i, j, kopia);
                                 polozenie_mojego_krola_x+=2;
                             }
                             else delete[]kopia;
@@ -812,25 +829,25 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
             }
         }
 }
-    void T_ruch::wykonaj_moj_ruch_jak_mozna(bool &czy_moj_krol_jest_szachowany, int &numer_mojego_ruchu, int &i, int &j, T_wsk_szachownica kopia, int &index_najgorszego_ruchu, double &najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow)
+    void T_ruch::wykonaj_moj_ruch_jak_mozna(int &i, int &j, T_wsk_szachownica kopia)
 {
     if(czy_moj_krol_jest_szachowany==false && j!=polozenie_mojego_krola_x && i!=polozenie_mojego_krola_y && polozenie_mojego_krola_x+polozenie_mojego_krola_y!=j+i && polozenie_mojego_krola_x-polozenie_mojego_krola_y!=j-i)
     {
         numer_mojego_ruchu++;
         wektor_na_ruchy.push_back(vector<T_wsk_szachownica>());
         wektor_na_ruchy[numer_mojego_ruchu].push_back(kopia);
-        wykonaj_ruch_przeciwnika(kopia, numer_mojego_ruchu);
-        odrzuc_najgorszy_ruch(numer_mojego_ruchu, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+        wykonaj_ruch_przeciwnika(kopia);
+        odrzuc_najgorszy_ruch();
     }
     else if(czy_moje_pole_jest_bite(polozenie_mojego_krola_x, polozenie_mojego_krola_y, kopia)==false)
     {
         numer_mojego_ruchu++;
         wektor_na_ruchy.push_back(vector<T_wsk_szachownica>());
         wektor_na_ruchy[numer_mojego_ruchu].push_back(kopia);
-        wykonaj_ruch_przeciwnika(kopia, numer_mojego_ruchu);
-        odrzuc_najgorszy_ruch(numer_mojego_ruchu, index_najgorszego_ruchu, najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow);
+        wykonaj_ruch_przeciwnika(kopia);
+        odrzuc_najgorszy_ruch();
     }
-    else delete[]kopia;
+    else delete[]kopia; //jesli nie mozna to uwalniamy pamiec
 }
         bool T_ruch::czy_moje_pole_jest_bite(const int &x,const int &y, T_wsk_szachownica kopia)
 {
@@ -901,23 +918,32 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
     return false;
 
 }
-        void T_ruch::odrzuc_najgorszy_ruch(int &numer_mojego_ruchu, int &index_najgorszego_ruchu, double &najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow)
+        void T_ruch::odrzuc_najgorszy_ruch()
 {
-
-    double najmniejszy_status_materialny_dla_danego_ruchu = 100.0;                                      //WYWALAMY NA BIERZACO NAJGORSZY RUCH
-    for(int i=1; i < wektor_na_ruchy[numer_mojego_ruchu].size(); i++)
+    double najmniejszy_status_materialny_dla_danego_ruchu = 100.0;                                      //WYWALAMY NA BIEZACO NAJGORSZY RUCH
+    for(int i=1; i < wektor_na_ruchy[numer_mojego_ruchu].size(); i++) //znajdujemy najkorzyskniejszy dla przeciwnika po jego odpowiedzi
     {
         najmniejszy_status_materialny_dla_danego_ruchu = min(najmniejszy_status_materialny_dla_danego_ruchu, oblicz_status_materialny(wektor_na_ruchy[numer_mojego_ruchu][i]));
     }
-    if(ile_ruchow_rozpatrywac[pokolenie_klasy] < wektor_na_ruchy.size())
-        if(najmniejszy_status_materialny_dla_danego_ruchu <= najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow)
+    if(ile_ruchow_rozpatrywac[pokolenie_klasy] >= wektor_na_ruchy.size()) //sytuacja, w ktorej ilosc obliczonych ruchow nieprzekracza limitu
+    {
+        if(najmniejszy_status_materialny_dla_danego_ruchu < najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow)
+        {
+            najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow = najmniejszy_status_materialny_dla_danego_ruchu;
+            index_najgorszego_ruchu = numer_mojego_ruchu;
+        }
+        statusy_materialne_rozpatrywanych_rochow.push_back(najmniejszy_status_materialny_dla_danego_ruchu);
+    }
+    else  //sytuacja, w ktorej ilosc obliczonych ruchow przekracza limit i trzeba odrzucic najgorszy ruch
+    {
+        if(najmniejszy_status_materialny_dla_danego_ruchu <= najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow)//jesli odrzucamy bieżacy ruch
         {
             for(auto element: wektor_na_ruchy[numer_mojego_ruchu])
                 delete[]element;
             wektor_na_ruchy.pop_back();
             numer_mojego_ruchu--;
         }
-        else
+        else//jesli odrzucamy ruch ktorys z poprzednich
         {
             statusy_materialne_rozpatrywanych_rochow[index_najgorszego_ruchu] = najmniejszy_status_materialny_dla_danego_ruchu;
             for(auto element: wektor_na_ruchy[index_najgorszego_ruchu])
@@ -925,25 +951,17 @@ void T_ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X)
             wektor_na_ruchy[index_najgorszego_ruchu] = wektor_na_ruchy[numer_mojego_ruchu];
             wektor_na_ruchy.pop_back();
             numer_mojego_ruchu--;
-            index_najgorszego_ruchu = 0;
+            index_najgorszego_ruchu = 0;// od poczatku szukamu ktory ruch jest potencjalnie najgorszym
             for(int i=0; i<ile_ruchow_rozpatrywac[pokolenie_klasy]; i++)
                 if(statusy_materialne_rozpatrywanych_rochow[i] < statusy_materialne_rozpatrywanych_rochow[index_najgorszego_ruchu])
                     index_najgorszego_ruchu = i;
         }
-    else
-    {
-        if(najmniejszy_status_materialny_dla_danego_ruchu < najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow)
-        {
-            najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow = najmniejszy_status_materialny_dla_danego_ruchu;
-            index_najgorszego_ruchu = numer_mojego_ruchu;
-        }
-        //statusy_materialne_rozpatrywanych_rochow[numer_mojego_ruchu] = najmniejszy_status_materialny_dla_danego_ruchu;
-        statusy_materialne_rozpatrywanych_rochow.push_back(najmniejszy_status_materialny_dla_danego_ruchu);
     }
 }
-void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego_ruchu)
+//***********************************************************************************************************************************************
+void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X)
 {
-    bool czy_krol_przeciwnika_jest_szachowany = czy_pole_przeciwnika_jest_bite(polozenie_krola_przeciwnika_x, polozenie_krola_przeciwnika_y, wsk_X);
+    czy_krol_przeciwnika_jest_szachowany = czy_pole_przeciwnika_jest_bite(polozenie_krola_przeciwnika_x, polozenie_krola_przeciwnika_y, wsk_X);
     for(int i=0; i<8; i++)
         for(int j=0; j<8; j++)
         {
@@ -959,28 +977,28 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i+1][j]='p';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                         }
                         if(i==1 && wsk_X[2][j]==' ' && wsk_X[3][j]==' ')                    //POSUNIECIE O 2 W PRZOD
                         {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[1][j]=' ';
                             kopia[3][j]='p';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                         }
                         if(j!=0 && 'G'<=wsk_X[i+1][j-1] && wsk_X[i+1][j-1]<='W')                //BICIE W LEWO
                         {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i+1][j-1]='p';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                         }
                         if(j!=7 && 'G'<=wsk_X[i+1][j+1] && wsk_X[i+1][j+1]<='W')                //BICIE W PRAWO
                         {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i+1][j+1]='p';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                         }
                     }
                     if(i==6)                                                       //PROMOCJA
@@ -991,25 +1009,25 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM SKOCZKA
                             kopia[6][j]=' ';
                             kopia[7][j]='s';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             }
                             {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM GONCA
                             kopia[6][j]=' ';
                             kopia[7][j]='g';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             }
                             {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM WIERZY
                             kopia[6][j]=' ';
                             kopia[7][j]='w';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             }
                             {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM HETMANA
                             kopia[6][j]=' ';
                             kopia[7][j]='h';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             }
                         }
                         if(j!=0 && 'G'<=wsk_X[7][j-1] && wsk_X[7][j-1]<='W')                //PROMOCJA W LEWO
@@ -1018,25 +1036,25 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM SKOCZKA
                             kopia[6][j]=' ';
                             kopia[7][j-1]='s';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             }
                             {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM GOÑCA
                             kopia[6][j]=' ';
                             kopia[7][j-1]='g';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             }
                             {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM WIERZY
                             kopia[6][j]=' ';
                             kopia[7][j-1]='w';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             }
                             {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM HETMANA
                             kopia[6][j]=' ';
                             kopia[7][j-1]='h';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             }
                         }
                         if(j!=7 && 'G'<=wsk_X[7][j+1] && wsk_X[7][j+1]<='W')                //PROMOCJA W PRAWO
@@ -1045,25 +1063,25 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM SKOCZKA
                             kopia[6][j]=' ';
                             kopia[7][j+1]='s';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             }
                             {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM GONCA
                             kopia[6][j]=' ';
                             kopia[7][j+1]='g';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             }
                             {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM WIERZY
                             kopia[6][j]=' ';
                             kopia[7][j+1]='w';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             }
                             {
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);               //Z UTWORZENIEM HETMANA
                             kopia[6][j]=' ';
                             kopia[7][j+1]='h';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             }
                         }
                     }
@@ -1076,56 +1094,56 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
                         kopia[i-2][j+1]='s';
-                        wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                        wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                     }
                     if(0<=i-1 && j+2<=7 && (wsk_X[i-1][j+2]<'g' || 'w'<wsk_X[i-1][j+2]))
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
                         kopia[i-1][j+2]='s';
-                        wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                        wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                     }
                     if(i+1<=7 && j+2<=7 && (wsk_X[i+1][j+2]<'g' || 'w'<wsk_X[i+1][j+2]))
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
                         kopia[i+1][j+2]='s';
-                        wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                        wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                     }
                     if(i+2<=7 && j+1<=7 && (wsk_X[i+2][j+1]<'g' || 'w'<wsk_X[i+2][j+1]))
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
                         kopia[i+2][j+1]='s';
-                        wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                        wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                     }
                     if(i+2<=7 && 0<=j-1 && (wsk_X[i+2][j-1]<'g' || 'w'<wsk_X[i+2][j-1]))
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
                         kopia[i+2][j-1]='s';
-                        wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                        wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                     }
                     if(i+1<=7 && 0<=j-2 && (wsk_X[i+1][j-2]<'g' || 'w'<wsk_X[i+1][j-2]))
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
                         kopia[i+1][j-2]='s';
-                        wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                        wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                     }
                     if(0<=i-1 && 0<=j-2 && (wsk_X[i-1][j-2]<'g' || 'w'<wsk_X[i-1][j-2]))
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
                         kopia[i-1][j-2]='s';
-                        wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                        wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                     }
                     if(0<=i-2 && 0<=j-1 && (wsk_X[i-2][j-1]<'g' || 'w'<wsk_X[i-2][j-1]))
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
                         kopia[i-2][j-1]='s';
-                        wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                        wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                     }
                     break;
                 }
@@ -1140,7 +1158,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='g';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][x]==' ')
@@ -1148,7 +1166,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='g';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int y=i+1, x=j+1; y<=7 && x<=7; y++, x++)                   //RUCH NA 4:30
@@ -1160,7 +1178,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='g';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][x]==' ')
@@ -1168,7 +1186,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='g';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int y=i+1, x=j-1; y<=7 && 0<=x; y++, x--)                   //RUCH NA 7:30
@@ -1180,7 +1198,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='g';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][x]==' ')
@@ -1188,7 +1206,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='g';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int y=i-1, x=j-1; 0<=y && 0<=x; y--, x--)                   //RUCH NA 10:30
@@ -1200,7 +1218,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='g';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][x]==' ')
@@ -1208,7 +1226,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='g';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                         }
                     }
                     break;
@@ -1224,7 +1242,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][j]='w';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][j]==' ')
@@ -1232,7 +1250,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][j]='w';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int x=j+1; x<=7; x++)                                       //RUCH NA 3:00
@@ -1244,7 +1262,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i][x]='w';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[i][x]==' ')
@@ -1252,7 +1270,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i][x]='w';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int y=i+1; y<=7; y++)                                       //RUCH NA 6:00
@@ -1264,7 +1282,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][j]='w';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][j]==' ')
@@ -1272,7 +1290,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][j]='w';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int x=j-1; 0<=x; x--)                                       //RUCH NA 9:00
@@ -1284,7 +1302,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i][x]='w';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[i][x]==' ')
@@ -1292,7 +1310,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i][x]='w';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                         }
                     }
                     break;
@@ -1308,7 +1326,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][j]='h';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][j]==' ')
@@ -1316,7 +1334,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][j]='h';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int y=i-1, x=j+1; 0<=y && x<=7; y--, x++)                   //RUCH NA 1:30
@@ -1328,7 +1346,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='h';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][x]==' ')
@@ -1336,7 +1354,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='h';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int x=j+1; x<=7; x++)                                       //RUCH NA 3:00
@@ -1348,7 +1366,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i][x]='h';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[i][x]==' ')
@@ -1356,7 +1374,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i][x]='h';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int y=i+1, x=j+1; y<=7 && x<=7; y++, x++)                   //RUCH NA 4:30
@@ -1368,7 +1386,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='h';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][x]==' ')
@@ -1376,7 +1394,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='h';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int y=i+1; y<=7; y++)                                       //RUCH NA 6:00
@@ -1388,7 +1406,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][j]='h';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][j]==' ')
@@ -1396,7 +1414,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][j]='h';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int y=i+1, x=j-1; y<=7 && 0<=x; y++, x--)                   //RUCH NA 7:30
@@ -1408,7 +1426,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='h';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][x]==' ')
@@ -1416,7 +1434,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='h';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int x=j-1; 0<=x; x--)                                       //RUCH NA 9:00
@@ -1428,7 +1446,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i][x]='h';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[i][x]==' ')
@@ -1436,7 +1454,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[i][x]='h';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                         }
                     }
                     for(int y=i-1, x=j-1; 0<=y && 0<=x; y--, x--)                   //RUCH NA 10:30
@@ -1448,7 +1466,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='h';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                             break;
                         }
                         if(wsk_X[y][x]==' ')
@@ -1456,7 +1474,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                             T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                             kopia[i][j]=' ';
                             kopia[y][x]='h';
-                            wykonaj_ruch_przeciwnika_jak_mozna(czy_krol_przeciwnika_jest_szachowany, numer_mojego_ruchu, i, j, kopia);
+                            wykonaj_ruch_przeciwnika_jak_mozna(i, j, kopia);
                         }
                     }
                     break;
@@ -1654,9 +1672,9 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
                 default: break;
             }
         }
-    odrzuc_najgorsze_ruchy_przeciwnika(numer_mojego_ruchu);
+    odrzuc_najgorsze_ruchy_przeciwnika();
 }
-    void T_ruch::wykonaj_ruch_przeciwnika_jak_mozna(bool &czy_krol_przeciwnika_jest_szachowany, int &numer_mojego_ruchu, int &i, int &j, T_wsk_szachownica kopia)
+    void T_ruch::wykonaj_ruch_przeciwnika_jak_mozna(int &i, int &j, T_wsk_szachownica kopia)
 {
     if(czy_krol_przeciwnika_jest_szachowany==false && j!=polozenie_krola_przeciwnika_x && i!=polozenie_krola_przeciwnika_y && polozenie_krola_przeciwnika_x+polozenie_krola_przeciwnika_y!=j+i && polozenie_krola_przeciwnika_x-polozenie_krola_przeciwnika_y!=j-i)
         wektor_na_ruchy[numer_mojego_ruchu].push_back(kopia);
@@ -1731,7 +1749,7 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
     }
     return false;
 }
-        void T_ruch::odrzuc_najgorsze_ruchy_przeciwnika(int &numer_mojego_ruchu)
+        void T_ruch::odrzuc_najgorsze_ruchy_przeciwnika()
 {
     int liczba_ruchow_przeciwnika = wektor_na_ruchy[numer_mojego_ruchu].size()-1;
     vector<double>status_materialny;
@@ -1743,18 +1761,19 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X, int &numer_mojego
     while(liczba_ruchow_przeciwnika > ile_ruchow_przeciwnika_rozpatrywac[pokolenie_klasy])
     {
         index_komorki_z_najwieksza_wartoscia = 0;
-        for(int i=1; i<liczba_ruchow_przeciwnika; i++)
+        for(int i=1; i<liczba_ruchow_przeciwnika; i++)        //szukamu komorki z najwiekszym statusem materialnym
         {
             if(status_materialny[index_komorki_z_najwieksza_wartoscia] < status_materialny[i])
                 index_komorki_z_najwieksza_wartoscia = i;
         }
-        status_materialny.erase(status_materialny.begin() + index_komorki_z_najwieksza_wartoscia);
-        delete[]wektor_na_ruchy[numer_mojego_ruchu][index_komorki_z_najwieksza_wartoscia+1];
-        wektor_na_ruchy[numer_mojego_ruchu].erase(wektor_na_ruchy[numer_mojego_ruchu].begin() + index_komorki_z_najwieksza_wartoscia + 1);
+        status_materialny.erase(status_materialny.begin() + index_komorki_z_najwieksza_wartoscia);  //usuwamy ta komorke
+        delete[]wektor_na_ruchy[numer_mojego_ruchu][index_komorki_z_najwieksza_wartoscia+1];        //niezapominajac o zwolnieniu pamieci
+        wektor_na_ruchy[numer_mojego_ruchu].erase(wektor_na_ruchy[numer_mojego_ruchu].begin() + index_komorki_z_najwieksza_wartoscia + 1);//wektor na ruchy tez nam sie zmienjsza
         liczba_ruchow_przeciwnika--;
     }
 }
-double T_ruch::oblicz_status_materialny(const T_wsk_szachownica wsk_X)
+//***********************************************************************************************************************************************
+double T_ruch::oblicz_status_materialny(const T_wsk_szachownica wsk_X)////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 {
     double status_materialny{0};
     for(int i=0; i<8; i++)
@@ -1778,7 +1797,7 @@ double T_ruch::oblicz_status_materialny(const T_wsk_szachownica wsk_X)
         }
     return status_materialny;
 }
-T_wsk_szachownica T_ruch::skopiuj_szachownice(T_wsk_szachownica oryginal)
+T_wsk_szachownica T_ruch::skopiuj_szachownice(const T_wsk_szachownica oryginal)
 {
     T_wsk_szachownica kopia = new char[8][8];
     for(int i=0; i<8; i++)
@@ -1788,12 +1807,21 @@ T_wsk_szachownica T_ruch::skopiuj_szachownice(T_wsk_szachownica oryginal)
 }
 void T_ruch::wypisz_szachownice(const T_wsk_szachownica wsk_X)
 {
+    for(int i=0; i<=pokolenie_klasy; i++)
+        cout<<string(2,'\333');
+    cout<<pokolenie_klasy<<string(18,'\333')<<endl;;
     for(int i=0; i<8; i++)
     {
+        for(int j=0; j<=pokolenie_klasy; j++)
+            cout<<string(2,'\333');
         for(int j=0; j<8; j++)
-            cout<<wsk_X[i][j];
-        cout<<endl;
+            cout<<' '<<wsk_X[i][j];
+        cout<<' ';
+        cout<<string(2,'\333')<<endl;
     }
+    for(int i=0; i<=pokolenie_klasy; i++)
+        cout<<string(2,'\333');
+    cout<<string(19,'\333')<<endl;
 }
 
 

@@ -6,7 +6,16 @@
 
 using namespace std;
 
-void T_szachownica::wczytaj_tablica_figor()
+
+
+
+
+T_szachownica::T_szachownica()
+{
+    wczytaj_tablica_figor();
+    wczytaj_tablica_szachownica(kolor);
+}
+    void T_szachownica::wczytaj_tablica_figor()
 {
     tablica_figor[brak]  =  string(418,'t'),
     tablica_figor[pion]  = {string{"TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"}+
@@ -52,13 +61,13 @@ void T_szachownica::wczytaj_tablica_figor()
                             string{"TTT32SSSSSSSS23TTTTTTTTTT441SSSSSS144TTTTTTTT41SSSSSSSSSSSS14TTTTT"}+
                             string{"T3333333333333333TTTTT"}};
 }
-void T_szachownica::wczytaj_tablica_szachownica(bool kolor)
+    void T_szachownica::wczytaj_tablica_szachownica(bool kolor)
 {
     wczytaj_deske_szachowa();
     wczytaj_wspolrzedne(kolor);
     wczytaj_ulozenie_poczatkowe(kolor);
 }
-    void T_szachownica::wczytaj_deske_szachowa()
+        void T_szachownica::wczytaj_deske_szachowa()
 {
     string pole_biale      (pole_szerokosc, '\333');
     string pole_czarne     (pole_szerokosc,    ' ');
@@ -87,7 +96,7 @@ void T_szachownica::wczytaj_tablica_szachownica(bool kolor)
             pola_cbcbcbcb.copy(tablica_szachownica[j+i],szerokosc);
     }
 }
-    void T_szachownica::wczytaj_wspolrzedne(bool kolor)
+        void T_szachownica::wczytaj_wspolrzedne(bool kolor)
 {
     string wspolrzedne[16]{{"  DXXX      XX      XX      XX      XX  "},
                            {" GXXXXD      XX  DXXXXG  XX      GXXXXD "},
@@ -119,7 +128,7 @@ void T_szachownica::wczytaj_tablica_szachownica(bool kolor)
 
 
 }
-        void T_szachownica::wczytaj_znak_wspolrzedny(int wsp_x, int wsp_y, string znak)
+            void T_szachownica::wczytaj_znak_wspolrzedny(int wsp_x, int wsp_y, string znak)
 {
     for(int i=0, y=wsp_y; i<40; y++ )
         for(int x=wsp_x; x<wsp_x+8; i++, x++)
@@ -133,7 +142,7 @@ void T_szachownica::wczytaj_tablica_szachownica(bool kolor)
             }
         }
 }
-    void T_szachownica::wczytaj_ulozenie_poczatkowe(bool kolor)
+        void T_szachownica::wczytaj_ulozenie_poczatkowe(bool kolor)
 {
     for(int i=1; i<=8; i++)
     {
@@ -158,7 +167,7 @@ void T_szachownica::wczytaj_tablica_szachownica(bool kolor)
     wczytaj_figure(skoczek, 7, 8, kolor);
     wczytaj_figure(wierza,  8, 8, kolor);
 }
-        void T_szachownica::wczytaj_figure(int figura, int wsp_pola_poziom, int wsp_pola_pion, bool kolor_figury)
+            void T_szachownica::wczytaj_figure(int figura, int wsp_pola_poziom, int wsp_pola_pion, bool kolor_figury)
 {
     int wsp_x = (wsp_pola_poziom-1)*pole_szerokosc+35;
     int wsp_y = (wsp_pola_pion-1)*pole_wysokosc+12;
@@ -179,11 +188,6 @@ void T_szachownica::wczytaj_tablica_szachownica(bool kolor)
                 default : break;
             }
         }
-}
-T_szachownica::T_szachownica()
-{
-    wczytaj_tablica_figor();
-    wczytaj_tablica_szachownica(kolor);
 }
 void T_szachownica::wypisz_tablica_szachownica()
 {

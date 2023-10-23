@@ -9,6 +9,7 @@ extern bool kolor;
 
 class T_szachownica
 {
+public:////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     enum T_wymiary_szachownicy
     {
         ramka_gora     =  2,
@@ -40,7 +41,6 @@ class T_szachownica
         void wczytaj_wspolrzedne(bool kolor);
             void wczytaj_znak_wspolrzedny(int wsp_x, int wsp_y, std::string znak);
         void wczytaj_ulozenie_poczatkowe(bool kolor);
-public:
             void wczytaj_figure(int figura, int wsp_pola_poziom, int wsp_pola_pion, bool kolor_figury);
     T_szachownica();
     void wypisz_tablica_szachownica();
