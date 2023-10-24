@@ -10,17 +10,10 @@ extern bool kolor;
 class T_szachownica
 {
 public:////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    enum T_wymiary_szachownicy
-    {
-        ramka_gora     =  2,
-        ramka_bok      =  4,
-        margines_gora  = 10,
-        margines_bok   = 20,
-        pole_wysokosc  = 19,
-        pole_szerokosc = 46,
-        wysokosc       = 2*margines_gora + 2*ramka_gora + 8*pole_wysokosc,
-        szerokosc      = 2*margines_bok  + 2*ramka_bok  + 8*pole_szerokosc
-    };
+
+    char tablica_szachownica[176][416];
+    std::string tablica_figor[7];
+
     enum T_bierki
     {
         brak    = 0,
@@ -31,9 +24,6 @@ public:////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         hetman  = 5,
         krol    = 6
     };
-    char tablica_szachownica[wysokosc][szerokosc];
-    std::string tablica_figor[7];
-
 
     void wczytaj_tablica_figor();
     void wczytaj_tablica_szachownica(bool kolor);

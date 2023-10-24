@@ -1,16 +1,13 @@
 #ifndef T_RUCH_H
 #define T_RUCH_H
-
 #include <vector>
 #include <algorithm>
-
 using T_wsk_szachownica = char(*)[8];
 extern bool kolor;
 
-
 class T_ruch
 {
-    public:////!!!!!!!!!!!!!!!!!!!!!!!!!!11
+    public:////!!!!!!!!!!!!!!!!!!!!!!!!!!
     friend class T_silnik;
 
     T_ruch* wsk_do_rodzica_klasy_T_ruch;
@@ -23,11 +20,11 @@ class T_ruch
         polozenie_krola_przeciwnika_x ,
         polozenie_krola_przeciwnika_y ,
         pokolenie_klasy               ,
-        ostatnie_pokolenie       =  4 ,
+        ostatnie_pokolenie       =  2 ,
         numer_mojego_ruchu       = -1 ,
         index_najgorszego_ruchu  =  0 ,
-        ile_ruchow_rozpatrywac[10]{7,4,3,2,2,2,2,2,1,1},
-        ile_ruchow_przeciwnika_rozpatrywac[10]{7,4,3,2,2,2,2,2,1,1};
+        ile_ruchow_rozpatrywac[10]{2,2,2,2,2,2,2,2,1,1},
+        ile_ruchow_przeciwnika_rozpatrywac[10]{2,2,2,2,2,2,2,2,1,1};
 
     double najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow;
 
@@ -39,6 +36,8 @@ class T_ruch
          czy_prawa_wierza_przeciwnika_sie_ruszyla,
          czy_moj_krol_jest_szachowany            ,
          czy_krol_przeciwnika_jest_szachowany    ;
+    bool koniec_gry_wygrana_maszyny      = false ,
+         koniec_gry_wygrana_urzytkownika = false ;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -66,6 +65,7 @@ class T_ruch
     double oblicz_status_materialny(const T_wsk_szachownica wsk_X);////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     T_wsk_szachownica skopiuj_szachownice(const T_wsk_szachownica oryginal);
     void wypisz_szachownice(const T_wsk_szachownica wsk_X);//??????????????????????????
+
 };
 #endif
 

@@ -2,7 +2,6 @@
 #include <vector>
 #include <algorithm>
 #include "T_ruch.h"
-
 using namespace std;
 using T_wsk_szachownica = char(*)[8];
 
@@ -92,16 +91,22 @@ double T_ruch::oblicz_nastepny_ruch(T_wsk_szachownica &wsk_X)
         }
         if(pokolenie_klasy == 0)
         {
-            delete[] wsk_X;
-            wsk_X = skopiuj_szachownice(wektor_na_ruchy[index_najleprzego_z_najgorszych_ruchow][0]);
+            delete[]wsk_X;
+            wsk_X=nullptr;
+            if(wektor_na_ruchy.size()==0) //czy urzytkownik zamatowal maszyne
+                koniec_gry_wygrana_urzytkownika = true;
+            for(int i=0; i<wektor_na_ruchy.size(); i++)
+            {
+                if(wektor_na_ruchy[i].size()==1) // czy maszyna zamatowala urzytkowanika
+                {
+                    wsk_X = skopiuj_szachownice(wektor_na_ruchy[i][0]);
+                    koniec_gry_wygrana_maszyny = true;
+                    break;
+                }
+            }
+            if(wsk_X == nullptr)
+                wsk_X = skopiuj_szachownice(wektor_na_ruchy[index_najleprzego_z_najgorszych_ruchow][0]);
         }
-////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-        //for(auto element: wektor_na_ruchy)
-        //wypisz_szachownice(element[0]);
-
-////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
         wyzeruj_wektor_na_ruchy();
         return najleprzy_z_najgorszych_status_materialny;
     }
@@ -110,12 +115,6 @@ double T_ruch::oblicz_nastepny_ruch(T_wsk_szachownica &wsk_X)
         for(auto element: statusy_materialne_rozpatrywanych_rochow)
             if(najleprzy_z_najgorszych_status_materialny < element)
                 najleprzy_z_najgorszych_status_materialny = element;
-////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-        //for(auto element: wektor_na_ruchy)
-         //wypisz_szachownice(element[0]);
-
-////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         wyzeruj_wektor_na_ruchy();
 
         return najleprzy_z_najgorszych_status_materialny;
@@ -1823,8 +1822,6 @@ void T_ruch::wypisz_szachownice(const T_wsk_szachownica wsk_X)
         cout<<string(2,'\333');
     cout<<string(19,'\333')<<endl;
 }
-
-
 
 
 
