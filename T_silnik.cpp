@@ -27,14 +27,23 @@ T_silnik::~T_silnik()
     delete[]wsk_szachownica_robocza;
 }
 //********************************************************************************************
-bool T_silnik::czy_urzytkownik_moze_wykonac_takie_posuniecie(int posuniecie_urzytkownika)/////////////////
+int T_silnik::wykonaj_posunieice(int posuniecie_urzytkownika)
 {
-    rozszyfruj_posuniecie_urzytkownika(posuniecie_urzytkownika);
-    if( !czy_na_polu_wyjsciowym_jest_bierka_urzytkownika()           ){cout<<"brak na starcie"<<endl;return false;}
-    if(  czy_na_polu_docelowym_jest_bierka_urzytkownika()            ){cout<<"bierka na docelowym"<<endl;return false;}
-    if(  czy_ten_ruch_powoduje_wystawienie_swojego_krola_na_bicie() ){cout<<"bity krol"<<endl;return false;}
-    if( !czy_ruch_jest_zgodny_z_zasadami()                          ){cout<<"nie zgodne z zasadami"<<endl;return false;}
-    return true;
+    if(posuniecie_urzytkownika != 10000) //niewykona sie kiedy maszyna wykonuje pierwszy ruch
+    {
+        rozszyfruj_posuniecie_urzytkownika(posuniecie_urzytkownika);
+        if(!czy_urzytkownik_moze_wykonac_takie_posuniecie())
+            return 20000;
+        nanies_posuniecie_urzytkownika_na_szachownice();
+    }
+    aktualny.przygotuj_T_ruch();
+    aktualny.oblicz_nastepny_ruch(wsk_szachownica_robocza);
+    if(aktualny.koniec_gry_pat_urzytkownika || aktualny.koniec_gry_wygrana_urzytkownika)
+        return czy_to_koniec_gry();
+    znajdz_posuniecie_maszyny();
+    nanies_posuniecie_maszyny_na_szachownice();
+    int posuniecie_maszyny = zaszyfruj_posuniecie_maszyny();
+    return posuniecie_maszyny + czy_to_koniec_gry();
 }
     void T_silnik::rozszyfruj_posuniecie_urzytkownika(int posuniecie_urzytkownika)
 {
@@ -46,7 +55,15 @@ bool T_silnik::czy_urzytkownik_moze_wykonac_takie_posuniecie(int posuniecie_urzy
     posuniecie_urzytkownika /=10;
     u.zX  = posuniecie_urzytkownika;
 }
-    bool T_silnik::czy_na_polu_wyjsciowym_jest_bierka_urzytkownika()
+    bool T_silnik::czy_urzytkownik_moze_wykonac_takie_posuniecie()
+{
+    if( !czy_na_polu_wyjsciowym_jest_bierka_urzytkownika()           )return false;
+    if(  czy_na_polu_docelowym_jest_bierka_urzytkownika()            )return false;
+    if(  czy_ten_ruch_powoduje_wystawienie_swojego_krola_na_bicie()  )return false;
+    if( !czy_ruch_jest_zgodny_z_zasadami()                           )return false;
+    return true;
+}
+        bool T_silnik::czy_na_polu_wyjsciowym_jest_bierka_urzytkownika()
 {
     T_wsk_szachownica wsk_X = wsk_szachownica_robocza;
     if(wsk_X[u.zY][u.zX]<'g' && 'w'<wsk_X[u.zY][u.zX])
@@ -54,7 +71,7 @@ bool T_silnik::czy_urzytkownik_moze_wykonac_takie_posuniecie(int posuniecie_urzy
     else
         return true;
 }
-    bool T_silnik::czy_na_polu_docelowym_jest_bierka_urzytkownika()
+        bool T_silnik::czy_na_polu_docelowym_jest_bierka_urzytkownika()
 {
     T_wsk_szachownica wsk_X = wsk_szachownica_robocza;
     if(wsk_X[u.naY][u.naX]<'g' || 'w'<wsk_X[u.naY][u.naX])
@@ -62,7 +79,7 @@ bool T_silnik::czy_urzytkownik_moze_wykonac_takie_posuniecie(int posuniecie_urzy
     else
         return true;
 }
-    bool T_silnik::czy_ten_ruch_powoduje_wystawienie_swojego_krola_na_bicie()
+        bool T_silnik::czy_ten_ruch_powoduje_wystawienie_swojego_krola_na_bicie()
 {
     T_wsk_szachownica wsk_X = wsk_szachownica_robocza;
     int potencjalnie_krol_przeciwnika_x;
@@ -92,17 +109,16 @@ bool T_silnik::czy_urzytkownik_moze_wykonac_takie_posuniecie(int posuniecie_urzy
         return false;
     }
 }
-    bool T_silnik::czy_ruch_jest_zgodny_z_zasadami()
+        bool T_silnik::czy_ruch_jest_zgodny_z_zasadami()
 {
     T_wsk_szachownica wsk_X = wsk_szachownica_robocza;
     switch(wsk_X[u.zY][u.zX])
     {
         case 'p':
             if(u.zY==1 && u.naY-u.zY==2 && u.zX==u.naX && wsk_X[u.zY+1][u.naX]==' ' && wsk_X[u.naY][u.naX]==' ') return true;//ruch o 2 do przodu
-            if(u.naY-u.zY==1 && u.zX==u.naX && wsk_X[u.naY][u.naX]==' ')                               return true;//ruch o 1 do przodu
-            if(u.naY-u.zY==1 && u.zX-u.naX==1 && 'G'<=wsk_X[u.naY][u.naX] && wsk_X[u.naY][u.naX]<='W') {cout<<"e";return true;}//bicie
-            if(u.naY-u.zY==1 && u.naX-u.zX==1 && 'G'<=wsk_X[u.naY][u.naX] && wsk_X[u.naY][u.naX]<='W') {cout<<"f";return true;}//bicie
-            cout<<wsk_X[u.naY][u.naX];
+            if(u.naY-u.zY==1 && u.zX==u.naX && wsk_X[u.naY][u.naX]==' ')                                         return true;//ruch o 1 do przodu
+            if(u.naY-u.zY==1 && u.zX-u.naX==1 && 'G'<=wsk_X[u.naY][u.naX] && wsk_X[u.naY][u.naX]<='W')           return true;//bicie
+            if(u.naY-u.zY==1 && u.naX-u.zX==1 && 'G'<=wsk_X[u.naY][u.naX] && wsk_X[u.naY][u.naX]<='W')           return true;//bicie
             return false;
         case 's':
             if((abs(u.zX-u.naX)==2 && abs(u.zY-u.naY)==1) || (abs(u.zX-u.naX)==1 && abs(u.zY-u.naY)==2))
@@ -177,20 +193,6 @@ bool T_silnik::czy_urzytkownik_moze_wykonac_takie_posuniecie(int posuniecie_urzy
             return false;
     }
 }
-//********************************************************************************************
-int T_silnik::wykonaj_posunieice(int posuniecie_urzytkownika)
-{
-    if(posuniecie_urzytkownika != 10000) //niewykona sie kiedy maszyna wykonuje pierwszy ruch
-    {
-        rozszyfruj_posuniecie_urzytkownika(posuniecie_urzytkownika);
-        nanies_posuniecie_urzytkownika_na_szachownice();
-    }
-    aktualny.oblicz_nastepny_ruch(wsk_szachownica_robocza);
-    znajdz_posuniecie_maszyny();
-    nanies_posuniecie_maszyny_na_szachownice();
-    int posuniecie_maszyny = zaszyfruj_posuniecie_maszyny();
-    return posuniecie_maszyny + czy_doszlo_do_wygranej();
-}
     void T_silnik::nanies_posuniecie_urzytkownika_na_szachownice()
 {
     wsk_szachownica_robocza[u.naY][u.naX] = wsk_szachownica_robocza[u.zY][u.zX];
@@ -227,12 +229,16 @@ int T_silnik::wykonaj_posunieice(int posuniecie_urzytkownika)
 {
     return m.zX*1000+m.zY*100+m.naX*10+m.naY*1;
 }
-    int T_silnik::czy_doszlo_do_wygranej()
+    int T_silnik::czy_to_koniec_gry()
 {
     if(aktualny.koniec_gry_wygrana_maszyny)
-        return 20000; //wygrywa maszyna
+        return 30000; //wygrywa maszyna
     if(aktualny.koniec_gry_wygrana_urzytkownika)
-        return 30000; //wygrywa urzytkownik
+        return 40000; //wygrywa urzytkownik
+    if(aktualny.koniec_gry_pat_maszyny)
+        return 50000; //wygrywa maszyna
+    if(aktualny.koniec_gry_pat_urzytkownika)
+        return 60000; //wygrywa urzytkownik
     return 0;
 }
 

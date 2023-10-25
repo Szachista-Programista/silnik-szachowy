@@ -14,8 +14,6 @@ T_ruch::T_ruch()
     polozenie_krola_przeciwnika_x = kolor?3:4;
     polozenie_krola_przeciwnika_y =         0;
 
-    najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow = 100.0;
-
     czy_moj_krol_sie_ruszyl                  = false;
     czy_moja_lewa_wierza_sie_ruszyla         = false;
     czy_moja_prawa_wierza_sie_ruszyla        = false;
@@ -26,6 +24,13 @@ T_ruch::T_ruch()
 T_ruch::~T_ruch()
 {
     wyzeruj_wektor_na_ruchy();
+}
+void T_ruch::przygotuj_T_ruch()
+{
+    statusy_materialne_rozpatrywanych_rochow.clear();
+    numer_mojego_ruchu       = -1 ;
+    index_najgorszego_ruchu  =  0 ;
+    najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow = 100.0;
 }
 double T_ruch::oblicz_nastepny_ruch(T_wsk_szachownica &wsk_X)
 {
@@ -67,7 +72,7 @@ double T_ruch::oblicz_nastepny_ruch(T_wsk_szachownica &wsk_X)
 {
     czy_moj_krol_jest_szachowany = czy_moje_pole_jest_bite(polozenie_mojego_krola_x, polozenie_mojego_krola_y, wsk_X);
 }
-    double T_ruch::znajdz_najleprze_z_posuniec(T_wsk_szachownica &wsk_X)////!!!!!!!!!!!!!!!!!!!!!!
+    double T_ruch::znajdz_najleprze_z_posuniec(T_wsk_szachownica &wsk_X)
 {
     double najleprzy_z_najgorszych_status_materialny = -100;
     if(pokolenie_klasy < ostatnie_pokolenie)
@@ -91,16 +96,24 @@ double T_ruch::oblicz_nastepny_ruch(T_wsk_szachownica &wsk_X)
         }
         if(pokolenie_klasy == 0)
         {
+            if(wektor_na_ruchy.size()==0) //czy urzytkownik zamatowal maszyne albo wywolal pata?
+            {
+                if(czy_moje_pole_jest_bite(polozenie_mojego_krola_x, polozenie_mojego_krola_y, wsk_X))
+                    koniec_gry_wygrana_urzytkownika = true;
+                else
+                    koniec_gry_pat_urzytkownika     = true;
+            }
             delete[]wsk_X;
             wsk_X=nullptr;
-            if(wektor_na_ruchy.size()==0) //czy urzytkownik zamatowal maszyne
-                koniec_gry_wygrana_urzytkownika = true;
             for(int i=0; i<wektor_na_ruchy.size(); i++)
             {
-                if(wektor_na_ruchy[i].size()==1) // czy maszyna zamatowala urzytkowanika
+                if(wektor_na_ruchy[i].size()==1) // czy maszyna zamatowala urzytkowanika albo wywolala pata?
                 {
                     wsk_X = skopiuj_szachownice(wektor_na_ruchy[i][0]);
-                    koniec_gry_wygrana_maszyny = true;
+                    if(czy_pole_przeciwnika_jest_bite(polozenie_krola_przeciwnika_x, polozenie_krola_przeciwnika_y, wsk_X))
+                        koniec_gry_wygrana_maszyny = true;
+                    else
+                        koniec_gry_pat_maszyny     = true;
                     break;
                 }
             }
@@ -116,7 +129,6 @@ double T_ruch::oblicz_nastepny_ruch(T_wsk_szachownica &wsk_X)
             if(najleprzy_z_najgorszych_status_materialny < element)
                 najleprzy_z_najgorszych_status_materialny = element;
         wyzeruj_wektor_na_ruchy();
-
         return najleprzy_z_najgorszych_status_materialny;
     }
 }
@@ -131,8 +143,6 @@ double T_ruch::oblicz_nastepny_ruch(T_wsk_szachownica &wsk_X)
 }
         T_ruch::T_ruch(T_ruch* wskaznik, double &status_materialny, T_wsk_szachownica wsk_X, int iteracja): pokolenie_klasy {iteracja}
 {
-    najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow = 100.0;
-
     przepisz_dane_o_ruchach_krolow_i_wiez(wskaznik);
     status_materialny = oblicz_nastepny_ruch(wsk_X);
 }
@@ -1806,21 +1816,21 @@ T_wsk_szachownica T_ruch::skopiuj_szachownice(const T_wsk_szachownica oryginal)
 }
 void T_ruch::wypisz_szachownice(const T_wsk_szachownica wsk_X)
 {
-    for(int i=0; i<=pokolenie_klasy; i++)
-        cout<<string(2,'\333');
-    cout<<pokolenie_klasy<<string(18,'\333')<<endl;;
+
+    cout<<string(23,'\333')<<endl;
+    cout<<"\333\333\333 0 1 2 3 4 5 6 7 \333\333\333"<<endl;
+    cout<<string(23,'\333')<<endl;
     for(int i=0; i<8; i++)
     {
-        for(int j=0; j<=pokolenie_klasy; j++)
-            cout<<string(2,'\333');
+        cout<<"\333"<<i<<"\333";
         for(int j=0; j<8; j++)
             cout<<' '<<wsk_X[i][j];
         cout<<' ';
-        cout<<string(2,'\333')<<endl;
+        cout<<"\333"<<i<<"\333"<<endl;
     }
-    for(int i=0; i<=pokolenie_klasy; i++)
-        cout<<string(2,'\333');
-    cout<<string(19,'\333')<<endl;
+    cout<<string(23,'\333')<<endl;
+    cout<<"\333\333\333 0 1 2 3 4 5 6 7 \333\333\333"<<endl;
+    cout<<string(23,'\333')<<endl;
 }
 
 
