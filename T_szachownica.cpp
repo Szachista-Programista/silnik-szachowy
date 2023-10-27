@@ -2,7 +2,6 @@
 #include <windows.h>
 #include <fstream>
 #include <string>
-
 #include "T_szachownica.h"
 
 using namespace std;
@@ -25,6 +24,7 @@ T_szachownica::T_szachownica()
     wczytaj_deske_szachowa();
     wczytaj_wspolrzedne(kolor);
     wczytaj_ulozenie_poczatkowe(kolor);
+    xxx();
 }
         void T_szachownica::wczytaj_deske_szachowa()
 {
@@ -115,7 +115,7 @@ T_szachownica::T_szachownica()
 }
             void T_szachownica::wczytaj_figure(int figura, int wsp_pola_poziom, int wsp_pola_pion, bool kolor_figury)////////
 {
-    int wsp_x = (wsp_pola_poziom)*46+35;
+    int wsp_x = (wsp_pola_poziom)*46+37;
     int wsp_y = (wsp_pola_pion)*19+12;
     bool kolor_pola = !((wsp_pola_poziom+wsp_pola_pion)%2);
 
@@ -139,7 +139,7 @@ void T_szachownica::wypisz_tablica_szachownica()//??????????????????
 {
     for(int i=0; i<176; i++)
     {
-        for(int j=0; j<416; j++)
+        for(int j=0; j<800; j++)
             cout<<tablica_szachownica[i][j];
         cout<<endl;
     }
@@ -155,3 +155,26 @@ void T_szachownica::ustawienie_wielkosci_obrazu()
     system("pause");
     system("cls");
 }
+
+
+void T_szachownica::xxx()
+{
+    for(int i=0; i<176; i++)
+    {
+        for(int j=416; j<800; j++)
+            tablica_szachownica[i][j]='#';
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

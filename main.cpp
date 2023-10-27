@@ -12,23 +12,10 @@ int znak;//////////////
 int main(){
 
 
-T_silnik x;
+T_szachownica x;
 
-
-int posuniecie;
-x.aktualny.wypisz_szachownice(x.wsk_szachownica_robocza);
-
-for(;;)
-{
-    cin>>posuniecie;
-    x.wykonaj_posunieice(posuniecie);
-    system("cls");
-
-    x.aktualny.wypisz_szachownice(x.wsk_szachownica_robocza);
-}
-
-
-
+x.ustawienie_wielkosci_obrazu();
+x.wypisz_tablica_szachownica();
 
 
 return 0;

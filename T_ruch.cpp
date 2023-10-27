@@ -4,6 +4,7 @@
 #include "T_ruch.h"
 using namespace std;
 using T_wsk_szachownica = char(*)[8];
+extern bool kolor;
 
 T_ruch::T_ruch()
 {
@@ -1784,23 +1785,25 @@ void T_ruch::wykonaj_ruch_przeciwnika(T_wsk_szachownica wsk_X)
 //***********************************************************************************************************************************************
 double T_ruch::oblicz_status_materialny(const T_wsk_szachownica wsk_X)////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 {
-    double status_materialny{0};
+    double status_materialny=0.0,
+           x                =0.0;
+
     for(int i=0; i<8; i++)
         for(int j=0; j<8; j++)
         {
             switch(wsk_X[i][j])
             {
                 case 'p': status_materialny += (i==6)? -2.0 : -1.0; break;
-                case 's': status_materialny += (i==0 || i==7 || j==0 || j==7)? -2.9 : -3.0; break;
-                case 'g': status_materialny += (i==0 || i==7 || j==0 || j==7)? -2.9 : -3.0; break;
-                case 'w': status_materialny += (wsk_X[1][j]=='P' || wsk_X[2][j]=='P' || wsk_X[3][j]=='P' || wsk_X[4][j]=='P' || wsk_X[5][j]=='P' || wsk_X[6][j]=='P')? -4.9 : -5.0; break;
-                case 'h': status_materialny += (wsk_X[1][j]=='P' || wsk_X[2][j]=='P' || wsk_X[3][j]=='P' || wsk_X[4][j]=='P' || wsk_X[5][j]=='P' || wsk_X[6][j]=='P')? -6.9 : -7.0; break;
+                case 's': status_materialny += (i==0 || i==7 || j==0 || j==7)? -3.0-x : -3.0; break;
+                case 'g': status_materialny += (i==0 || i==7 || j==0 || j==7)? -3.0-x : -3.0; break;
+                case 'w': status_materialny += (wsk_X[1][j]=='P' || wsk_X[2][j]=='P' || wsk_X[3][j]=='P' || wsk_X[4][j]=='P' || wsk_X[5][j]=='P' || wsk_X[6][j]=='P')? -5.0-x : -5.0; break;
+                case 'h': status_materialny += (wsk_X[1][j]=='P' || wsk_X[2][j]=='P' || wsk_X[3][j]=='P' || wsk_X[4][j]=='P' || wsk_X[5][j]=='P' || wsk_X[6][j]=='P')? -7.0-x : -7.0; break;
 
                 case 'P': status_materialny += (i==1)? 2.0 : 1.0; break;
-                case 'S': status_materialny += (i==0 || i==7 || j==0 || j==7)? 2.9 : 3.0; break;
-                case 'G': status_materialny += (i==0 || i==7 || j==0 || j==7)? 2.9 : 3.0; break;
-                case 'W': status_materialny += (wsk_X[1][j]=='p' || wsk_X[2][j]=='p' || wsk_X[3][j]=='p' || wsk_X[4][j]=='p' || wsk_X[5][j]=='p' || wsk_X[6][j]=='p')? 4.9 : 5.0; break;
-                case 'H': status_materialny += (wsk_X[1][j]=='p' || wsk_X[2][j]=='p' || wsk_X[3][j]=='p' || wsk_X[4][j]=='p' || wsk_X[5][j]=='p' || wsk_X[6][j]=='p')? 6.9 : 7.0; break;
+                case 'S': status_materialny += (i==0 || i==7 || j==0 || j==7)? 3.0+x : 3.0; break;
+                case 'G': status_materialny += (i==0 || i==7 || j==0 || j==7)? 3.0+x : 3.0; break;
+                case 'W': status_materialny += (wsk_X[1][j]=='p' || wsk_X[2][j]=='p' || wsk_X[3][j]=='p' || wsk_X[4][j]=='p' || wsk_X[5][j]=='p' || wsk_X[6][j]=='p')? 5.0+x : 5.0; break;
+                case 'H': status_materialny += (wsk_X[1][j]=='p' || wsk_X[2][j]=='p' || wsk_X[3][j]=='p' || wsk_X[4][j]=='p' || wsk_X[5][j]=='p' || wsk_X[6][j]=='p')? 7.0+x : 7.0; break;
                 default: break;
             }
         }
@@ -1814,13 +1817,14 @@ T_wsk_szachownica T_ruch::skopiuj_szachownice(const T_wsk_szachownica oryginal)
             kopia[i][j] = oryginal[i][j];
     return kopia;
 }
-void T_ruch::wypisz_szachownice(const T_wsk_szachownica wsk_X)
+void T_ruch::wypisz_szachownice(const T_wsk_szachownica wsk_X)////!!!!!!!!!!!!!!!!!!!!!!!!!!11
 {
 
     cout<<string(23,'\333')<<endl;
     cout<<"\333\333\333 0 1 2 3 4 5 6 7 \333\333\333"<<endl;
     cout<<string(23,'\333')<<endl;
     for(int i=0; i<8; i++)
+    //for(int i=7; i>=0; i--)
     {
         cout<<"\333"<<i<<"\333";
         for(int j=0; j<8; j++)

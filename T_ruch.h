@@ -4,9 +4,7 @@
 #include <algorithm>
 
 using T_wsk_szachownica = char(*)[8];
-extern bool kolor;
 
-extern int znak;///////////////
 
 class T_ruch
 {
@@ -38,8 +36,8 @@ class T_ruch
          czy_lewa_wierza_przeciwnika_sie_ruszyla ,////////////
          czy_prawa_wierza_przeciwnika_sie_ruszyla,///////////
          czy_moj_krol_jest_szachowany            ,
-         czy_krol_przeciwnika_jest_szachowany    ;//////////////
-    bool koniec_gry_wygrana_maszyny      = false ,
+         czy_krol_przeciwnika_jest_szachowany    ,//////////////
+         koniec_gry_wygrana_maszyny      = false ,
          koniec_gry_wygrana_urzytkownika = false ,
          koniec_gry_pat_maszyny          = false ,
          koniec_gry_pat_urzytkownika     = false ;
