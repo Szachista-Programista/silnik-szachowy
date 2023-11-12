@@ -1,35 +1,27 @@
 #include <iostream>
 #include <windows.h>
-#include "T_szachownica.h"
-#include "T_ruch.h"
-#include "T_silnik.h"
+#include "Szachownica.h"
+#include "Ruch.h"
+#include "Silnik.h"
+#include "Notatnik.h"
+#include "Komunikat.h"
+#include "Gra.h"
+
 using namespace std;
 bool kolor=1;
 using T_wsk_szachownica = char(*)[8];
 
-int znak;//////////////
+
 
 int main(){
 
 
-T_szachownica x;
-
-x.ustawienie_wielkosci_obrazu();
-x.wypisz_tablica_szachownica();
+Gra g(kolor);
+g.zagraj_z_urzytkownikiem();
 
 
 return 0;
 }
-
-
-
-
-
-
-
-
-
-
 
 
 
