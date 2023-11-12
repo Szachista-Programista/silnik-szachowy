@@ -6,14 +6,13 @@ using T_wsk_szachownica = char(*)[8];
 extern bool kolor;
 
 
-//********************************************************************************************
-Silnik::Silnik(bool k): kolor{k}, aktualny{k}
-{
+Silnik::Silnik(bool k): kolor{k}, aktualny{k}{
+//==============================================================================================================
     wsk_szachownica_wyjsciowa = zainicjalizuj_szachownice();
     wsk_szachownica_robocza   = zainicjalizuj_szachownice();
 }
-    T_wsk_szachownica Silnik::zainicjalizuj_szachownice()
-{
+    T_wsk_szachownica Silnik::zainicjalizuj_szachownice(){
+//==============================================================================================================
     return new char[8][8]{{'w','s','g',kolor?'k':'h',kolor?'h':'k','g','s','w'},
                           {'p','p','p','p','p','p','p','p'},
                           {' ',' ',' ',' ',' ',' ',' ',' '},
@@ -23,14 +22,13 @@ Silnik::Silnik(bool k): kolor{k}, aktualny{k}
                           {'P','P','P','P','P','P','P','P'},
                           {'W','S','G',kolor?'K':'H',kolor?'H':'K','G','S','W'}};
 }
-Silnik::~Silnik()
-{
+Silnik::~Silnik(){
+//==============================================================================================================
     delete[]wsk_szachownica_wyjsciowa;
     delete[]wsk_szachownica_robocza;
 }
-//********************************************************************************************
-bool Silnik::czy_urzytkownik_moze_wykonac_takie_posuniecie(int posuniecie_urzytkownika)
-{
+bool Silnik::czy_urzytkownik_moze_wykonac_takie_posuniecie(int posuniecie_urzytkownika){
+//==============================================================================================================
     rozszyfruj_posuniecie_urzytkownika(posuniecie_urzytkownika);
     if(!czy_na_polu_wyjsciowym_jest_bierka_urzytkownika()          )return false;
     if( czy_na_polu_docelowym_jest_bierka_urzytkownika()           )return false;
@@ -38,8 +36,8 @@ bool Silnik::czy_urzytkownik_moze_wykonac_takie_posuniecie(int posuniecie_urzytk
     if(!czy_ruch_jest_zgodny_z_zasadami()                          )return false;
     return true;
 }
-    void Silnik::rozszyfruj_posuniecie_urzytkownika(int posuniecie_urzytkownika)
-{
+    void Silnik::rozszyfruj_posuniecie_urzytkownika(int posuniecie_urzytkownika){
+//==============================================================================================================
     posuniecie_urzytkownika = posuniecie_urzytkownika %10000;
     u.naY = posuniecie_urzytkownika % 10;
     posuniecie_urzytkownika /=10;
@@ -49,42 +47,42 @@ bool Silnik::czy_urzytkownik_moze_wykonac_takie_posuniecie(int posuniecie_urzytk
     posuniecie_urzytkownika /=10;
     u.zX  = posuniecie_urzytkownika;
 }
-    bool Silnik::czy_na_polu_wyjsciowym_jest_bierka_urzytkownika()
-{
+    bool Silnik::czy_na_polu_wyjsciowym_jest_bierka_urzytkownika(){
+//==============================================================================================================
     T_wsk_szachownica wsk_X = wsk_szachownica_robocza;
     if(wsk_X[u.zY][u.zX]<'g' && 'w'<wsk_X[u.zY][u.zX])
         return false;
     else
         return true;
 }
-    bool Silnik::czy_na_polu_docelowym_jest_bierka_urzytkownika()
-{
+    bool Silnik::czy_na_polu_docelowym_jest_bierka_urzytkownika(){
+//==============================================================================================================
     T_wsk_szachownica wsk_X = wsk_szachownica_robocza;
     if(wsk_X[u.naY][u.naX]<'g' || 'w'<wsk_X[u.naY][u.naX])
         return false;
     else
         return true;
 }
-    bool Silnik::czy_ten_ruch_powoduje_wystawienie_swojego_krola_na_bicie()
-{
+    bool Silnik::czy_ten_ruch_powoduje_wystawienie_swojego_krola_na_bicie(){
+//==============================================================================================================
     T_wsk_szachownica wsk_X = wsk_szachownica_robocza;
-    int potencjalnie_krol_przeciwnika_x;
-    int potencjalnie_krol_przeciwnika_y;
+    int potencjalnie_krol_urzytkownika_x;
+    int potencjalnie_krol_urzytkownika_y;
 
-    if(wsk_X[u.zY][u.zX]=='k') //czy przeciwnik chce sie ruszyc krolem
+    if(wsk_X[u.zY][u.zX]=='k') //czy urzytkownik chce sie ruszyc krolem
     {
-        potencjalnie_krol_przeciwnika_x = u.naX;
-        potencjalnie_krol_przeciwnika_y = u.naY;
+        potencjalnie_krol_urzytkownika_x = u.naX;
+        potencjalnie_krol_urzytkownika_y = u.naY;
     }
     else
     {
-        potencjalnie_krol_przeciwnika_x = aktualny.polozenie_krola_przeciwnika_x;
-        potencjalnie_krol_przeciwnika_y = aktualny.polozenie_krola_przeciwnika_y;
+        potencjalnie_krol_urzytkownika_x = aktualny.polozenie_krola_urzytkownika_x;
+        potencjalnie_krol_urzytkownika_y = aktualny.polozenie_krola_urzytkownika_y;
     }
     T_wsk_szachownica kopia = aktualny.skopiuj_szachownice(wsk_X);
     kopia[u.naY][u.naX]=kopia[u.zY][u.zX];
     kopia[u.zY][u.zX]=' ';
-    if(aktualny.czy_pole_przeciwnika_jest_bite(potencjalnie_krol_przeciwnika_x, potencjalnie_krol_przeciwnika_y, kopia))
+    if(aktualny.czy_pole_urzytkownika_jest_bite(potencjalnie_krol_urzytkownika_x, potencjalnie_krol_urzytkownika_y, kopia))
     {
         delete[]kopia;
         return true;
@@ -95,8 +93,8 @@ bool Silnik::czy_urzytkownik_moze_wykonac_takie_posuniecie(int posuniecie_urzytk
         return false;
     }
 }
-    bool Silnik::czy_ruch_jest_zgodny_z_zasadami()
-{
+    bool Silnik::czy_ruch_jest_zgodny_z_zasadami(){
+//==============================================================================================================
     T_wsk_szachownica wsk_X = wsk_szachownica_robocza;
     switch(wsk_X[u.zY][u.zX])
     {
@@ -165,23 +163,22 @@ bool Silnik::czy_urzytkownik_moze_wykonac_takie_posuniecie(int posuniecie_urzytk
         case 'k':
             if(abs(u.zX-u.naX)<=1 && abs(u.zY-u.naY)<=1)//zwykly ruch krolem
                 return true;
-            if(u.zY==u.naY && aktualny.czy_krol_przeciwnika_sie_ruszyl==false)//roszada
-                if(kolor==0)//przeciwnik gra czarnymi
-                    if(u.naX==2 && aktualny.czy_lewa_wierza_przeciwnika_sie_ruszyla ==false && wsk_X[0][1]==' ' && wsk_X[0][2]==' ' && wsk_X[0][3]==' ')//dluga roszada
+            if(u.zY==u.naY && aktualny.czy_krol_urzytkownika_sie_ruszyl==false)//roszada
+                if(kolor==0)//urzytkownik gra czarnymi
+                    if(u.naX==2 && aktualny.czy_lewa_wierza_urzytkownika_sie_ruszyla ==false && wsk_X[0][1]==' ' && wsk_X[0][2]==' ' && wsk_X[0][3]==' ')//dluga roszada
                         return true;
-                    if(u.naX==6 && aktualny.czy_prawa_wierza_przeciwnika_sie_ruszyla==false && wsk_X[0][5]==' ' && wsk_X[0][6]==' ')//krotka roszada
+                    if(u.naX==6 && aktualny.czy_prawa_wierza_urzytkownika_sie_ruszyla==false && wsk_X[0][5]==' ' && wsk_X[0][6]==' ')//krotka roszada
                         return true;
-                if(kolor==1)//przeciwnik gra bialymi
-                    if(u.naX==5 && aktualny.czy_prawa_wierza_przeciwnika_sie_ruszyla==false && wsk_X[0][4]==' ' && wsk_X[0][5]==' ' && wsk_X[0][6]==' ')//dluga roszada
+                if(kolor==1)//urzytkownik gra bialymi
+                    if(u.naX==5 && aktualny.czy_prawa_wierza_urzytkownika_sie_ruszyla==false && wsk_X[0][4]==' ' && wsk_X[0][5]==' ' && wsk_X[0][6]==' ')//dluga roszada
                         return true;
-                    if(u.naX==1 && aktualny.czy_lewa_wierza_przeciwnika_sie_ruszyla ==false && wsk_X[0][1]==' ' && wsk_X[0][2]==' ')//krotka roszada
+                    if(u.naX==1 && aktualny.czy_lewa_wierza_urzytkownika_sie_ruszyla ==false && wsk_X[0][1]==' ' && wsk_X[0][2]==' ')//krotka roszada
                         return true;
             return false;
     }
 }
-//********************************************************************************************
-int Silnik::wykonaj_posuniecie(int posuniecie_urzytkownika)
-{
+int Silnik::wykonaj_posuniecie(int posuniecie_urzytkownika){
+//==============================================================================================================
     if(posuniecie_urzytkownika != 10000) //niewykona sie kiedy maszyna wykonuje pierwszy ruch
     {
         rozszyfruj_posuniecie_urzytkownika(posuniecie_urzytkownika);
@@ -196,8 +193,8 @@ int Silnik::wykonaj_posuniecie(int posuniecie_urzytkownika)
     nanies_posuniecie_maszyny_na_szachownice();
     return posuniecie_maszyny + czy_to_koniec_gry();
 }
-    void Silnik::nanies_posuniecie_urzytkownika_na_szachownice(int posuniecie_urzytkownika)
-{
+    void Silnik::nanies_posuniecie_urzytkownika_na_szachownice(int posuniecie_urzytkownika){
+//==============================================================================================================
     int promocja_piona  = posuniecie_urzytkownika - posuniecie_urzytkownika % 10000; //0,1,2,3 lub 4
     char ruszana_bierka = wsk_szachownica_robocza[u.zY][u.zX];
 
@@ -238,8 +235,8 @@ int Silnik::wykonaj_posuniecie(int posuniecie_urzytkownika)
         }
     }
 }
-    void Silnik::znajdz_posuniecie_maszyny()
-{
+    void Silnik::znajdz_posuniecie_maszyny(){
+//==============================================================================================================
     bool czy_to_roszada = false;
     for(int i=0,x=0; i<8; i++) //czy doszlo do roszady
     {
@@ -288,8 +285,8 @@ int Silnik::wykonaj_posuniecie(int posuniecie_urzytkownika)
         }
     }
 }
-    int  Silnik::zaszyfruj_posuniecie_maszyny()
-{
+    int  Silnik::zaszyfruj_posuniecie_maszyny(){
+//==============================================================================================================
     int kod_wypromowanej_bierki = 0;
     if(wsk_szachownica_robocza[m.naY][m.naX] != wsk_szachownica_wyjsciowa[m.zY][m.zX])// doszlo do promocji pionka
         switch(wsk_szachownica_robocza[m.naY][m.naX])
@@ -302,8 +299,8 @@ int Silnik::wykonaj_posuniecie(int posuniecie_urzytkownika)
         }
     return m.zX*1000+m.zY*100+m.naX*10+m.naY*1 + kod_wypromowanej_bierki;
 }
-    void Silnik::nanies_posuniecie_maszyny_na_szachownice()
-{
+    void Silnik::nanies_posuniecie_maszyny_na_szachownice(){
+//==============================================================================================================
     char ruszana_bierka;
     ruszana_bierka = wsk_szachownica_robocza[m.zY][m.zX];
 
@@ -334,8 +331,8 @@ int Silnik::wykonaj_posuniecie(int posuniecie_urzytkownika)
         }
     }
 }
-    int  Silnik::czy_to_koniec_gry()
-{
+    int  Silnik::czy_to_koniec_gry(){
+//==============================================================================================================
     if(aktualny.koniec_gry_wygrana_urzytkownika)
         return 60000; //wygrywa urzytkownik
     if(aktualny.koniec_gry_pat_urzytkownika)
@@ -347,7 +344,6 @@ int Silnik::wykonaj_posuniecie(int posuniecie_urzytkownika)
 
     return 0;
 }
-//********************************************************************************************
 
 
 

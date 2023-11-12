@@ -11,14 +11,14 @@ using T_wsk_szachownica = char(*)[8];
 
 
 
-Notatnik::Notatnik(bool k): kolor{k}
-{
+Notatnik::Notatnik(bool k): kolor{k}{
+//==============================================================================================================
     aktualna_szachownica = zainicjalizuj_szachownice();
     ubiegla_szachownica  = zainicjalizuj_szachownice();
     wczytaj_znaki();
 }
-    T_wsk_szachownica Notatnik::zainicjalizuj_szachownice()
-{
+    T_wsk_szachownica Notatnik::zainicjalizuj_szachownice(){
+//==============================================================================================================
     return new char[8][8]{{'w','s','g',kolor?'k':'h',kolor?'h':'k','g','s','w'},
                           {'p','p','p','p','p','p','p','p'},
                           {' ',' ',' ',' ',' ',' ',' ',' '},
@@ -28,8 +28,8 @@ Notatnik::Notatnik(bool k): kolor{k}
                           {'P','P','P','P','P','P','P','P'},
                           {'W','S','G',kolor?'K':'H',kolor?'H':'K','G','S','W'}};
 }
-    void Notatnik::wczytaj_znaki()
-{
+    void Notatnik::wczytaj_znaki(){
+//==============================================================================================================
     ifstream odczyt;
     odczyt.open("znaki.txt");
     string znak;
@@ -45,33 +45,31 @@ Notatnik::Notatnik(bool k): kolor{k}
     }
     odczyt.close();
 }
-Notatnik::~Notatnik()
-{
+Notatnik::~Notatnik(){
+//==============================================================================================================
     delete[]aktualna_szachownica;
     delete[]ubiegla_szachownica;
 }
-//********************************************************************************
-void Notatnik::wygeneruj_i_wypisz_notacje(int ruch)
-{
+void Notatnik::wygeneruj_i_wypisz_notacje(int ruch){
+//==============================================================================================================
     uaktualnij_wartosci_parametrow(ruch);
     nanies_ruch_na_szachownice_i_zapisz_notacje();
     uzupelnij_zapis_gry();
     wypisz_notacje();
 }
-    void Notatnik::uaktualnij_wartosci_parametrow(int ruch)
-{
+    void Notatnik::uaktualnij_wartosci_parametrow(int ruch){
+//==============================================================================================================
     notacja.clear();
     kod_ruchu = ruch;
     nr_ruchu++;
     nr_pary_ruchow = (nr_ruchu+1)/2;
     bool ruch_maszyny = kolor ^ nr_ruchu%2;
     naniesiono_ruch = false;
-
     rozszyfruj_ruch();
     zaktualizuj_polozenia_krolow();
 }
-        void Notatnik::rozszyfruj_ruch()
-{
+        void Notatnik::rozszyfruj_ruch(){
+//==============================================================================================================
     ruch_naY = kod_ruchu % 10;
     kod_ruchu /=10;
     ruch_naX = kod_ruchu % 10;
@@ -82,8 +80,8 @@ void Notatnik::wygeneruj_i_wypisz_notacje(int ruch)
     kod_ruchu /=10;
     parametr_dodatkowy = kod_ruchu;
 }
-        void Notatnik::zaktualizuj_polozenia_krolow()
-{
+        void Notatnik::zaktualizuj_polozenia_krolow(){
+//==============================================================================================================
     for(int i=0; i<8; i++)
         for(int j=0; j<8; j++)
         {
@@ -99,8 +97,8 @@ void Notatnik::wygeneruj_i_wypisz_notacje(int ruch)
             }
         }
 }
-    void Notatnik::nanies_ruch_na_szachownice_i_zapisz_notacje()
-{
+    void Notatnik::nanies_ruch_na_szachownice_i_zapisz_notacje(){
+//==============================================================================================================
     if(parametr_dodatkowy == 6 || parametr_dodatkowy == 7) return;
     nanies_roszade();
     nanies_promocje_pionka();
@@ -108,8 +106,8 @@ void Notatnik::wygeneruj_i_wypisz_notacje(int ruch)
     nanies_zwykly_ruch();
     if(czy_jest_szach()) notacja += '+';
 }
-        void Notatnik::nanies_roszade()
-{
+        void Notatnik::nanies_roszade(){
+//==============================================================================================================
     if(aktualna_szachownica[ruch_zY][ruch_zX] == (ruch_maszyny?'K':'k') && abs(ruch_zX-ruch_naX)==2)//roszada
     {
         naniesiono_ruch = true;
@@ -141,8 +139,8 @@ void Notatnik::wygeneruj_i_wypisz_notacje(int ruch)
         }
     }
 }
-        void Notatnik::nanies_promocje_pionka()
-{
+        void Notatnik::nanies_promocje_pionka(){
+//==============================================================================================================
     if(parametr_dodatkowy) //promocja
     {
         naniesiono_ruch = true;
@@ -165,8 +163,8 @@ void Notatnik::wygeneruj_i_wypisz_notacje(int ruch)
         }
     }
 }
-        void Notatnik::nanies_bicie_w_przelocie()
-{
+        void Notatnik::nanies_bicie_w_przelocie(){
+//==============================================================================================================
     if(aktualna_szachownica[ruch_zY][ruch_zX] == (ruch_maszyny?'P':'p') && aktualna_szachownica[ruch_naY][ruch_naX] == ' ' && abs(ruch_zX-ruch_naX) == 1)
     {
         naniesiono_ruch = true;
@@ -179,8 +177,8 @@ void Notatnik::wygeneruj_i_wypisz_notacje(int ruch)
         aktualna_szachownica[ruch_zY][ruch_naX] == ' ';
     }
 }
-        void Notatnik::nanies_zwykly_ruch()
-{
+        void Notatnik::nanies_zwykly_ruch(){
+//==============================================================================================================
     if( ! naniesiono_ruch)
     {
         char ruszana_bierka = aktualna_szachownica[ruch_zY][ruch_zX];
@@ -197,7 +195,6 @@ void Notatnik::wygeneruj_i_wypisz_notacje(int ruch)
                 break;
             case 'S': case 's':
             {
-
                 notacja += 'S';
                 int X = 2*ruch_zX - ruch_naX; //wspolzedna X-owa potencjalnego blizniaczego skoczka w tym samym wierszu
                 if(0<=X && X<=7 && aktualna_szachownica[ruch_zY][X] == ruszana_bierka)
@@ -256,13 +253,12 @@ void Notatnik::wygeneruj_i_wypisz_notacje(int ruch)
         if(ruch_z_biciem)
             notacja += 'x';
         notacja += podaj_wspolrzedne(ruch_naX, ruch_naY);
-
         aktualna_szachownica[ruch_naY][ruch_naX] = ruszana_bierka;
         aktualna_szachownica[ruch_zY][ruch_zX]   = ' ';
     }
 }
-            string Notatnik::podaj_wspolrzedne(int x, int y)
-{
+            string Notatnik::podaj_wspolrzedne(int x, int y){
+//==============================================================================================================
     string wspolrzedne;
     if(kolor)
     {
@@ -276,8 +272,8 @@ void Notatnik::wygeneruj_i_wypisz_notacje(int ruch)
     }
     return wspolrzedne;
 }
-        bool Notatnik::czy_jest_szach()
-{
+        bool Notatnik::czy_jest_szach(){
+//==============================================================================================================
     int x = ( ! ruch_maszyny? krol_maszyny_x: krol_urzytkownika_x);
     int y = ( ! ruch_maszyny? krol_maszyny_y: krol_urzytkownika_y);
 
@@ -346,8 +342,8 @@ void Notatnik::wygeneruj_i_wypisz_notacje(int ruch)
     }
     return false;
 }
-    void Notatnik::uzupelnij_zapis_gry()
-{
+    void Notatnik::uzupelnij_zapis_gry(){
+//==============================================================================================================
     ostringstream zapisek;
     if(nr_ruchu % 2)
     {
@@ -360,8 +356,8 @@ void Notatnik::wygeneruj_i_wypisz_notacje(int ruch)
         zapis_calej_gry[nr_pary_ruchow-1] += zapisek.str();
     }
 }
-    void Notatnik::wypisz_notacje()
-{
+    void Notatnik::wypisz_notacje(){
+//==============================================================================================================
     string tablica_notacja[9];
     if(nr_ruchu%2 == 1)
         wypisz_ubiegla_notacje(ubiegly_wiersz_notacji, ubiegla_kolumna_notacji);
@@ -386,36 +382,37 @@ void Notatnik::wygeneruj_i_wypisz_notacje(int ruch)
         }
     }
 }
-        void Notatnik::wypisz_ubiegla_notacje(int wiersz, int kolumna)
-{
+        void Notatnik::wypisz_ubiegla_notacje(int wiersz, int kolumna){
+//==============================================================================================================
     int x = 420 + kolumna*160;
-    int y = wiersz*11
+    int y = wiersz*11;
     for(int i=0; i<9; i++)
     {
         ustaw_kursor_na(x, y+i);
         cout<<kolumna_z_notacjami[aktualna_kolumna_notacji][y+i];
     }
 }
-        void Notatnik::cofnij_kolumny()
-{
-    kolumna_z_notacjami[0] = kolumna_z_notacjami[1];
-    kolumna_z_notacjami[1] = kolumna_z_notacjami[2];
-    kolumna_z_notacjami[2].clear();
+        void Notatnik::cofnij_kolumny(){
+//==============================================================================================================
+    skopiuj_kolumne(0, 1);
+    skopiuj_kolumne(1, 2);
+    oproznij_kolumne(2);
     wypisz_kolumne(0);
     wypisz_kolumne(1);
     wyczysc_kolumne(2);
 }
-            void Notatnik::wyczysc_kolumne(int nr)//?????????
-{
-    int x = 420 + nr*160;
+            void Notatnik::skopiuj_kolumne(int index_kopi, int index_wzorca){
+//==============================================================================================================
     for(int i=0; i<176; i++)
-    {
-        ustaw_kursor_na(x, i);
-        cout<<string(21, ' ');// 21 ??????????
-    }
+        kolumna_z_notacjami[index_kopi][i] = kolumna_z_notacjami[index_wzorca][i];
 }
-            void Notatnik::wypisz_kolumne(int nr)
-{
+            void Notatnik::oproznij_kolumne(int numer_kolumny){
+//==============================================================================================================
+    for(int i=0; i<176; i++)
+        kolumna_z_notacjami[numer_kolumny][i].clear();
+}
+            void Notatnik::wypisz_kolumne(int nr){
+//==============================================================================================================
     int x = 420 + nr*160;
     for(int i=0; i<176; i++)
     {
@@ -423,8 +420,17 @@ void Notatnik::wygeneruj_i_wypisz_notacje(int ruch)
         cout<<kolumna_z_notacjami[nr][i];
     }
 }
-        void Notatnik::dodaj_tresc_do_tablica_notacja(string tresc, string tablica_notacja[])
-{
+            void Notatnik::wyczysc_kolumne(int nr){//?????????
+//==============================================================================================================
+    int x = 420 + nr*160;
+    for(int i=0; i<176; i++)
+    {
+        ustaw_kursor_na(x, i);
+        cout<<string(21, ' ');// 21 ??????????
+    }
+}
+        void Notatnik::dodaj_tresc_do_tablica_notacja(string tresc, string tablica_notacja[]){
+//==============================================================================================================
     for(auto znak: tresc)
     {
         dodaj_znak_do_tablica_notacja(znak, tablica_notacja);
@@ -432,8 +438,8 @@ void Notatnik::wygeneruj_i_wypisz_notacje(int ruch)
             tablica_notacja[i] += ' ';
     }
 }
-            void Notatnik::dodaj_znak_do_tablica_notacja(char znak, string tablica_notacja[])
-{
+            void Notatnik::dodaj_znak_do_tablica_notacja(char znak, string tablica_notacja[]){
+//==============================================================================================================
     int index_znaku = podaj_index_znaku(znak);
     int szerokosc_znaku = znaki[index_znaku][0].size();
 
@@ -443,17 +449,17 @@ void Notatnik::wygeneruj_i_wypisz_notacje(int ruch)
         {
             switch(znaki[index_znaku][i][j])
             {
-                case ' ': tablica_obwieszczenie[i] += ' '   ; break;
-                case 'X': tablica_obwieszczenie[i] += '\333'; break;
-                case 'D': tablica_obwieszczenie[i] += '\334'; break;
-                case 'G': tablica_obwieszczenie[i] += '\337'; break;
+                case ' ': tablica_notacja[i] += ' '   ; break;
+                case 'X': tablica_notacja[i] += '\333'; break;
+                case 'D': tablica_notacja[i] += '\334'; break;
+                case 'G': tablica_notacja[i] += '\337'; break;
                 default : break;
             }
         }
     }
 }
-                int Notatnik::podaj_index_znaku(char znak)
-{
+                int Notatnik::podaj_index_znaku(char znak){
+//==============================================================================================================
     if('A'<=znak && znak<='Z')
         return znak-65;
     if('a'<=znak && znak<='z')
@@ -470,34 +476,34 @@ void Notatnik::wygeneruj_i_wypisz_notacje(int ruch)
         case ' ': return 67;
     }
 }
-        void Notatnik::wypisz_aktualna_notacje(int wiersz, int kolumna, string tablica_notacja[])//////////////////
-{
+        void Notatnik::wypisz_aktualna_notacje(int wiersz, int kolumna, string tablica_notacja[]){//////////////////
+//==============================================================================================================
     int x = 420 + kolumna*160;
-    int y = wiersz*11
+    int y = wiersz*11;
     cout<<"\033[32m";
     for(int i=0; i<9; i++)
     {
         ustaw_kursor_na(x, y+i);
-        cout<<tablica_notacjanie[i];
+        cout<<tablica_notacja[i];
     }
     cout<<"\033[0m";
 }
-            void Notatnik::ustaw_kursor_na(int x, int y)
-{
+            void Notatnik::ustaw_kursor_na(int x, int y){
+//==============================================================================================================
     cout<<"\033["<<y+1<<";"<<x+1<<"H";
 }
-        void Notatnik::przepisz_tablice_do_kolumny(string tablica_notacja[])
-{
+        void Notatnik::przepisz_tablice_do_kolumny(string tablica_notacja[]){
+//==============================================================================================================
     for(int i=0; i<9; i++)
         kolumna_z_notacjami[aktualna_kolumna_notacji][aktualny_wiersz_notacji*11 + i] = tablica_notacja[i];
 }
-string Notatnik::podaj_kod_aktualizacji_szachownicy()
-{
+string Notatnik::podaj_kod_aktualizacji_szachownicy(){
+//==============================================================================================================
     oblicz_kod_aktualizacji_szachownicy();
     return kod_aktualizacji_szachownicy;
 }
-    void Notatnik::oblicz_kod_aktualizacji_szachownicy()
-{
+    void Notatnik::oblicz_kod_aktualizacji_szachownicy(){
+//==============================================================================================================
     kod_aktualizacji_szachownicy.clear();
     for(int i=0; i<8; i++)
         for(int j=0; j<8; j++)

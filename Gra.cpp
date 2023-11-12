@@ -10,16 +10,15 @@ using namespace std;
 
 Gra::Gra(bool k): kolor{k}, szachownica{k}, silnik{k}, notatnik{k}{
 //==============================================================================================================
-    nr_ruchu = 0;
 }
 void Gra::zagraj_z_urzytkownikiem(){
 //==============================================================================================================
     if(kolor == false) //maszyna zaczyna
-        obsluga_ruchu_maszyny(10000)
+        obsluga_ruchu_maszyny(10000);
     for( ; ; )
     {
         obsluga_ruchu_urzytkownika();
-        obsluga_ruchu_maszyny();
+        obsluga_ruchu_maszyny(ruch_urzytkownika);
     }
 }
     void Gra::zaktualizuj_szachownice(string kod_aktualizacji, bool podswietlenie){
@@ -34,10 +33,10 @@ void Gra::zagraj_z_urzytkownikiem(){
     {
         pojedyncze_polecenie = kod_aktualizacji.substr(0, 3);
         kod_aktualizacji.erase(0, 3);
-        x = odwroc_wspolzedna( isdigit( pojedyncze_polecenie[0] ));
-        y = odwroc_wspolzedna( isdigit( pojedyncze_polecenie[1] ));
+        x = odwroc_wspolzedne( isdigit( pojedyncze_polecenie[0] ));
+        y = odwroc_wspolzedne( isdigit( pojedyncze_polecenie[1] ));
         znak = pojedyncze_polecenie[2];
-        bierka = podaj_kod_bierki(char znak);
+        bierka = podaj_kod_bierki(znak);
         kolor_figury = podaj_kolor_bierki(znak);
         szachownica.zaktualizuj_pole(x, y, bierka, kolor_figury, podswietlenie);
     }
@@ -94,7 +93,7 @@ void Gra::zagraj_z_urzytkownikiem(){
             zaktualizuj_szachownice(kod_czastkowy, true);
             if(!wykonano_prawidlowy_ruch)
             {
-                komnikat.obwieszczenie("nieprawidlowy ruch", 500);
+                komunikat.obwieszczenie("nieprawidlowy ruch", 500);
                 szachownica.usun_obwieszczenie(170);
                 zaktualizuj_szachownice(kod_aktualnej_aktualizacji_szachownicy, false);
                 continue;
@@ -103,8 +102,8 @@ void Gra::zagraj_z_urzytkownikiem(){
             {
                 if(czy_urzytkownik_dokonuje_promocji_pionka())
                 {
-                    string opcje_promocji[]{"Skoczek", "Goniec", "Wieza", "Krol"};
-                    kod_promocji = komunikat.pole_wyboru_(opcje_promocji)*10000;
+                    vector<string> opcje_promocji{"Skoczek", "Goniec", "Wieza", "Krol"};
+                    kod_promocji = komunikat.pole_wyboru(opcje_promocji)*10000;
                     ruch_urzytkownika += kod_promocji;
                 }
                 notatnik.wygeneruj_i_wypisz_notacje(ruch_urzytkownika);
@@ -200,7 +199,7 @@ void Gra::zagraj_z_urzytkownikiem(){
     else
         return false;
 }
-    void obsluga_ruchu_maszyny(int komenda){
+    void Gra::obsluga_ruchu_maszyny(int komenda){
 //==============================================================================================================
     ruch_maszyny = silnik.wykonaj_posuniecie(komenda);
     notatnik.wygeneruj_i_wypisz_notacje(ruch_maszyny);

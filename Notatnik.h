@@ -64,8 +64,10 @@ public://???????????????????????????????????????????
         void wypisz_notacje();
             void wypisz_ubiegla_notacje(int wiersz, int kolumna);
             void cofnij_kolumny();
-                void wyczysc_kolumne(int nr);
+                void skopiuj_kolumne(int index_kopi, int index_wzorca);
+                void oproznij_kolumne(int numer_kolumny);
                 void wypisz_kolumne(int nr);
+                void wyczysc_kolumne(int nr);
             void dodaj_tresc_do_tablica_notacja(std::string tresc, std::string tablica_notacja[]);
                 void dodaj_znak_do_tablica_notacja(char znak, std::string tablica_notacja[]);
                     int podaj_index_znaku(char znak);

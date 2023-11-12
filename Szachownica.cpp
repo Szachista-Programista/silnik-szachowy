@@ -5,28 +5,27 @@
 #include "Szachownica.h"
 
 using namespace std;
-//******************************************************************************************************
-Szachownica::Szachownica(bool k): kolor{k}
-{
+Szachownica::Szachownica(bool k): kolor{k}{
+//==============================================================================================================
     wczytaj_tablica_figor();
     wczytaj_tablica_szachownica();
 }
-    void Szachownica::wczytaj_tablica_figor()
-{
+    void Szachownica::wczytaj_tablica_figor(){
+//==============================================================================================================
     ifstream odczyt;
     odczyt.open("figury.txt");
     for(int i=0; i<7; i++)
         getline(odczyt, tablica_figor[i]);
     odczyt.close();
 }
-    void Szachownica::wczytaj_tablica_szachownica()
-{
+    void Szachownica::wczytaj_tablica_szachownica(){
+//==============================================================================================================
     wczytaj_deske_szachowa();
     wczytaj_wspolrzedne();
     wczytaj_ulozenie_poczatkowe();
 }
-        void Szachownica::wczytaj_deske_szachowa()
-{
+        void Szachownica::wczytaj_deske_szachowa(){
+//==============================================================================================================
     string pole_biale       (46, '\333');
     string pole_czarne      (46,    ' ');
     string margines_boczny  (20,    ' ');
@@ -51,8 +50,8 @@ Szachownica::Szachownica(bool k): kolor{k}
             pola_cbcbcbcb.copy(tablica_szachownica[j+i],416);
     }
 }
-        void Szachownica::wczytaj_wspolrzedne()
-{
+        void Szachownica::wczytaj_wspolrzedne(){
+//==============================================================================================================
     ifstream odczyt;
     string wspolrzedne[16];
     odczyt.open("wspolzedne.txt");
@@ -73,8 +72,8 @@ Szachownica::Szachownica(bool k): kolor{k}
 
 
 }
-            void Szachownica::wczytaj_znak_wspolrzedny(int wsp_x, int wsp_y, string znak)
-{
+            void Szachownica::wczytaj_znak_wspolrzedny(int wsp_x, int wsp_y, string znak){
+//==============================================================================================================
     for(int i=0, y=wsp_y; i<40; y++ )
         for(int x=wsp_x; x<wsp_x+8; i++, x++)
         {
@@ -87,14 +86,14 @@ Szachownica::Szachownica(bool k): kolor{k}
             }
         }
 }
-        void Szachownica::wczytaj_ulozenie_poczatkowe()
-{
+        void Szachownica::wczytaj_ulozenie_poczatkowe(){
+//==============================================================================================================
     for(int i=0; i<=7; i++) //wczytanie pionkow
     {
         wczytaj_figure(i, 1, pion, !kolor);
         wczytaj_figure(i, 6, pion,  kolor);
     }
-    wczytaj_figure(0, 0, wierza,  !kolor);  //wczytanie reszty bierek komputera
+    wczytaj_figure(0, 0, wierza,  !kolor);  //wczytanie reszty bierek maszyny
     wczytaj_figure(1, 0, skoczek, !kolor);
     wczytaj_figure(2, 0, goniec,  !kolor);
     wczytaj_figure(3, 0, kolor?hetman:krol, !kolor);
@@ -112,8 +111,8 @@ Szachownica::Szachownica(bool k): kolor{k}
     wczytaj_figure(6, 7, skoczek, kolor);
     wczytaj_figure(7, 7, wierza,  kolor);
 }
-            void Szachownica::wczytaj_figure(int wsp_pola_poziom, int wsp_pola_pion, int figura, bool kolor_figury, bool czy_podswietlic)
-{
+            void Szachownica::wczytaj_figure(int wsp_pola_poziom, int wsp_pola_pion, int figura, bool kolor_figury, bool czy_podswietlic){
+//==============================================================================================================
     int wsp_x = (wsp_pola_poziom)*46+24;
     int wsp_y = (wsp_pola_pion)*19+12;
     bool kolor_pola;
@@ -137,15 +136,25 @@ Szachownica::Szachownica(bool k): kolor{k}
             }
         }
 }
-//******************************************************************************************************
-void Szachownica::usun_obwieszczenie(int szerokosc_obwieszczenia)
-{
+void Szachownica::usun_obwieszczenie(int szerokosc_obwieszczenia){
+//==============================================================================================================
     int szerokosc_marginesu = (416-szerokosc_obwieszczenia)/2;
     odswiez_tablica_szachownica_miejscowo(szerokosc_marginesu, 81, szerokosc_marginesu+szerokosc_obwieszczenia, 94);
 }
-//******************************************************************************************************
-void Szachownica::wypisz_tablica_szachownica()
-{
+void Szachownica::usun_pole_wyboru(int szerokosc_pola, int wysokosc_pola){
+//==============================================================================================================
+    int margines_bok =  (416-szerokosc_pola)/2;
+    int margines_gora = (176-wysokosc_pola) /2;
+
+    for(int i=0; i<wysokosc_pola; i++)
+    {
+        ustaw_kursor_na(margines_bok, margines_gora + i);
+        for(int j=0; j<szerokosc_pola; j++)
+            cout<<tablica_szachownica[margines_gora + i][margines_bok + j];
+    }
+}
+void Szachownica::wypisz_tablica_szachownica(){
+//==============================================================================================================
     for(int i=0; i<176; i++)
     {
         for(int j=0; j<416; j++)
@@ -153,14 +162,13 @@ void Szachownica::wypisz_tablica_szachownica()
         cout<<endl;
     }
 }
-//******************************************************************************************************
-void Szachownica::zaktualizuj_pole(int wsp_pola_poziom, int wsp_pola_pion, int figura, bool kolor_figury, bool czy_podswietlic)
-{
+void Szachownica::zaktualizuj_pole(int wsp_pola_poziom, int wsp_pola_pion, int figura, bool kolor_figury, bool czy_podswietlic){
+//==============================================================================================================
     wczytaj_figure(wsp_pola_poziom, wsp_pola_pion, figura, kolor_figury, czy_podswietlic);
     wypisz_figure(wsp_pola_poziom, wsp_pola_pion, czy_podswietlic);
 }
-    void Szachownica::wypisz_figure(int wsp_pola_poziom, int wsp_pola_pion, bool czy_podswietlic)//mmmmmmmmmmmmmm
-{
+    void Szachownica::wypisz_figure(int wsp_pola_poziom, int wsp_pola_pion, bool czy_podswietlic){//mmmmmmmmmmmmmm
+//==============================================================================================================
     if(czy_podswietlic)
         cout<<"\033[31m";
     int wsp_x = (wsp_pola_poziom)*46+24;
@@ -168,8 +176,8 @@ void Szachownica::zaktualizuj_pole(int wsp_pola_poziom, int wsp_pola_pion, int f
     odswiez_tablica_szachownica_miejscowo(wsp_x, wsp_y, wsp_x+45, wsp_y+18);
     cout<<"\033[0m";
 }
-        void Szachownica::odswiez_tablica_szachownica_miejscowo(int od_X, int od_Y, int do_X, int do_Y)
-{
+        void Szachownica::odswiez_tablica_szachownica_miejscowo(int od_X, int od_Y, int do_X, int do_Y){
+//==============================================================================================================
     for(int i=od_Y; i<=do_Y; i++)
     {
         ustaw_kursor_na(od_X, i);
@@ -178,11 +186,10 @@ void Szachownica::zaktualizuj_pole(int wsp_pola_poziom, int wsp_pola_pion, int f
     }
     ustaw_kursor_na(0, 180);
 }
-            void Szachownica::ustaw_kursor_na(int x, int y)
-{
+            void Szachownica::ustaw_kursor_na(int x, int y){
+//==============================================================================================================
     cout<<"\033["<<y+1<<";"<<x+1<<"H";
 }
-//******************************************************************************************************
 
 
 

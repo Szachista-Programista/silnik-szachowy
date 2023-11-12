@@ -1,7 +1,7 @@
 #ifndef Komunikat_H
 #define Komunikat_H
-
 #include <string>
+#include <vector>
 
 class Komunikat
 {
@@ -20,7 +20,6 @@ public://????????????????????//
 
 
 
-//***************************************
     Komunikat();
         void wczytaj_znaki();
     void ustawienie_wielkosci_obrazu();
@@ -31,17 +30,16 @@ public://????????????????????//
                 int podaj_index_znaku(char znak);
         void wypisz_obwieszczenie();
             void ustaw_kursor_na(int x, int y);
-
-    int pole_wyboru(string opcje[]);
-        void nadaj_wartosci_parametrom_pola(string opcje[]);
-        void wyczysc_tablica_pole_wyboru();
-            int oblicz_szerokosc_tekstu(string tresc);
+    int pole_wyboru(std::vector<std::string> opcje);
+        void nadaj_wartosci_parametrom_pola(std::vector<std::string> opcje);
+            int oblicz_szerokosc_tekstu(std::string tresc);
                 int podaj_szerokosc_znaku(char znak);
+        void wyczysc_tablica_pole_wyboru();
         void wczytaj_obramowanie_pola();
-        void wszytaj_tresc_pola_wyboru(string opcje[]);
-            void wczytaj_linijke_tekstu(string tresc, int nr_linijki);
-                void dodaj_znak_do_linijki(char znak, string linijka[]);
-                void przepisz_linijke_do_tablica_pola_wyboru(string linijka[], int nr_linijki);
+        void wszytaj_tresc_pola_wyboru(std::vector<std::string> opcje);
+            void wczytaj_linijke_tekstu(std::string tresc, int nr_linijki);
+                void dodaj_znak_do_linijki(char znak, std::string linijka[]);
+                void przepisz_linijke_do_tablica_pola_wyboru(std::string linijka[], int nr_linijki);
         void wypisz_pole_wyboru();
         int wybor_opcji();
             void zaznacz_opcje(int nr_opcji);

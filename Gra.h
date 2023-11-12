@@ -5,7 +5,7 @@
 #include "Notatnik.h"
 #include "Komunikat.h"
 
-class Menu
+class Gra
 {
 public:
 
@@ -45,7 +45,7 @@ public:
             void wylacz_podswietlenie_ubieglego_ruchu();
             bool czy_wybrano_prawidlowe_pole();
             bool czy_urzytkownik_dokonuje_promocji_pionka();
-        void obsluga_ruchu_maszyny(int komenda = ruch_urzytkownika);
+        void obsluga_ruchu_maszyny(int komenda);
     int odwroc_ruch(int wspolzedne);//????????????
 
 

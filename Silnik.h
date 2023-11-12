@@ -16,18 +16,15 @@ class Silnik
 
 
 
-//********************************************************************************************
     Silnik(bool k);
         T_wsk_szachownica zainicjalizuj_szachownice();
     ~Silnik();
-//********************************************************************************************
     bool czy_urzytkownik_moze_wykonac_takie_posuniecie(int posuniecie_urzytkownika);
         void rozszyfruj_posuniecie_urzytkownika(int posuniecie_urzytkownika);
         bool czy_na_polu_wyjsciowym_jest_bierka_urzytkownika();
         bool czy_na_polu_docelowym_jest_bierka_urzytkownika();
         bool czy_ten_ruch_powoduje_wystawienie_swojego_krola_na_bicie();
         bool czy_ruch_jest_zgodny_z_zasadami();
-//********************************************************************************************
     int wykonaj_posuniecie(int posuniecie_urzytkownika);
         void nanies_posuniecie_urzytkownika_na_szachownice(int posuniecie_urzytkownika);
         void znajdz_posuniecie_maszyny();

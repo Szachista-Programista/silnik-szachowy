@@ -1,7 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 #include <windows.h>
+#include <conio.h>
 #include "Komunikat.h"
 
 using namespace std;
@@ -48,8 +50,8 @@ void Komunikat::obwieszczenie(string tresc, int czas_ms){
 }
     void Komunikat::wyczysc_tablica_obwieszczenie(){
 //==============================================================================================================
-    for(auto element: tablica_obwieszczenie)
-        element.clear();
+    for(int i=0; i<13; i++)
+        tablica_obwieszczenie[i].clear();
 }
     void Komunikat::dodaj_tresc_do_tablica_obwieszczenie(string tresc){
 //==============================================================================================================
@@ -129,7 +131,7 @@ void Komunikat::obwieszczenie(string tresc, int czas_ms){
 //==============================================================================================================
     cout<<"\033["<<y+1<<";"<<x+1<<"H";
 }
-int Komunikat::pole_wyboru(string opcje[]){
+int Komunikat::pole_wyboru(vector<string> opcje){
 //==============================================================================================================
     nadaj_wartosci_parametrom_pola(opcje);
     wyczysc_tablica_pole_wyboru();
@@ -138,26 +140,18 @@ int Komunikat::pole_wyboru(string opcje[]){
     wypisz_pole_wyboru();
     return wybor_opcji();
 }
-    void Komunikat::nadaj_wartosci_parametrom_pola(string opcje[]){
+    void Komunikat::nadaj_wartosci_parametrom_pola(vector<string> opcje){
 //==============================================================================================================
     szerokosc_najdluzszej_opcji = 0;
-    liczba_opcji = sizeof(opcje);
-    for(auto opcja: opcje)
+    liczba_opcji = opcje.size();
+    for(int i=0; i<liczba_opcji; i++)
     {
-        int szerokosc = oblicz_szerokosc_tekstu(opcja);
+        int szerokosc = oblicz_szerokosc_tekstu(opcje[i]);
         if(szerokosc_najdluzszej_opcji < szerokosc)
             szerokosc_najdluzszej_opcji = szerokosc;
     }
-    szerokosc_pola = 20 + (szerokosc_najdluzszej_opcji < 180)? 180: szerokosc_najdluzszej_opcji;
+    szerokosc_pola = 35 + ((szerokosc_najdluzszej_opcji <= 171)? 170: szerokosc_najdluzszej_opcji);
     wysokosc_pola  = liczba_opcji*10 + 13;
-}
-    void Komunikat::wyczysc_tablica_pole_wyboru(){
-//==============================================================================================================
-    for(auto element: tablica_pole_wyboru)
-    {
-        element.clear();
-        element = string(szerokosc_pola, ' ');
-    }
 }
         int Komunikat::oblicz_szerokosc_tekstu(string tresc){
 //==============================================================================================================
@@ -248,6 +242,14 @@ int Komunikat::pole_wyboru(string opcje[]){
             return 0;
     }
 }
+    void Komunikat::wyczysc_tablica_pole_wyboru(){
+//==============================================================================================================
+    for(int i=0; i<53; i++)
+    {
+        tablica_pole_wyboru[i].clear();
+        tablica_pole_wyboru[i] = string(szerokosc_pola, ' ');
+    }
+}
     void Komunikat::wczytaj_obramowanie_pola(){
 //==============================================================================================================
     tablica_pole_wyboru[0]                 = string(szerokosc_pola, '\333');
@@ -267,11 +269,12 @@ int Komunikat::pole_wyboru(string opcje[]){
         tablica_pole_wyboru[i][szerokosc_pola - 1] = '\333';
     }
 }
-    void wszytaj_tresc_pola_wyboru(string opcje[]){
+    void Komunikat::wszytaj_tresc_pola_wyboru(std::vector<std::string> opcje){
 //==============================================================================================================
     for(int i=0; i<liczba_opcji; i++)
         wczytaj_linijke_tekstu(opcje[i], i);
-    wczytaj_linijke_tekstu("wybierz 1-" + to_string(liczba_opcji) + " oraz Enter", liczba_opcji + 1);
+    int wysrotkowanie_komunikatu = ((205 < szerokosc_pola)? ((szerokosc_pola-205)/14): 0);
+    wczytaj_linijke_tekstu(string(wysrotkowanie_komunikatu, ' ') + "wybierz 1-" + to_string(liczba_opcji) + " oraz Enter", liczba_opcji);
 }
         void Komunikat::wczytaj_linijke_tekstu(string tresc, int nr_linijki){
 //==============================================================================================================
@@ -306,18 +309,12 @@ int Komunikat::pole_wyboru(string opcje[]){
 }
             void Komunikat::przepisz_linijke_do_tablica_pola_wyboru(string linijka[], int nr_linijki){
 //==============================================================================================================
-    int index_linijki = nr_linijki*10 + 2;
+    int index_linijki_Y =  nr_linijki*10 + 2;
+    int index_linijki_X = (nr_linijki == liczba_opcji? 10: 25);
     int szerokosc_linijki = linijka[0].size();
     for(int i=0; i<9; i++)
-    {
         for(int j=0; j<szerokosc_linijki; j++)
-        {
-            tablica_pole_wyboru[i+index_linijki][j+15] = linijka[i][j];
-        }
-    }
-
-
-
+            tablica_pole_wyboru[i+index_linijki_Y][j+index_linijki_X] = linijka[i][j];
 }
     void Komunikat::wypisz_pole_wyboru(){
 //==============================================================================================================
@@ -338,13 +335,13 @@ int Komunikat::pole_wyboru(string opcje[]){
     while(true)
     {
         znak = getch();
-        if('1'<=znak && znak<='0'+liczba_opcji) //static_cast<char>('0'+liczba_opcji)
+        if('1'<=znak && znak<='0'+liczba_opcji)
         {
             zaznacz_opcje(znak-'1');
             wczytano_cyfre = true;
             continue;
         }
-        if(wczytano_cyfre == true && znak  == '\n')
+        if(wczytano_cyfre == true && znak == 13)
             return static_cast<int>(znak);
     }
 }
@@ -355,18 +352,19 @@ int Komunikat::pole_wyboru(string opcje[]){
 }
             void Komunikat::anuluj_podswietlenie(){
 //==============================================================================================================
-    int X = (416-szerokosc_pola)/2 + 5;
-    int margines_gorny  = (176-wysokosc_pola) /2;
-    for(int i=0; i<liczba_opcji*9+3; i++)
+    int X = (416-szerokosc_pola)/2 + 10;
+    int Y  = (176-wysokosc_pola)/2 + 2;
+    for(int i=0; i<liczba_opcji*10-1; i++)
     {
-        ustaw_kursor_na(margines_boczny+5, margines_gorny+2+i)
+        ustaw_kursor_na(X, Y+i);
         cout<<string(9, ' ');
     }
 }
             void Komunikat::podswietl_opcje(int nr_opcji){
 //==============================================================================================================
-    int X = (416-szerokosc_pola)/2 + 5;
+    int X = (416-szerokosc_pola)/2 + 10;
     int Y = (176-wysokosc_pola)/ 2 + 2 + nr_opcji*10;
+    cout<<"\033[33m";
     ustaw_kursor_na(X, Y+0);    cout<<string(1, '\333') + string(1, '\334');
     ustaw_kursor_na(X, Y+1);    cout<<string(3, '\333') + string(1, '\334');
     ustaw_kursor_na(X, Y+2);    cout<<string(5, '\333') + string(1, '\334');
@@ -376,16 +374,9 @@ int Komunikat::pole_wyboru(string opcje[]){
     ustaw_kursor_na(X, Y+6);    cout<<string(5, '\333') + string(1, '\337');
     ustaw_kursor_na(X, Y+7);    cout<<string(3, '\333') + string(1, '\337');
     ustaw_kursor_na(X, Y+8);    cout<<string(1, '\333') + string(1, '\337');
+    cout<<"\033[0m";
 }
 
 
-
-
-
-
-
-
-
-//==============================================================================================================
 
 
