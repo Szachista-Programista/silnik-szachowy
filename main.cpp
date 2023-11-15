@@ -16,17 +16,14 @@ using T_wsk_szachownica = char(*)[8];
 int main(){
 Komunikat K;
 Szachownica S(kolor);
-
+Notatnik N(kolor);
 
 K.ustawienie_wielkosci_obrazu();
-//S.wypisz_tablica_szachownica();
+Gra G(kolor);
+
+G.zagraj_z_urzytkownikiem();
 
 
-vector<string> x{"1.iiiiiiiiiiiiiiiiiiiiiiiiiiiiiyyyyyyyyyyy","2.","3.","4."};
-
-
-K.pole_wyboru(x);
-cout<<K.szerokosc_pola;
 
 
 return 0;

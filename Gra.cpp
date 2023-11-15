@@ -13,6 +13,7 @@ Gra::Gra(bool k): kolor{k}, szachownica{k}, silnik{k}, notatnik{k}{
 }
 void Gra::zagraj_z_urzytkownikiem(){
 //==============================================================================================================
+    szachownica.wypisz_tablica_szachownica();
     if(kolor == false) //maszyna zaczyna
         obsluga_ruchu_maszyny(10000);
     for( ; ; )
@@ -33,8 +34,9 @@ void Gra::zagraj_z_urzytkownikiem(){
     {
         pojedyncze_polecenie = kod_aktualizacji.substr(0, 3);
         kod_aktualizacji.erase(0, 3);
-        x = odwroc_wspolzedne( isdigit( pojedyncze_polecenie[0] ));
-        y = odwroc_wspolzedne( isdigit( pojedyncze_polecenie[1] ));
+
+        x = 7-(pojedyncze_polecenie[0] - '0');
+        y = 7-(pojedyncze_polecenie[1] - '0');
         znak = pojedyncze_polecenie[2];
         bierka = podaj_kod_bierki(znak);
         kolor_figury = podaj_kolor_bierki(znak);
@@ -69,7 +71,6 @@ void Gra::zagraj_z_urzytkownikiem(){
 }
     void Gra::obsluga_ruchu_urzytkownika(){
 //==============================================================================================================
-    ruch_jest_podswietlony = true;
     while(true)
     {
         ruch_urzytkownika = wspolzedne_urzytkownika = pobierz_wspolzedne();
@@ -151,14 +152,14 @@ void Gra::zagraj_z_urzytkownikiem(){
     }
     if(kolor == true)
     {
-        int wsp_x = wspolzedne[0]-65;
-        int wsp_y = 8-isdigit(wspolzedne[1]);
+        int wsp_x = wspolzedne[0]-'A';
+        int wsp_y = 8-(wspolzedne[1]-'0');
         return  odwroc_wspolzedne(wsp_x*10 + wsp_y);
     }
     if(kolor == false)
     {
-        int wsp_x = 8-(wspolzedne[0]-65);
-        int wsp_y = isdigit(wspolzedne[1]);
+        int wsp_x = 8-(wspolzedne[0]-'A');
+        int wsp_y = (wspolzedne[1]-'0');
         return  odwroc_wspolzedne(wsp_x*10 + wsp_y);
     }
 }
@@ -175,10 +176,10 @@ void Gra::zagraj_z_urzytkownikiem(){
 }
         void Gra::wylacz_podswietlenie_ubieglego_ruchu(){
 //==============================================================================================================
-    if(ruch_jest_podswietlony == true)
+    if(ruch_maszyny_jest_podswietlony == true)
     {
         zaktualizuj_szachownice(kod_ubieglej_aktualizacji_szachownicy, false);
-        ruch_jest_podswietlony == false;
+        ruch_maszyny_jest_podswietlony == false;
     }
 }
         bool Gra::czy_wybrano_prawidlowe_pole(){
@@ -206,6 +207,7 @@ void Gra::zagraj_z_urzytkownikiem(){
     kod_aktualnej_aktualizacji_szachownicy = notatnik.podaj_kod_aktualizacji_szachownicy();
     zaktualizuj_szachownice(kod_ubieglej_aktualizacji_szachownicy, false);
     zaktualizuj_szachownice(kod_aktualnej_aktualizacji_szachownicy, true);
+    ruch_maszyny_jest_podswietlony = true;
     kod_ubieglej_aktualizacji_szachownicy = kod_aktualnej_aktualizacji_szachownicy;
 }
 int Gra::odwroc_ruch(int ruch){//?????????

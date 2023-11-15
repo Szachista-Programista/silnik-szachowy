@@ -11,7 +11,7 @@ public:
 
 
     bool kolor;
-    bool ruch_jest_podswietlony;
+    bool ruch_maszyny_jest_podswietlony;
     bool wybrano_prawidlowe_pole;
     bool wykonano_prawidlowy_ruch;
 
