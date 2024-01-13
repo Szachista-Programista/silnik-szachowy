@@ -18,7 +18,7 @@ Komunikat::Komunikat(){
     ifstream odczyt;
     odczyt.open("znaki.txt");
     string znak;
-    for(int i=0; i<68; i++)
+    for(int i=0; i<69; i++)
     {
         getline(odczyt, znak);
         znak.erase(0, 2);
@@ -136,7 +136,7 @@ int Komunikat::pole_wyboru(vector<string> opcje){
     nadaj_wartosci_parametrom_pola(opcje);
     wyczysc_tablica_pole_wyboru();
     wczytaj_obramowanie_pola();
-    wszytaj_tresc_pola_wyboru(opcje);
+    wczytaj_tresc_pola_wyboru(opcje);
     wypisz_pole_wyboru();
     return wybor_opcji();
 }
@@ -233,6 +233,7 @@ int Komunikat::pole_wyboru(vector<string> opcje){
         case 'j':
         case 's':
         case ' ':
+        case '/':
             return 6;
         case 'i':
         case 'l':
@@ -269,7 +270,7 @@ int Komunikat::pole_wyboru(vector<string> opcje){
         tablica_pole_wyboru[i][szerokosc_pola - 1] = '\333';
     }
 }
-    void Komunikat::wszytaj_tresc_pola_wyboru(std::vector<std::string> opcje){
+    void Komunikat::wczytaj_tresc_pola_wyboru(std::vector<std::string> opcje){
 //==============================================================================================================
     for(int i=0; i<liczba_opcji; i++)
         wczytaj_linijke_tekstu(opcje[i], i);
@@ -331,6 +332,7 @@ int Komunikat::pole_wyboru(vector<string> opcje){
     int Komunikat::wybor_opcji(){//////////////////////
 //==============================================================================================================
     char znak;
+    int wybrana_opcja;
     bool wczytano_cyfre = false;
     while(true)
     {
@@ -338,11 +340,12 @@ int Komunikat::pole_wyboru(vector<string> opcje){
         if('1'<=znak && znak<='0'+liczba_opcji)
         {
             zaznacz_opcje(znak-'1');
+            wybrana_opcja = znak - '0';
             wczytano_cyfre = true;
             continue;
         }
         if(wczytano_cyfre == true && znak == 13)
-            return static_cast<int>(znak);
+            return wybrana_opcja;
     }
 }
         void Komunikat::zaznacz_opcje(int nr_opcji){

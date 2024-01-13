@@ -24,8 +24,8 @@ class Ruch
         ostatnie_pokolenie       =  3 ,
         numer_mojego_ruchu       = -1 ,
         index_najgorszego_ruchu  =  0 ,
-        ile_ruchow_rozpatrywac[10]{6,4,3,2,2,2,2,2,1,1},
-        ile_ruchow_urzytkownika_rozpatrywac[10]{6,4,3,2,2,2,2,2,1,1};//////////
+        ile_ruchow_rozpatrywac[10]{12,7,4,1,1,1,1,1,1,1},
+        ile_ruchow_urzytkownika_rozpatrywac[10]{6,3,2,1,1,1,1,1,1,1};//////////
 
     double najmniejszy_status_materialny_sposrod_rozpatrywanych_ruchow = 100.0;
 
@@ -52,6 +52,11 @@ class Ruch
         void sprawdz_czy_wieze_i_krole_byly_ruszane(T_wsk_szachownica wsk_X);
         void sprawdz_moj_krol_jest_szachowany(T_wsk_szachownica wsk_X);
         double znajdz_najleprze_z_posuniec(T_wsk_szachownica &wsk_X);
+            double obsluga_poczatku_drzewa_poszukowan(T_wsk_szachownica &wsk_X);
+                void obsluga_konca_poszukowan(T_wsk_szachownica &wsk_X, int &index);
+                    void czy_urzytkownik_zakonczyl_gre(T_wsk_szachownica &wsk_X);
+                    void czy_maszyna_zakonczyla_gre(T_wsk_szachownica &wsk_X, int &index);
+            double obsluga_konca_drzewa_poszukowan();
             void wyzeruj_wektor_na_ruchy();
             Ruch(Ruch* wskaznik,double &status_materialny,T_wsk_szachownica wsk_X, int iteracja);
                 void przepisz_dane_o_ruchach_krolow_i_wiez(Ruch* wsk);

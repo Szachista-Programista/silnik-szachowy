@@ -24,6 +24,7 @@ Ruch::Ruch(bool k): kolor{k}{
 }
 Ruch::~Ruch(){
 //==============================================================================================================
+
     wyzeruj_wektor_na_ruchy();
 }
 void Ruch::przygotuj_Ruch(){
@@ -64,8 +65,8 @@ double Ruch::oblicz_nastepny_ruch(T_wsk_szachownica &wsk_X){
 //==============================================================================================================
     if(wsk_X[7][0]!='W') czy_moja_lewa_wierza_sie_ruszyla =true;
     if(wsk_X[7][7]!='W') czy_moja_prawa_wierza_sie_ruszyla =true;
-    if(wsk_X[7][0]!='w') czy_lewa_wierza_urzytkownika_sie_ruszyla  =true;
-    if(wsk_X[7][7]!='w') czy_prawa_wierza_urzytkownika_sie_ruszyla =true;
+    if(wsk_X[0][0]!='w') czy_lewa_wierza_urzytkownika_sie_ruszyla  =true;
+    if(wsk_X[0][7]!='w') czy_prawa_wierza_urzytkownika_sie_ruszyla =true;
     if(kolor? wsk_X[7][3]!='K': wsk_X[7][4]!='K') czy_moj_krol_sie_ruszyl         =true;
     if(kolor? wsk_X[0][3]!='k': wsk_X[0][4]!='k') czy_krol_urzytkownika_sie_ruszyl =true;
 }
@@ -75,65 +76,91 @@ double Ruch::oblicz_nastepny_ruch(T_wsk_szachownica &wsk_X){
 }
     double Ruch::znajdz_najleprze_z_posuniec(T_wsk_szachownica &wsk_X){
 //==============================================================================================================
+    if(pokolenie_klasy < ostatnie_pokolenie)  return obsluga_poczatku_drzewa_poszukowan(wsk_X);
+    if(pokolenie_klasy == ostatnie_pokolenie) return obsluga_konca_drzewa_poszukowan();
+}
+        double Ruch::obsluga_poczatku_drzewa_poszukowan(T_wsk_szachownica &wsk_X){
+//==============================================================================================================
     double najleprzy_z_najgorszych_status_materialny = -100;
-    if(pokolenie_klasy < ostatnie_pokolenie)
+    int index_najleprzego_z_najgorszych_ruchow;
+    for(int i=0; i<wektor_na_ruchy.size() && i<ile_ruchow_rozpatrywac[pokolenie_klasy]; i++)
     {
-        int index_najleprzego_z_najgorszych_ruchow;
-        for(int i=0; i<wektor_na_ruchy.size() && i<ile_ruchow_rozpatrywac[pokolenie_klasy]; i++)
+        double najgorszy_status_malerialny_po_ruchu_urzytkownika = 100,
+               bierzacy_status_malerialny_urzytkownika;
+        for(int j=1; j<wektor_na_ruchy[i].size() && j<=ile_ruchow_urzytkownika_rozpatrywac[pokolenie_klasy]; j++)
         {
-            double najgorszy_status_malerialny_po_ruchu_urzytkownika = 100,
-                   bierzacy_status_malerialny_urzytkownika;
-            for(int j=1; j<wektor_na_ruchy[i].size() && j<=ile_ruchow_urzytkownika_rozpatrywac[pokolenie_klasy]; j++)
-            {
-                Ruch(this, bierzacy_status_malerialny_urzytkownika, wektor_na_ruchy[i][j], pokolenie_klasy + 1);
-                if(bierzacy_status_malerialny_urzytkownika < najgorszy_status_malerialny_po_ruchu_urzytkownika)
-                    najgorszy_status_malerialny_po_ruchu_urzytkownika = bierzacy_status_malerialny_urzytkownika;
-            }
-            if(najleprzy_z_najgorszych_status_materialny < najgorszy_status_malerialny_po_ruchu_urzytkownika)
-            {
-                najleprzy_z_najgorszych_status_materialny = najgorszy_status_malerialny_po_ruchu_urzytkownika;
-                index_najleprzego_z_najgorszych_ruchow = i;
-            }
+            Ruch(this, bierzacy_status_malerialny_urzytkownika, wektor_na_ruchy[i][j], pokolenie_klasy + 1);
+            if(bierzacy_status_malerialny_urzytkownika < najgorszy_status_malerialny_po_ruchu_urzytkownika)
+                najgorszy_status_malerialny_po_ruchu_urzytkownika = bierzacy_status_malerialny_urzytkownika;
         }
-        if(pokolenie_klasy == 0)
+        if(najleprzy_z_najgorszych_status_materialny < najgorszy_status_malerialny_po_ruchu_urzytkownika)
         {
-            if(wektor_na_ruchy.size()==0) //czy urzytkownik zamatowal maszyne albo wywolal pata?
-            {
-                if(czy_moje_pole_jest_bite(polozenie_mojego_krola_x, polozenie_mojego_krola_y, wsk_X))
-                    koniec_gry_wygrana_urzytkownika = true;
-                else
-                    koniec_gry_pat_urzytkownika     = true;
-            }
-            delete[]wsk_X;
-            wsk_X=nullptr;
-            for(int i=0; i<wektor_na_ruchy.size(); i++)
-            {
-                if(wektor_na_ruchy[i].size()==1) // czy maszyna zamatowala urzytkowanika albo wywolala pata?
-                {
-                    wsk_X = skopiuj_szachownice(wektor_na_ruchy[i][0]);
-                    if(czy_pole_urzytkownika_jest_bite(polozenie_krola_urzytkownika_x, polozenie_krola_urzytkownika_y, wsk_X))
-                        koniec_gry_wygrana_maszyny = true;
-                    else
-                        koniec_gry_pat_maszyny     = true;
-                    break;
-                }
-            }
-            if(wsk_X == nullptr)
-                wsk_X = skopiuj_szachownice(wektor_na_ruchy[index_najleprzego_z_najgorszych_ruchow][0]);
+            najleprzy_z_najgorszych_status_materialny = najgorszy_status_malerialny_po_ruchu_urzytkownika;
+            index_najleprzego_z_najgorszych_ruchow = i;
         }
-        wyzeruj_wektor_na_ruchy();
-        return najleprzy_z_najgorszych_status_materialny;
     }
-    if(pokolenie_klasy == ostatnie_pokolenie)// koniec drzewa poszukiwan
+    obsluga_konca_poszukowan(wsk_X, index_najleprzego_z_najgorszych_ruchow);
+    wyzeruj_wektor_na_ruchy();
+    return najleprzy_z_najgorszych_status_materialny;
+}
+            void Ruch::obsluga_konca_poszukowan(T_wsk_szachownica &wsk_X, int &index){
+//==============================================================================================================
+    if(pokolenie_klasy == 0)
     {
-        for(auto element: statusy_materialne_rozpatrywanych_rochow)
-            if(najleprzy_z_najgorszych_status_materialny < element)
-                najleprzy_z_najgorszych_status_materialny = element;
-        wyzeruj_wektor_na_ruchy();
-        return najleprzy_z_najgorszych_status_materialny;
+        czy_urzytkownik_zakonczyl_gre(wsk_X);
+        delete[]wsk_X;
+        wsk_X=nullptr;
+        czy_maszyna_zakonczyla_gre(wsk_X, index);
+        if(wsk_X == nullptr && wektor_na_ruchy.size()!=0)
+            wsk_X = skopiuj_szachownice(wektor_na_ruchy[index][0]);
     }
 }
-        void Ruch::wyzeruj_wektor_na_ruchy(){
+                void Ruch::czy_urzytkownik_zakonczyl_gre(T_wsk_szachownica &wsk_X){
+//==============================================================================================================
+    if(wektor_na_ruchy.size()==0)
+    {
+        if(czy_moje_pole_jest_bite(polozenie_mojego_krola_x, polozenie_mojego_krola_y, wsk_X))
+            koniec_gry_wygrana_urzytkownika = true;
+        else
+            koniec_gry_pat_urzytkownika     = true;
+    }
+}
+                void Ruch::czy_maszyna_zakonczyla_gre(T_wsk_szachownica &wsk_X, int &index){
+//==============================================================================================================
+    for(int i=0, j=0; i<wektor_na_ruchy.size(); i++)
+    {
+        if(wektor_na_ruchy[i].size()==1) // czy maszyna zamatowala urzytkowanika albo wywolala pata?
+        {
+            j++;
+            if(index == i)
+                for(int k=0; k<wektor_na_ruchy.size(); k++)
+                    if(wektor_na_ruchy[k].size() > 1 )
+                        index = k;
+            if(czy_pole_urzytkownika_jest_bite(polozenie_krola_urzytkownika_x, polozenie_krola_urzytkownika_y, wektor_na_ruchy[i][0]))
+            {
+                wsk_X = skopiuj_szachownice(wektor_na_ruchy[i][0]);
+                koniec_gry_wygrana_maszyny = true;
+                break;
+            }
+            else if(j == wektor_na_ruchy.size())
+            {
+                wsk_X = skopiuj_szachownice(wektor_na_ruchy[i][0]);
+                koniec_gry_pat_maszyny     = true;
+                break;
+            }
+        }
+    }
+}
+        double Ruch::obsluga_konca_drzewa_poszukowan(){
+//==============================================================================================================
+    double status_materialny = -100;
+    for(auto element: statusy_materialne_rozpatrywanych_rochow)
+        if(status_materialny < element)
+            status_materialny = element;
+    wyzeruj_wektor_na_ruchy();
+    return status_materialny;
+}
+            void Ruch::wyzeruj_wektor_na_ruchy(){
 //==============================================================================================================
     for(auto wektorek: wektor_na_ruchy)
     {
@@ -158,8 +185,10 @@ double Ruch::oblicz_nastepny_ruch(T_wsk_szachownica &wsk_X){
 }
 void Ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X){
 //==============================================================================================================
+    vector<int>iteratory = {3, 4, 2, 5, 1, 6, 0, 7};
     for(int i=0; i<8; i++)
-        for(int j=0; j<8; j++)
+        for (int j: iteratory)
+        //for(int j=0; j<8; j++)
         {
             switch(wsk_X[i][j])
             {
@@ -678,7 +707,7 @@ void Ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X){
                 case 'K':                                                       //KWESTIA KROLA
                 {
                     if(0<=i-1 && (wsk_X[i-1][j]<'G' || 'W'<wsk_X[i-1][j]))                    //RUCH NA 12:00
-                    if(2<=abs(polozenie_mojego_krola_x-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
+                    if(2<=abs(polozenie_mojego_krola_x-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-1-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
@@ -688,7 +717,7 @@ void Ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X){
                         polozenie_mojego_krola_y++;
                     }
                     if(0<=i-1 && j+1<=7 && (wsk_X[i-1][j+1]<'G' || 'W'<wsk_X[i-1][j+1]))      //RUCH NA 1:30
-                    if(2<=abs(polozenie_mojego_krola_x-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
+                    if(2<=abs(polozenie_mojego_krola_x+1-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-1-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
@@ -700,7 +729,7 @@ void Ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X){
                         polozenie_mojego_krola_y++;
                     }
                     if(j+1<=7 && (wsk_X[i][j+1]<'G' || 'W'<wsk_X[i][j+1]))                    //RUCH NA 3:00
-                    if(2<=abs(polozenie_mojego_krola_x-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
+                    if(2<=abs(polozenie_mojego_krola_x+1-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
@@ -710,7 +739,7 @@ void Ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X){
                         polozenie_mojego_krola_x--;
                     }
                     if(i+1<=7 && j+1<=7 && (wsk_X[i+1][j+1]<'G' || 'W'<wsk_X[i+1][j+1]))      //RUCH NA 4:30
-                    if(2<=abs(polozenie_mojego_krola_x-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
+                    if(2<=abs(polozenie_mojego_krola_x+1-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y+1-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
@@ -722,7 +751,7 @@ void Ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X){
                         polozenie_mojego_krola_y--;
                     }
                     if(i+1<=7 && (wsk_X[i+1][j]<'G' || 'W'<wsk_X[i+1][j]))                    //RUCH NA 6:00
-                    if(2<=abs(polozenie_mojego_krola_x-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
+                    if(2<=abs(polozenie_mojego_krola_x-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y+1-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
@@ -732,12 +761,11 @@ void Ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X){
                         polozenie_mojego_krola_y--;
                     }
                     if(i+1<=7 && 0<=j-1 && (wsk_X[i+1][j-1]<'G' || 'W'<wsk_X[i+1][j-1]))      //RUCH NA 7:30
-                    if(2<=abs(polozenie_mojego_krola_x-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
+                    if(2<=abs(polozenie_mojego_krola_x-1-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y+1-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
                         kopia[i+1][j-1]='K';
-                        if(czy_moje_pole_jest_bite(polozenie_mojego_krola_x-1, polozenie_mojego_krola_y+1, kopia)==false)
                         polozenie_mojego_krola_x--;
                         polozenie_mojego_krola_y++;
                         wykonaj_moj_ruch_jak_mozna(i, j, kopia);
@@ -745,7 +773,7 @@ void Ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X){
                         polozenie_mojego_krola_y--;
                     }
                     if(0<=j-1 && (wsk_X[i][j-1]<'G' || 'W'<wsk_X[i][j-1]))                    //RUCH NA 9:00
-                    if(2<=abs(polozenie_mojego_krola_x-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
+                    if(2<=abs(polozenie_mojego_krola_x-1-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
@@ -755,7 +783,7 @@ void Ruch::wykonaj_moj_ruch(T_wsk_szachownica wsk_X){
                         polozenie_mojego_krola_x++;
                     }
                     if(0<=i-1 && 0<=j-1 && (wsk_X[i-1][j-1]<'G' || 'W'<wsk_X[i-1][j-1]))      //RUCH NA 10:30
-                    if(2<=abs(polozenie_mojego_krola_x-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
+                    if(2<=abs(polozenie_mojego_krola_x-1-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-1-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
@@ -1490,7 +1518,7 @@ void Ruch::wykonaj_ruch_urzytkownika(T_wsk_szachownica wsk_X){
                 case 'k':                                                       //KWESTIA KROLA
                 {
                     if(0<=i-1 && (wsk_X[i-1][j]<'g' || 'w'<wsk_X[i-1][j]))                    //RUCH NA 12:00
-                    if(2<=abs(polozenie_mojego_krola_x-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
+                    if(2<=abs(polozenie_mojego_krola_x-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-1-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
@@ -1504,7 +1532,7 @@ void Ruch::wykonaj_ruch_urzytkownika(T_wsk_szachownica wsk_X){
                         else delete[]kopia;
                     }
                     if(0<=i-1 && j+1<=7 && (wsk_X[i-1][j+1]<'g' || 'w'<wsk_X[i-1][j+1]))      //RUCH NA 1:30
-                    if(2<=abs(polozenie_mojego_krola_x-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
+                    if(2<=abs(polozenie_mojego_krola_x+1-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-1-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
@@ -1520,7 +1548,7 @@ void Ruch::wykonaj_ruch_urzytkownika(T_wsk_szachownica wsk_X){
                         else delete[]kopia;
                     }
                     if(j+1<=7 && (wsk_X[i][j+1]<'g' || 'w'<wsk_X[i][j+1]))                    //RUCH NA 3:00
-                    if(2<=abs(polozenie_mojego_krola_x-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
+                    if(2<=abs(polozenie_mojego_krola_x+1-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
@@ -1534,7 +1562,7 @@ void Ruch::wykonaj_ruch_urzytkownika(T_wsk_szachownica wsk_X){
                         else delete[]kopia;
                     }
                     if(i+1<=7 && j+1<=7 && (wsk_X[i+1][j+1]<'g' || 'w'<wsk_X[i+1][j+1]))      //RUCH NA 4:30
-                    if(2<=abs(polozenie_mojego_krola_x-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
+                    if(2<=abs(polozenie_mojego_krola_x+1-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y+1-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
@@ -1550,7 +1578,7 @@ void Ruch::wykonaj_ruch_urzytkownika(T_wsk_szachownica wsk_X){
                         else delete[]kopia;
                     }
                     if(i+1<=7 && (wsk_X[i+1][j]<'g' || 'w'<wsk_X[i+1][j]))                    //RUCH NA 6:00
-                    if(2<=abs(polozenie_mojego_krola_x-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
+                    if(2<=abs(polozenie_mojego_krola_x-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y+1-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
@@ -1564,7 +1592,7 @@ void Ruch::wykonaj_ruch_urzytkownika(T_wsk_szachownica wsk_X){
                         else delete[]kopia;
                     }
                     if(i+1<=7 && 0<=j-1 && (wsk_X[i+1][j-1]<'g' || 'w'<wsk_X[i+1][j-1]))      //RUCH NA 7:30
-                    if(2<=abs(polozenie_mojego_krola_x-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
+                    if(2<=abs(polozenie_mojego_krola_x-1-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y+1-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
@@ -1580,7 +1608,7 @@ void Ruch::wykonaj_ruch_urzytkownika(T_wsk_szachownica wsk_X){
                         else delete[]kopia;
                     }
                     if(0<=j-1 && (wsk_X[i][j-1]<'g' || 'w'<wsk_X[i][j-1]))                    //RUCH NA 9:00
-                    if(2<=abs(polozenie_mojego_krola_x-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
+                    if(2<=abs(polozenie_mojego_krola_x-1-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';
@@ -1594,7 +1622,7 @@ void Ruch::wykonaj_ruch_urzytkownika(T_wsk_szachownica wsk_X){
                         else delete[]kopia;
                     }
                     if(0<=i-1 && 0<=j-1 && (wsk_X[i-1][j-1]<'g' || 'w'<wsk_X[i-1][j-1]))      //RUCH NA 10:30
-                    if(2<=abs(polozenie_mojego_krola_x-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
+                    if(2<=abs(polozenie_mojego_krola_x-1-polozenie_krola_urzytkownika_x) || 2<=abs(polozenie_mojego_krola_y-1-polozenie_krola_urzytkownika_y)) //czy krol do krola sie nie przytula
                     {
                         T_wsk_szachownica kopia = skopiuj_szachownice(wsk_X);
                         kopia[i][j]=' ';

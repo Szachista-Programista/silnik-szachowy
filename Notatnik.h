@@ -14,9 +14,11 @@ public://???????????????????????????????????????????
                       ubiegla_szachownica;
     std::string notacja;
     std::vector<std::string>zapis_calej_gry;
-    std::string znaki[68][9];
+    std::string znaki[69][9];
     std::string kolumna_z_notacjami[3][176];
+    std::string tablica_notacja[9];
     std::string kod_aktualizacji_szachownicy;
+    std::string wynik_gry;
 
     int krol_maszyny_x,
         krol_maszyny_y,
@@ -40,7 +42,8 @@ public://???????????????????????????????????????????
 
     bool kolor,
          ruch_maszyny,
-         naniesiono_ruch;
+         naniesiono_ruch,
+         koniec_gry = false;
 
 
 
@@ -61,21 +64,25 @@ public://???????????????????????????????????????????
             std::string podaj_wspolrzedne(int x, int y);
             bool czy_jest_szach();
         void uzupelnij_zapis_gry();
+            void obsluga_konca_gry();
+                void zamien_plus_na_hasztag();
         void wypisz_notacje();
+            void wyczysc_tablica_notacja();
             void wypisz_ubiegla_notacje(int wiersz, int kolumna);
             void cofnij_kolumny();
                 void skopiuj_kolumne(int index_kopi, int index_wzorca);
                 void oproznij_kolumne(int numer_kolumny);
                 void wypisz_kolumne(int nr);
                 void wyczysc_kolumne(int nr);
-            void dodaj_tresc_do_tablica_notacja(std::string tresc, std::string tablica_notacja[]);
-                void dodaj_znak_do_tablica_notacja(char znak, std::string tablica_notacja[]);
+            void dodaj_tresc_do_tablica_notacja(std::string tresc);
+                void dodaj_znak_do_tablica_notacja(char znak);
                     int podaj_index_znaku(char znak);
-            void wypisz_aktualna_notacje(int wiersz, int kolumna, std::string tablica_notacja[]);//////////////////
+            void wypisz_tablica_notacja(int wiersz, int kolumna, bool podswietlenie);
                 void ustaw_kursor_na(int x, int y);
-            void przepisz_tablice_do_kolumny(std::string tablica_notacja[]);
+            void przepisz_tablice_do_kolumny();
     std::string podaj_kod_aktualizacji_szachownicy();
         void oblicz_kod_aktualizacji_szachownicy();
+    void zapisz_gre_w_notatniku();
 
 
 

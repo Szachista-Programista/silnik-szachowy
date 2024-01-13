@@ -86,30 +86,55 @@ Szachownica::Szachownica(bool k): kolor{k}{
             }
         }
 }
-        void Szachownica::wczytaj_ulozenie_poczatkowe(){
+        void Szachownica::wczytaj_ulozenie_poczatkowe(){//@@@
 //==============================================================================================================
-    for(int i=0; i<=7; i++) //wczytanie pionkow
-    {
-        wczytaj_figure(i, 1, pion, !kolor);
-        wczytaj_figure(i, 6, pion,  kolor);
-    }
-    wczytaj_figure(0, 0, wierza,  !kolor);  //wczytanie reszty bierek maszyny
-    wczytaj_figure(1, 0, skoczek, !kolor);
-    wczytaj_figure(2, 0, goniec,  !kolor);
-    wczytaj_figure(3, 0, kolor?hetman:krol, !kolor);
-    wczytaj_figure(4, 0, kolor?krol:hetman, !kolor);
-    wczytaj_figure(5, 0, goniec,  !kolor);
-    wczytaj_figure(6, 0, skoczek, !kolor);
-    wczytaj_figure(7, 0, wierza,  !kolor);
+    /*char ulozenie_poczatkowe[8][8]{{'w','s','g',kolor?'k':'h',kolor?'h':'k','g','s','w'},
+                                  {'p','p','p','p','p','p','p','p'},
+                                  {' ',' ',' ',' ',' ',' ',' ',' '},
+                                  {' ',' ',' ',' ',' ',' ',' ',' '},
+                                  {' ',' ',' ',' ',' ',' ',' ',' '},
+                                  {' ',' ',' ',' ',' ',' ',' ',' '},
+                                  {'P','P','P','P','P','P','P','P'},
+                                  {'W','S','G',kolor?'K':'H',kolor?'H':'K','G','S','W'}};*/
+    char ulozenie_poczatkowe[8][8]{{'w','s','g',kolor?'k':'h',kolor?'h':'k','g','s','w'},
+                          {'p','p','p','p','p','p','p','p'},
+                          {' ',' ',' ',' ',' ',' ',' ',' '},
+                          {' ',' ',' ',' ',' ',' ',' ',' '},
+                          {' ',' ',' ',' ',' ',' ',' ',' '},
+                          {' ',' ',' ',' ',' ',' ',' ',' '},
+                          {'P','P','P','P','P','P','P','P'},
+                          {'W','S','G',kolor?'K':'H',kolor?'H':'K','G','S','W'}};
+    /*char ulozenie_poczatkowe[8][8]{{'k',' ',' ',' ',' ',' ',' ',' '},
+                          {' ',' ','w',' ',' ',' ',' ',' '},
+                          {' ','w',' ',' ',' ',' ',' ',' '},
+                          {' ',' ',' ',' ',' ',' ',' ',' '},
+                          {' ',' ',' ',' ',' ',' ',' ',' '},
+                          {' ',' ',' ',' ',' ',' ',' ',' '},
+                          {' ',' ',' ',' ',' ',' ',' ',' '},
+                          {'K',' ',' ',' ',' ',' ',' ',' '}};*/
 
-    wczytaj_figure(0, 7, wierza,  kolor);  //wczytanie reszty bierek urzytkownika
-    wczytaj_figure(1, 7, skoczek, kolor);
-    wczytaj_figure(2, 7, goniec,  kolor);
-    wczytaj_figure(3, 7, kolor?hetman:krol, kolor);
-    wczytaj_figure(4, 7, kolor?krol:hetman, kolor);
-    wczytaj_figure(5, 7, goniec,  kolor);
-    wczytaj_figure(6, 7, skoczek, kolor);
-    wczytaj_figure(7, 7, wierza,  kolor);
+
+    for(int i=0; i<8; i++)
+        for(int j=0; j<8; j++)
+        {
+            switch (ulozenie_poczatkowe[i][j])
+            {
+                case 'p': wczytaj_figure(7-j,7-i , pion,     kolor); break;
+                case 'P': wczytaj_figure(7-j,7-i , pion,    !kolor); break;
+                case 's': wczytaj_figure(7-j,7-i , skoczek,  kolor); break;
+                case 'S': wczytaj_figure(7-j,7-i , skoczek, !kolor); break;
+                case 'g': wczytaj_figure(7-j,7-i , goniec,   kolor); break;
+                case 'G': wczytaj_figure(7-j,7-i , goniec,  !kolor); break;
+                case 'w': wczytaj_figure(7-j,7-i , wierza,   kolor); break;
+                case 'W': wczytaj_figure(7-j,7-i , wierza,  !kolor); break;
+                case 'h': wczytaj_figure(7-j,7-i , hetman,   kolor); break;
+                case 'H': wczytaj_figure(7-j,7-i , hetman,  !kolor); break;
+                case 'k': wczytaj_figure(7-j,7-i , krol,     kolor); break;
+                case 'K': wczytaj_figure(7-j,7-i , krol,    !kolor); break;
+                case ' ': wczytaj_figure(7-j,7-i , brak,     kolor); break;
+                default: break;
+            }
+        }
 }
             void Szachownica::wczytaj_figure(int wsp_pola_poziom, int wsp_pola_pion, int figura, bool kolor_figury, bool czy_podswietlic){
 //==============================================================================================================
@@ -155,6 +180,7 @@ void Szachownica::usun_pole_wyboru(int szerokosc_pola, int wysokosc_pola){
 }
 void Szachownica::wypisz_tablica_szachownica(){
 //==============================================================================================================
+    ustaw_kursor_na(0, 0);
     for(int i=0; i<176; i++)
     {
         for(int j=0; j<416; j++)

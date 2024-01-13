@@ -7,7 +7,7 @@ class Komunikat
 {
 public://????????????????????//
 
-    std::string znaki[68][9];
+    std::string znaki[69][9];
     std::string tablica_obwieszczenie[13];
     std::string tablica_pole_wyboru[53];
     int szerokosc_pola;
@@ -36,7 +36,7 @@ public://????????????????????//
                 int podaj_szerokosc_znaku(char znak);
         void wyczysc_tablica_pole_wyboru();
         void wczytaj_obramowanie_pola();
-        void wszytaj_tresc_pola_wyboru(std::vector<std::string> opcje);
+        void wczytaj_tresc_pola_wyboru(std::vector<std::string> opcje);
             void wczytaj_linijke_tekstu(std::string tresc, int nr_linijki);
                 void dodaj_znak_do_linijki(char znak, std::string linijka[]);
                 void przepisz_linijke_do_tablica_pola_wyboru(std::string linijka[], int nr_linijki);
