@@ -1,29 +1,18 @@
 #ifndef GRA_H
 #define GRA_H
+#include <cstdlib>
+#include <ctime>
 #include "Partia.h"
 
-
-
-
 class Gra{
-public:
-
-    Komunikat komunikat;
-
-    void start();
-        void menu_gry();
-    void uruchom_partie();
-        void menu_koloru(bool &kolor);
-        int losowanie_koloru();
-
-
-
-
+private:Szachownica szachownica;
+        Komunikat komunikat;
+//********************************************************************************
+public: void start();
+private:    void menu_gry();
+                void uruchom_partie();
+                    void menu_koloru_urzytkownika(bool &kolor);
+                        int losowanie_koloru()noexcept;
+                void menu_ustawien();
 };
-
-
-
-
-
-
-#endif
+#endif//GRA_H

@@ -1,19 +1,23 @@
-#include <iostream>
-#include <windows.h>
-#include "Szachownica.h"
-#include "Ruch.h"
-#include "Silnik.h"
-#include "Notatnik.h"
-#include "Komunikat.h"
-#include "Partia.h"
 #include "Gra.h"
 
-using namespace std;
 
 int main(){
+    try{Gra gra;gra.start();}catch(globalType::obslugiwany_blad &e){std::cout<<e.komunikat;}
 
-Gra gra;
-gra.start();
 
-return 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    return 0;
 }
