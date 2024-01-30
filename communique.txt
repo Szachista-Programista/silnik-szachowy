@@ -1,1 +1,38 @@
-
+1. zagraj$1. play$
+2. ustawienia kolorow$2. color settings$
+3. ustawienia jezykow$3. languages settings$
+4. wyjscie$4. exit$
+1. kolor podswietlonego pola$1. underlighted square color$
+2. kolor menu/komunikatow$2. checkbox/communique color$
+3. kolor wybieranej opcji$3. chosen option color$
+4. kolor notacji$4. notation color$
+5. wroc$5. back$
+1. kolorem bialym$1. white color$
+2. kolorem czarnym$2. black color$
+3. kolorem losowym$3. random color$
+1. czerwony$1. red$
+2. zielony$2. green$
+3. zolty$3. yellow$
+4. niebieski$4. blue$
+1. Polski$1. Polish$
+2. Angielski$2. English$
+Do zobaczenia.$See you.$
+To pole nie nalezy do ciebie.$This square does not belong to you.$
+1. kontynuuj$1. continue$
+3. zakoncz partie$3. stop the game$
+WYGRALES...$YOU WON...$
+spowodowales pata...$you caused a stalemate...$
+PRZEGRALES...$YOU LOSE...$
+maszyna spowodowala pata...$the engine caused a stalemate...$
+czy zapisac notacje...$do you want to save the notations...$
+1. TAK$1. YES$
+2. NIE$2. NO$
+Nieprawidlowy ruch.$Wrong move.$
+1. Skoczek$1. Knight$
+2. Goniec$2. Bishop$
+3. Wieza$3. Rook$
+4. Hetman$4. Queen$
+4. wroc$4. back$
+3. wroc$3. back$
+wybierz 1-$choose 1-$
+ oraz Enter$ and Enter$

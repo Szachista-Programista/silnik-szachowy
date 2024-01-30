@@ -1,25 +1,26 @@
 #include "GlobalDefinitions.h"
-using namespace std;
 
-namespace globalType{
+namespace globalType{//globalType::
+    std::string communiquesArray[numberOfCommuniques][numberOfLanguages];
+
     Languages setLanguage;
-    Color menu;//               = red;
-    Color notation;//           = green;
-    Color underlightedSquare;// = blue;
-    Color chsenOption;//        = yellow;
+    Color menu;
+    Color notation;
+    Color underlightedSquare;
+    Color chsenOption;
 //********************************************************************************
-    void readConfigFile(){
+    void readConfigFile(){//0
 //==============================================================================================================
     try{
-        ifstream reading;
-        string data;
+        std::ifstream reading;
+        std::string data;
         reading.open("config.txt");
         if (!reading.is_open())
-            throw ifstream::failure("The file 'config.txt' cannot be opened .");
+            throw std::ifstream::failure("The file 'config.txt' cannot be opened .");
         if (!getline(reading, data))
-            throw ifstream::failure("Error reading character from 'config.txt' file .");
+            throw std::ifstream::failure("Error reading character from 'config.txt' file .");
         if (data.size() != 5)
-            throw ifstream::failure("Wrong content of 'config.txt' file.");
+            throw std::ifstream::failure("Wrong content of 'config.txt' file.");
         reading.close();
 
         setLanguage        = static_cast<Languages>(data[0]-'0');
@@ -29,39 +30,84 @@ namespace globalType{
         chsenOption        = static_cast<Color>    (data[4]-'0');
 //#########################################################################
     }
-    catch(const ifstream::failure &e){
+    catch(const std::ifstream::failure &e){
         errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
-    void writeConfigFile(){
+    void writeConfigFile(){//0
 //==============================================================================================================
     try{
-        string data{};
+        std::string data{};
         data += static_cast<char>(setLanguage        +'0');
         data += static_cast<char>(menu               +'0');
         data += static_cast<char>(notation           +'0');
         data += static_cast<char>(underlightedSquare +'0');
         data += static_cast<char>(chsenOption        +'0');
 
-        ofstream file("config.txt");
+        std::ofstream file("config.txt");
         if (!file.is_open())
-            throw ofstream::failure("The file could not be opened for writing.");
+            throw std::ofstream::failure("The file could not be opened for writing.");
 
         file << data;
         file.close();
 //#########################################################################
     }
-    catch(const ofstream::failure &e){
+    catch(const std::ofstream::failure &e){
         errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
-   // void readCommuniqueFile()
+    void readCommuniqueFile(){//0
+    //==============================================================================================================
+    try{
+        std::ifstream reading;
+        std::string line;
+        reading.open("communique.txt");
+        if (!reading.is_open())
+            throw std::ifstream::failure("The file 'communique.txt' cannot be opened .");
 
-
+        for(int i=0; i<numberOfCommuniques; i++)
+        {
+            if (!getline(reading, line))
+                throw std::ifstream::failure("Error reading content from 'communique.txt' file .");
+            for(int j=0, k=0; j<numberOfLanguages; j++, k++)
+                for(; line[k] != '$'; k++)
+                {
+                    if (k >= line.size())
+                        throw std::ifstream::failure("Unexpected line ending in 'communique.txt' file.");
+                    communiquesArray[i][j] += line[k];
+                }
+        }
+        reading.close();
+//#########################################################################
+    }
+    catch(const std::ifstream::failure &e){
+        errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
+    }
+}
+    std::vector<std::string> getCommuniqueCotent(const std::vector<int> &indexes){//0
+//==============================================================================================================
+    try{
+        std::vector<std::string> result;
+        for (int index : indexes) {
+            if (index <= 0 && numberOfCommuniques <= index)
+                throw std::invalid_argument("Wrong index.");
+            result.push_back(communiquesArray[index][setLanguage]);
+        }
+        return result;
+//#########################################################################
+    }
+    catch(const std::invalid_argument &e){
+        errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
+    }
+}
 }
 namespace systemInfo {
     void setConsoleColor(globalType::Color color){//0+
@@ -75,26 +121,26 @@ namespace systemInfo {
                 case globalType::green: SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 2);  break;
                 case globalType::yellow:SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 6);  break;
                 case globalType::blue:  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 1);  break;
-                default:    throw invalid_argument("Unknown color.");
+                default:    throw std::invalid_argument("Unknown color.");
             }
         #elif __APPLE__
                 switch(color)
             {
-                case globalType::white: cout << "\033[0m";   break;
-                case globalType::red:   cout << "\033[31m";  break;
-                case globalType::green: cout << "\033[32m";  break;
-                case globalType::yellow:cout << "\033[33m";  break;
-                case globalType::blue:  cout << "\033[34m";  break;
+                case globalType::white: std::cout << "\033[0m";   break;
+                case globalType::red:   std::cout << "\033[31m";  break;
+                case globalType::green: std::cout << "\033[32m";  break;
+                case globalType::yellow:std::cout << "\033[33m";  break;
+                case globalType::blue:  std::cout << "\033[34m";  break;
                 default:    throw invalid_argument("Unknown color.");
             }
         #elif __linux__
                 switch(color)
             {
-                case globalType::white: cout << "\033[0m";   break;
-                case globalType::red:   cout << "\033[31m";  break;
-                case globalType::green: cout << "\033[32m";  break;
-                case globalType::yellow:cout << "\033[33m";  break;
-                case globalType::blue:  cout << "\033[34m";  break;
+                case globalType::white: std::cout << "\033[0m";   break;
+                case globalType::red:   std::cout << "\033[31m";  break;
+                case globalType::green: std::cout << "\033[32m";  break;
+                case globalType::yellow:std::cout << "\033[33m";  break;
+                case globalType::blue:  std::cout << "\033[34m";  break;
                 default:    throw invalid_argument("Unknown color.");
             }
         #else
@@ -102,9 +148,9 @@ namespace systemInfo {
         #endif
 //#########################################################################
     }
-    catch(const invalid_argument &e){
+    catch(const std::invalid_argument &e){
         globalType::errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
@@ -112,25 +158,25 @@ namespace systemInfo {
     //==============================================================================================================
     try{
         if (x < 0 || y < 0)
-            throw invalid_argument("Negative coordinates.");
+            throw std::invalid_argument("Negative coordinates.");
         #ifdef _WIN32
             COORD coord;
             coord.X = static_cast<SHORT>(x);
             coord.Y = static_cast<SHORT>(y);
             if (!SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord))
-                throw runtime_error("Error setting cursor position on Windows console");
+                throw std::runtime_error("Error setting cursor position on Windows console");
         #elif __APPLE__
-            cout<<"\033["<<y+1<<";"<<x+1<<"H";
+            std::cout<<"\033["<<y+1<<";"<<x+1<<"H";
         #elif __linux__
-            cout<<"\033["<<y+1<<";"<<x+1<<"H";
+            std::cout<<"\033["<<y+1<<";"<<x+1<<"H";
         #else
             #error the program only supports(Windosw/Mac_OS/Linux)
         #endif
 //#########################################################################
     }
-    catch(const invalid_argument &e){
+    catch(const std::invalid_argument &e){
         globalType::errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
@@ -146,10 +192,10 @@ namespace systemInfo {
             newt = oldt;
             newt.c_lflag &= ~(ICANON | ECHO);
             if (tcsetattr(STDIN_FILENO, TCSANOW, &newt) != 0)
-                throw runtime_error("Terminal configuration error");
+                throw std::runtime_error("Terminal configuration error");
             ch = getchar();
             if (tcsetattr(STDIN_FILENO, TCSANOW, &oldt) != 0)
-                throw runtime_error("Error restoring terminal settings");
+                throw std::runtime_error("Error restoring terminal settings");
             return ch;
         #elif __linux__
             struct termios oldt, newt;
@@ -158,19 +204,19 @@ namespace systemInfo {
             newt = oldt;
             newt.c_lflag &= ~(ICANON | ECHO);
             if (tcsetattr(STDIN_FILENO, TCSANOW, &newt) != 0)
-                throw runtime_error("Terminal configuration error");
+                throw std::runtime_error("Terminal configuration error");
             ch = getchar();
             if (tcsetattr(STDIN_FILENO, TCSANOW, &oldt) != 0)
-                throw runtime_error("Error restoring terminal settings");
+                throw std::runtime_error("Error restoring terminal settings");
             return ch;
         #else
             #error the program only supports(Windosw/Mac_OS/Linux)
         #endif
 //#########################################################################
     }
-    catch(const runtime_error &e){
+    catch(const std::runtime_error &e){
         globalType::errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
@@ -179,9 +225,9 @@ namespace systemInfo {
     #ifdef _WIN32
         system("cls");
     #elif __APPLE__
-        cout << "\033[2J\033[1;1H";
+        std::cout << "\033[2J\033[1;1H";
     #elif __linux__
-        cout << "\033[2J\033[1;1H";
+        std::cout << "\033[2J\033[1;1H";
     #else
         #error the program only supports(Windosw/Mac_OS/Linux)
     #endif
@@ -190,7 +236,7 @@ namespace systemInfo {
 //==============================================================================================================
     try{
         if (milliseconds < 0)
-            throw invalid_argument("Negative delay time value.");
+            throw std::invalid_argument("Negative delay time value.");
         #ifdef _WIN32
             Sleep(milliseconds);
         #elif __APPLE__
@@ -202,9 +248,9 @@ namespace systemInfo {
         #endif
 //#########################################################################
     }
-    catch(const invalid_argument &e){
+    catch(const std::invalid_argument &e){
         globalType::errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }

@@ -1,11 +1,10 @@
 #include "Game.h"
 
-
 int main(){
 
     try{
-        Game Game;
-        Game.start();
+        Game game;
+        game.start();
         }
     catch(globalType::errorType &e){
         std::cout<<e.errorMessage;
@@ -14,3 +13,5 @@ int main(){
 
     return 0;
 }
+
+

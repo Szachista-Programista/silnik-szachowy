@@ -1,6 +1,5 @@
 #include "Chessboard.h"
 using namespace std;
-using namespace globalType;
 
 Chessboard::Chessboard(bool k): color{k}{//3
 //==============================================================================================================
@@ -9,27 +8,27 @@ Chessboard::Chessboard(bool k): color{k}{//3
         loadChessboardArray();
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
     void Chessboard::loadPiecesArray(){//0+
 //==============================================================================================================
     try{
-        ifstream reading;
+        std::ifstream reading;
         reading.open("pieces.txt");
         if (!reading.is_open())
-            throw ifstream::failure("The file 'pieces.txt' cannot be opened.");
+            throw std::ifstream::failure("The file 'pieces.txt' cannot be opened.");
         for(int i=0; i<7; i++)
             if (!getline(reading, piecesArray[i]))
-                throw ifstream::failure("Error reading character from 'pieces.txt' file.");
+                throw std::ifstream::failure("Error reading character from 'pieces.txt' file.");
         reading.close();
 //#########################################################################
     }
-    catch(const ifstream::failure &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+    catch(const std::ifstream::failure &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
@@ -41,22 +40,22 @@ Chessboard::Chessboard(bool k): color{k}{//3
         loadPieces();
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
         void Chessboard::loadChessboard()noexcept{
 //==============================================================================================================
-    string whiteSquare (squareWidth, '\333');
-    string blackSquare (squareWidth,    ' ');
-    string outerFrame  (20,    ' ');
-    string innerFrame  (4,  '\333');
-    string outerFooter (globalType::chessboardwidth, ' ');
+    std::string whiteSquare (squareWidth, '\333');
+    std::string blackSquare (squareWidth,    ' ');
+    std::string outerFrame  (20,    ' ');
+    std::string innerFrame  (4,  '\333');
+    std::string outerFooter (globalType::chessboardwidth, ' ');
 
-    string innerFooter      = outerFrame + string(376,'\333') + outerFrame;
-    string wbwbwbwbSquares  = outerFrame + innerFrame + whiteSquare + blackSquare + whiteSquare + blackSquare + whiteSquare + blackSquare + whiteSquare + blackSquare + innerFrame + outerFrame;
-    string bwbwbwbwSquares  = outerFrame + innerFrame + blackSquare + whiteSquare + blackSquare + whiteSquare + blackSquare + whiteSquare + blackSquare + whiteSquare + innerFrame + outerFrame;
+    std::string innerFooter      = outerFrame + std::string(376,'\333') + outerFrame;
+    std::string wbwbwbwbSquares  = outerFrame + innerFrame + whiteSquare + blackSquare + whiteSquare + blackSquare + whiteSquare + blackSquare + whiteSquare + blackSquare + innerFrame + outerFrame;
+    std::string bwbwbwbwSquares  = outerFrame + innerFrame + blackSquare + whiteSquare + blackSquare + whiteSquare + blackSquare + whiteSquare + blackSquare + whiteSquare + innerFrame + outerFrame;
 
     for(int i=0; i<10; i++){
         outerFooter.copy(chessboardArray[i],    globalType::chessboardwidth);
@@ -75,14 +74,14 @@ Chessboard::Chessboard(bool k): color{k}{//3
         void Chessboard::loadCoodinates(){//1
 //==============================================================================================================
     try{
-        ifstream reading;
-        string coordinates[numberOfCoordinatesChars];
+        std::ifstream reading;
+        std::string coordinates[numberOfCoordinatesChars];
         reading.open("coordinatesChars.txt");
         if (!reading.is_open())
-            throw ifstream::failure("The file 'coordinatesChars.txt' cannot be opened.");
+            throw std::ifstream::failure("The file 'coordinatesChars.txt' cannot be opened.");
         for(int i=0; i<16; i++)
             if (!getline(reading, coordinates[i]))
-                throw ifstream::failure("Error reading character from 'coordinatesChars.txt' file.");
+                throw std::ifstream::failure("Error reading character from 'coordinatesChars.txt' file.");
         reading.close();
         for(int x=43, i=color?8:15 ; x<=43+7*squareWidth; x+=squareWidth, color?i++:i--)
         {
@@ -96,17 +95,17 @@ Chessboard::Chessboard(bool k): color{k}{//3
         }
 //#########################################################################
     }
-    catch(const ifstream::failure &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+    catch(const std::ifstream::failure &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-            void Chessboard::loadSingeCoordinateChar(int coordX, int coordY, string cHar){//0+
+            void Chessboard::loadSingeCoordinateChar(int coordX, int coordY, std::string cHar){//0+
 //==============================================================================================================
     try{
         if(coordX<0 || globalType::chessboardwidth<coordX || coordY<0 || globalType::chessboardHeight<coordY)
@@ -128,8 +127,8 @@ Chessboard::Chessboard(bool k): color{k}{//3
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
@@ -169,12 +168,12 @@ Chessboard::Chessboard(bool k): color{k}{//3
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -210,8 +209,8 @@ Chessboard::Chessboard(bool k): color{k}{//3
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
@@ -225,12 +224,12 @@ void Chessboard::deleteCommunique(int communiqueWidth){//*1
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -246,15 +245,15 @@ void Chessboard::deleteCheckbox(int Width, int Height, bool deleteByChessboardWr
             for(int j=0; j<Width; j++)
             {
                 if(deleteByChessboardWrite)
-                    cout<<chessboardArray[checkboxBeginningY + i][checkboxBeginningX + j];
+                    std::cout<<chessboardArray[checkboxBeginningY + i][checkboxBeginningX + j];
                 else
-                    cout<<' ';
+                    std::cout<<' ';
             }
         }
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -265,13 +264,13 @@ void Chessboard::writeChessboardArray(){//*0
         for(int i=0; i<globalType::chessboardHeight; i++)
         {
             for(int j=0; j<globalType::chessboardwidth; j++)
-                cout<<chessboardArray[i][j];
-            cout<<endl;
+                std::cout<<chessboardArray[i][j];
+            std::cout<<endl;
         }
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -287,12 +286,12 @@ void Chessboard::updateSquare(int squareCoordX, int squareCoordY, int piece, boo
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -310,12 +309,12 @@ void Chessboard::updateSquare(int squareCoordX, int squareCoordY, int piece, boo
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -328,18 +327,18 @@ void Chessboard::updateSquare(int squareCoordX, int squareCoordY, int piece, boo
         {
             systemInfo::setCursorPosition(fromX, i);
             for(int j=fromX; j<=toX; j++)
-                cout<<chessboardArray[i][j];
+                std::cout<<chessboardArray[i][j];
         }
         systemInfo::setCursorPosition(0, 180);
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }

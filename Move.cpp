@@ -1,6 +1,5 @@
 #include "Move.h"
 using namespace std;
-using namespace globalType;
 
 Move::Move(bool k)noexcept: color{k}{
 //==============================================================================================================
@@ -29,7 +28,7 @@ void Move::prepareMove()noexcept{
     worstMoveIndex   =  0 ;
     LeastMaterialStatusOfconsideredMovements = 100.0;
 }
-double Move::findNextMove(chessboardPointer &wsk_X){//7
+double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
 //==============================================================================================================
     try{
         if(wsk_X == nullptr)
@@ -42,16 +41,16 @@ double Move::findNextMove(chessboardPointer &wsk_X){//7
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-    void Move::verifyKingsLocation(chessboardPointer wsk_X){//0+
+    void Move::verifyKingsLocation(globalType::chessboardPointer wsk_X){//0+
 //==============================================================================================================
     try{
         if(wsk_X == nullptr)
@@ -75,12 +74,12 @@ double Move::findNextMove(chessboardPointer &wsk_X){//7
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
-    void Move::checkIfRooksAndKingsMoved(chessboardPointer wsk_X){//0+
+    void Move::checkIfRooksAndKingsMoved(globalType::chessboardPointer wsk_X){//0+
 //==============================================================================================================
     try{
         if (wsk_X == nullptr)
@@ -94,35 +93,35 @@ double Move::findNextMove(chessboardPointer &wsk_X){//7
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
-    void Move::checkIfEngineRookChecked(chessboardPointer wsk_X){//1
+    void Move::checkIfEngineRookChecked(globalType::chessboardPointer wsk_X){//1
 //==============================================================================================================
     try{
         engineKingChecked = checkIfEngineSquareCaptured(machineKingLocationX, machineKingLocationY, wsk_X);
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-    double Move::findBestMove(chessboardPointer &wsk_X){//r
+    double Move::findBestMove(globalType::chessboardPointer &wsk_X){//r
 //==============================================================================================================
     try{
         if(movementGeneration < lastMovementGeneration)  return beginningSearchingTreeService(wsk_X);
         if(movementGeneration == lastMovementGeneration) return endingSearchingTreeService();
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-        double Move::beginningSearchingTreeService(chessboardPointer &wsk_X){//r
+        double Move::beginningSearchingTreeService(globalType::chessboardPointer &wsk_X){//r
 //==============================================================================================================
     try{
         double bestUserMaterialStatusOfTheWorst = -100;
@@ -148,12 +147,12 @@ double Move::findNextMove(chessboardPointer &wsk_X){//7
         return bestUserMaterialStatusOfTheWorst;
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-            void Move::endingSearchingService(chessboardPointer &wsk_X, int &index){//2
+            void Move::endingSearchingService(globalType::chessboardPointer &wsk_X, int &index){//2
 //==============================================================================================================
     try{
         if(movementGeneration == 0)
@@ -167,12 +166,12 @@ double Move::findNextMove(chessboardPointer &wsk_X){//7
         }
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-                void Move::checkIfGameFinishedByUser(chessboardPointer &wsk_X){//1
+                void Move::checkIfGameFinishedByUser(globalType::chessboardPointer &wsk_X){//1
 //==============================================================================================================
     try{
         if(movements.size()==0)
@@ -184,12 +183,12 @@ double Move::findNextMove(chessboardPointer &wsk_X){//7
         }
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-                void Move::checkIfGameFinishedByEngine(chessboardPointer &wsk_X, int &index){//1
+                void Move::checkIfGameFinishedByEngine(globalType::chessboardPointer &wsk_X, int &index){//1
 //==============================================================================================================
     try{
         for(int i=0, j=0; i<movements.size(); i++)
@@ -217,8 +216,8 @@ double Move::findNextMove(chessboardPointer &wsk_X){//7
         }
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -240,15 +239,15 @@ double Move::findNextMove(chessboardPointer &wsk_X){//7
     }
     movements.clear();
 }
-        Move::Move(Move* pointer, double &materialStatus, chessboardPointer wsk_X, int iteration): movementGeneration {iteration}{//r
+        Move::Move(Move* pointer, double &materialStatus, globalType::chessboardPointer wsk_X, int iteration): movementGeneration {iteration}{//r
 //==============================================================================================================
     try{
         rewriteKingsAndRooksMovesData(pointer);
         materialStatus = findNextMove(wsk_X);
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -266,17 +265,17 @@ double Move::findNextMove(chessboardPointer &wsk_X){//7
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
-void Move::makeEngineMoves(chessboardPointer wsk_X){//6
+void Move::makeEngineMoves(globalType::chessboardPointer wsk_X){//6
 //==============================================================================================================
     try{
         if (wsk_X == nullptr)
             throw invalid_argument("Nullptr of the chessboard.");
-        vector<int>iterators = {3, 4, 2, 5, 1, 6, 0, 7};
+        std::vector<int>iterators = {3, 4, 2, 5, 1, 6, 0, 7};
         for(int i=0; i<8; i++)
             for (int j: iterators)
             {
@@ -508,7 +507,7 @@ void Move::makeEngineMoves(chessboardPointer wsk_X){//6
                         {
                             if(engineKingMoved==false && engineLeftRookMoved==false && wsk_X[7][1]==' ' && wsk_X[7][2]==' ' && wsk_X[7][3]==' ')       //long castle
                             {
-                                chessboardPointer cOpy = copyChessboard(wsk_X);
+                                globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                                 if(checkIfEngineSquareCaptured(2, 7, cOpy)==false && checkIfEngineSquareCaptured(3, 7, cOpy)==false && checkIfEngineSquareCaptured(4, 7, cOpy)==false)
                                 {
                                     cOpy[7][0]=' ';
@@ -523,7 +522,7 @@ void Move::makeEngineMoves(chessboardPointer wsk_X){//6
                             }
                             if(engineKingMoved==false && engineRightRookMoved==false && wsk_X[7][5]==' ' && wsk_X[7][6]==' ')                          //short caste
                             {
-                                chessboardPointer cOpy = copyChessboard(wsk_X);
+                                globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                                 if(checkIfEngineSquareCaptured(4, 7, cOpy)==false && checkIfEngineSquareCaptured(5, 7, cOpy)==false && checkIfEngineSquareCaptured(6, 7, cOpy)==false)
                                 {
                                     cOpy[7][7]=' ';
@@ -541,7 +540,7 @@ void Move::makeEngineMoves(chessboardPointer wsk_X){//6
                         {
                             if(engineKingMoved==false && engineRightRookMoved==false && wsk_X[7][4]==' ' && wsk_X[7][5]==' ' && wsk_X[7][6]==' ')       //long castle
                             {
-                                chessboardPointer cOpy = copyChessboard(wsk_X);
+                                globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                                 if(checkIfEngineSquareCaptured(3, 7, cOpy)==false && checkIfEngineSquareCaptured(4, 7, cOpy)==false && checkIfEngineSquareCaptured(5, 7, cOpy)==false)
                                 {
                                     cOpy[7][7]=' ';
@@ -556,7 +555,7 @@ void Move::makeEngineMoves(chessboardPointer wsk_X){//6
                             }
                             if(engineKingMoved==false && engineLeftRookMoved==false && wsk_X[7][1]==' ' && wsk_X[7][2]==' ')                          //short caste
                             {
-                                chessboardPointer cOpy = copyChessboard(wsk_X);
+                                globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                                 if(checkIfEngineSquareCaptured(1, 7, cOpy)==false && checkIfEngineSquareCaptured(2, 7, cOpy)==false && checkIfEngineSquareCaptured(3, 7, cOpy)==false)
                                 {
                                     cOpy[7][0]=' ';
@@ -578,39 +577,39 @@ void Move::makeEngineMoves(chessboardPointer wsk_X){//6
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-    void Move::engineMovesService(int fromX, int fromY, int toX, int toY, char piece, chessboardPointer wsk_X){//5
+    void Move::engineMovesService(int fromX, int fromY, int toX, int toY, char piece, globalType::chessboardPointer wsk_X){//5
 //==============================================================================================================
     try{
         if (wsk_X == nullptr)
             throw invalid_argument("Nullptr of the chessboard.");
         if(fromX<0 || 7<fromX || fromY<0 || 7<fromY || toX<0 || 7<toX || toY<0 || 7<toY)
             throw invalid_argument("Chessboard coordinates out of range.");
-        chessboardPointer cOpy = copyChessboard(wsk_X);
+        globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
         cOpy[fromY][fromX] = ' ';
         cOpy[toY][toX] = piece;
         makeEngineMovesIfAllowed(fromY, fromX, cOpy);
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-        void Move::makeEngineMovesIfAllowed(int &y, int &x, chessboardPointer cOpy){//4
+        void Move::makeEngineMovesIfAllowed(int &y, int &x, globalType::chessboardPointer cOpy){//4
 //==============================================================================================================
     try{
         if (x < 0 || 7 < x || y < 0 || 7 < y)
@@ -620,7 +619,7 @@ void Move::makeEngineMoves(chessboardPointer wsk_X){//6
         if(engineKingChecked==false && x!=machineKingLocationX && y!=machineKingLocationY && (machineKingLocationX+machineKingLocationY!=x+y) && (machineKingLocationX-machineKingLocationY!=x-y))
         {//whether the king stands on the square line from which the move took place
             engineMoveNumber++;
-            movements.push_back(vector<chessboardPointer>());
+            movements.push_back(std::vector<globalType::chessboardPointer>());
             movements[engineMoveNumber].push_back(cOpy);
             makeUserMoves(cOpy);
             discardWorstEngineMove();
@@ -628,7 +627,7 @@ void Move::makeEngineMoves(chessboardPointer wsk_X){//6
         else if(checkIfEngineSquareCaptured(machineKingLocationX, machineKingLocationY, cOpy)==false)
         {//If it's there, isn't it captured after all?
             engineMoveNumber++;
-            movements.push_back(vector<chessboardPointer>());
+            movements.push_back(std::vector<globalType::chessboardPointer>());
             movements[engineMoveNumber].push_back(cOpy);
             makeUserMoves(cOpy);
             discardWorstEngineMove();
@@ -637,16 +636,16 @@ void Move::makeEngineMoves(chessboardPointer wsk_X){//6
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-            bool Move::checkIfEngineSquareCaptured(const int &x,const int &y, chessboardPointer cOpy){//0+
+            bool Move::checkIfEngineSquareCaptured(const int &x,const int &y, globalType::chessboardPointer cOpy){//0+
 //==============================================================================================================
     try{
         if (x < 0 || 7 < x || y < 0 || 7 < y)
@@ -720,8 +719,8 @@ void Move::makeEngineMoves(chessboardPointer wsk_X){//6
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
@@ -767,12 +766,12 @@ void Move::makeEngineMoves(chessboardPointer wsk_X){//6
         }
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-void Move::makeUserMoves(chessboardPointer wsk_X){//3
+void Move::makeUserMoves(globalType::chessboardPointer wsk_X){//3
 //==============================================================================================================
     try{
         if (wsk_X == nullptr)
@@ -945,7 +944,7 @@ void Move::makeUserMoves(chessboardPointer wsk_X){//3
                         if(0<=i-1 && (wsk_X[i-1][j]<'g' || 'w'<wsk_X[i-1][j]))                    //movement towards 12:00
                         if(2<=abs(machineKingLocationX-userKingLocationX) || 2<=abs(machineKingLocationY-1-userKingLocationY))
                         {
-                            chessboardPointer cOpy = copyChessboard(wsk_X);
+                            globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                             cOpy[i][j]=' ';
                             cOpy[i-1][j]='k';
                             if(checkIfUserSquareCaptured(userKingLocationX, userKingLocationY-1, cOpy)==false)
@@ -959,7 +958,7 @@ void Move::makeUserMoves(chessboardPointer wsk_X){//3
                         if(0<=i-1 && j+1<=7 && (wsk_X[i-1][j+1]<'g' || 'w'<wsk_X[i-1][j+1]))      //movement towards 01:30
                         if(2<=abs(machineKingLocationX+1-userKingLocationX) || 2<=abs(machineKingLocationY-1-userKingLocationY))
                         {
-                            chessboardPointer cOpy = copyChessboard(wsk_X);
+                            globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                             cOpy[i][j]=' ';
                             cOpy[i-1][j+1]='k';
                             if(checkIfUserSquareCaptured(userKingLocationX+1, userKingLocationY-1, cOpy)==false)
@@ -975,7 +974,7 @@ void Move::makeUserMoves(chessboardPointer wsk_X){//3
                         if(j+1<=7 && (wsk_X[i][j+1]<'g' || 'w'<wsk_X[i][j+1]))                    //movement towards 03:00
                         if(2<=abs(machineKingLocationX+1-userKingLocationX) || 2<=abs(machineKingLocationY-userKingLocationY))
                         {
-                            chessboardPointer cOpy = copyChessboard(wsk_X);
+                            globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                             cOpy[i][j]=' ';
                             cOpy[i][j+1]='k';
                             if(checkIfUserSquareCaptured(userKingLocationX+1, userKingLocationY, cOpy)==false)
@@ -989,7 +988,7 @@ void Move::makeUserMoves(chessboardPointer wsk_X){//3
                         if(i+1<=7 && j+1<=7 && (wsk_X[i+1][j+1]<'g' || 'w'<wsk_X[i+1][j+1]))      //movement towards 04:30
                         if(2<=abs(machineKingLocationX+1-userKingLocationX) || 2<=abs(machineKingLocationY+1-userKingLocationY))
                         {
-                            chessboardPointer cOpy = copyChessboard(wsk_X);
+                            globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                             cOpy[i][j]=' ';
                             cOpy[i+1][j+1]='k';
                             if(checkIfUserSquareCaptured(userKingLocationX+1, userKingLocationY+1, cOpy)==false)
@@ -1005,7 +1004,7 @@ void Move::makeUserMoves(chessboardPointer wsk_X){//3
                         if(i+1<=7 && (wsk_X[i+1][j]<'g' || 'w'<wsk_X[i+1][j]))                    //movement towards 06:00
                         if(2<=abs(machineKingLocationX-userKingLocationX) || 2<=abs(machineKingLocationY+1-userKingLocationY))
                         {
-                            chessboardPointer cOpy = copyChessboard(wsk_X);
+                            globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                             cOpy[i][j]=' ';
                             cOpy[i+1][j]='k';
                             if(checkIfUserSquareCaptured(userKingLocationX, userKingLocationY+1, cOpy)==false)
@@ -1019,7 +1018,7 @@ void Move::makeUserMoves(chessboardPointer wsk_X){//3
                         if(i+1<=7 && 0<=j-1 && (wsk_X[i+1][j-1]<'g' || 'w'<wsk_X[i+1][j-1]))      //movement towards 07:30
                         if(2<=abs(machineKingLocationX-1-userKingLocationX) || 2<=abs(machineKingLocationY+1-userKingLocationY))
                         {
-                            chessboardPointer cOpy = copyChessboard(wsk_X);
+                            globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                             cOpy[i][j]=' ';
                             cOpy[i+1][j-1]='k';
                             if(checkIfUserSquareCaptured(userKingLocationX-1, userKingLocationY+1, cOpy)==false)
@@ -1035,7 +1034,7 @@ void Move::makeUserMoves(chessboardPointer wsk_X){//3
                         if(0<=j-1 && (wsk_X[i][j-1]<'g' || 'w'<wsk_X[i][j-1]))                    //movement towards 09:00
                         if(2<=abs(machineKingLocationX-1-userKingLocationX) || 2<=abs(machineKingLocationY-userKingLocationY))
                         {
-                            chessboardPointer cOpy = copyChessboard(wsk_X);
+                            globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                             cOpy[i][j]=' ';
                             cOpy[i][j-1]='k';
                             if(checkIfUserSquareCaptured(userKingLocationX-1, userKingLocationY, cOpy)==false)
@@ -1049,7 +1048,7 @@ void Move::makeUserMoves(chessboardPointer wsk_X){//3
                         if(0<=i-1 && 0<=j-1 && (wsk_X[i-1][j-1]<'g' || 'w'<wsk_X[i-1][j-1]))      //movement towards 10:30
                         if(2<=abs(machineKingLocationX-1-userKingLocationX) || 2<=abs(machineKingLocationY-1-userKingLocationY))
                         {
-                            chessboardPointer cOpy = copyChessboard(wsk_X);
+                            globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                             cOpy[i][j]=' ';
                             cOpy[i-1][j-1]='k';
                             if(checkIfUserSquareCaptured(userKingLocationX-1, userKingLocationY-1, cOpy)==false)
@@ -1066,7 +1065,7 @@ void Move::makeUserMoves(chessboardPointer wsk_X){//3
                         {
                             if(userKingMoved==false && userLeftRookMoved==false && wsk_X[0][1]==' ' && wsk_X[0][2]==' ' && wsk_X[0][3]==' ')       //long castle
                             {
-                                chessboardPointer cOpy = copyChessboard(wsk_X);
+                                globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                                 if(checkIfUserSquareCaptured(2, 0, cOpy)==false && checkIfUserSquareCaptured(3, 0, cOpy)==false && checkIfUserSquareCaptured(4, 0, cOpy)==false)
                                 {
                                     cOpy[0][0]=' ';
@@ -1081,7 +1080,7 @@ void Move::makeUserMoves(chessboardPointer wsk_X){//3
                             }
                             if(userKingMoved==false && userRightRookMoved==false && wsk_X[0][5]==' ' && wsk_X[0][6]==' ')                          //short caste
                             {
-                                chessboardPointer cOpy = copyChessboard(wsk_X);
+                                globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                                 if(checkIfUserSquareCaptured(4, 0, cOpy)==false && checkIfUserSquareCaptured(5, 0, cOpy)==false && checkIfUserSquareCaptured(6, 0, cOpy)==false)
                                 {
                                     cOpy[0][7]=' ';
@@ -1099,7 +1098,7 @@ void Move::makeUserMoves(chessboardPointer wsk_X){//3
                         {
                             if(userKingMoved==false && userRightRookMoved==false && wsk_X[0][4]==' ' && wsk_X[0][5]==' ' && wsk_X[0][6]==' ')       //long castle
                             {
-                                chessboardPointer cOpy = copyChessboard(wsk_X);
+                                globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                                 if(checkIfUserSquareCaptured(3, 0, cOpy)==false && checkIfUserSquareCaptured(4, 0, cOpy)==false && checkIfUserSquareCaptured(5, 0, cOpy)==false)
                                 {
                                     cOpy[0][7]=' ';
@@ -1114,7 +1113,7 @@ void Move::makeUserMoves(chessboardPointer wsk_X){//3
                             }
                             if(userKingMoved==false && userLeftRookMoved==false && wsk_X[0][1]==' ' && wsk_X[0][2]==' ')                          //short caste
                             {
-                                chessboardPointer cOpy = copyChessboard(wsk_X);
+                                globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                                 if(checkIfUserSquareCaptured(1, 0, cOpy)==false && checkIfUserSquareCaptured(2, 0, cOpy)==false && checkIfUserSquareCaptured(3, 0, cOpy)==false)
                                 {
                                     cOpy[0][0]=' ';
@@ -1137,39 +1136,39 @@ void Move::makeUserMoves(chessboardPointer wsk_X){//3
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-    void Move::userMovesService(int fromX, int fromY, int toX, int toY, char bierka, chessboardPointer wsk_X){//2
+    void Move::userMovesService(int fromX, int fromY, int toX, int toY, char bierka, globalType::chessboardPointer wsk_X){//2
 //==============================================================================================================
     try{
         if (wsk_X == nullptr)
             throw invalid_argument("Nullptr of the chessboard.");
         if(fromX<0 || 7<fromX || fromY<0 || 7<fromY || toX<0 || 7<toX || toY<0 || 7<toY)
             throw invalid_argument("Chessboard coordinates out of range.");
-        chessboardPointer cOpy = copyChessboard(wsk_X);
+        globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
         cOpy[fromY][fromX] = ' ';
         cOpy[toY][toX] = bierka;
         makeUserMovesIfAllowed(fromY, fromX, cOpy);
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-        void Move::makeUserMovesIfAllowed(int &y, int &x, chessboardPointer cOpy){//1
+        void Move::makeUserMovesIfAllowed(int &y, int &x, globalType::chessboardPointer cOpy){//1
 //==============================================================================================================
     try{
         if (x < 0 || 7 < x || y < 0 || 7 < y)
@@ -1184,16 +1183,16 @@ void Move::makeUserMoves(chessboardPointer wsk_X){//3
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-            bool Move::checkIfUserSquareCaptured(const int &x, const int &y, chessboardPointer cOpy){//0+
+            bool Move::checkIfUserSquareCaptured(const int &x, const int &y, globalType::chessboardPointer cOpy){//0+
 //==============================================================================================================
     try{
         if (x < 0 || 7 < x || y < 0 || 7 < y)
@@ -1267,8 +1266,8 @@ void Move::makeUserMoves(chessboardPointer wsk_X){//3
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
@@ -1276,7 +1275,7 @@ void Move::makeUserMoves(chessboardPointer wsk_X){//3
 //==============================================================================================================
     try{
         int userMovementsNumber = movements[engineMoveNumber].size()-1;
-        vector<double>materialStatus;
+        std::vector<double>materialStatus;
         for(int i=0; i<userMovementsNumber; i++)                                                  //calculating the user's material status
             materialStatus.push_back(countMaterialStatus(movements[engineMoveNumber][i+1]));
 
@@ -1294,12 +1293,12 @@ void Move::makeUserMoves(chessboardPointer wsk_X){//3
         }
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-double Move::countMaterialStatus(const chessboardPointer wsk_X){//0+
+double Move::countMaterialStatus(const globalType::chessboardPointer wsk_X){//0+
 //==============================================================================================================
     try{
         if (wsk_X == nullptr)
@@ -1336,17 +1335,17 @@ double Move::countMaterialStatus(const chessboardPointer wsk_X){//0+
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
-chessboardPointer Move::copyChessboard(const chessboardPointer oryginal){//0+
+globalType::chessboardPointer Move::copyChessboard(const globalType::chessboardPointer oryginal){//0+
 //==============================================================================================================
     try{
         if (oryginal == nullptr)
             throw invalid_argument("Attempting to copy the nullptr address of the chessboard.");
-        chessboardPointer cOpy = new char[8][8];
+        globalType::chessboardPointer cOpy = new char[8][8];
         for(int i=0; i<8; i++)
             for(int j=0; j<8; j++)
                 cOpy[i][j] = oryginal[i][j];
@@ -1354,13 +1353,13 @@ chessboardPointer Move::copyChessboard(const chessboardPointer oryginal){//0+
 //#########################################################################
     }
     catch(const bad_alloc &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }

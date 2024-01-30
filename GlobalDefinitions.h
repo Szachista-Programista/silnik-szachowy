@@ -27,17 +27,16 @@
 
 
 namespace globalType{
-    using chessboardPointer = char(*)[8];
-    struct errorType{std::string errorMessage;};
-
     enum{
+        numberOfLanguages      = 2,
         numberOfNotationColumn = 3,
         numberOfPieces         = 7,
         letterHeight           = 9,
         notationLineHeight     = 11,
         communiqueHeight       = 13,
-        checkboxHeight         = 73,
+        numberOfCommuniques    = 38,
         numberOfChars          = 69,
+        checkboxHeight         = 73,
         columnHeight           = 176,
         columnWidth            = 176,
         chessboardHeight       = 176,
@@ -50,18 +49,26 @@ namespace globalType{
         yellow,
         blue
     };
-    extern Color menu;
-    extern Color notation;
-    extern Color underlightedSquare;
-    extern Color chsenOption;
     enum Languages{
         polish  = 0,
         english = 1
     };
+
+    using chessboardPointer = char(*)[8];
+    struct errorType{std::string errorMessage;};
+    extern std::string communiquesArray[][numberOfLanguages];
+
+    extern Color menu;
+    extern Color notation;
+    extern Color underlightedSquare;
+    extern Color chsenOption;
+
     extern Languages setLanguage;
 //********************************************************************************
     void readConfigFile();
     void writeConfigFile();
+    void readCommuniqueFile();
+    std::vector<std::string> getCommuniqueCotent(const std::vector<int> &indexes);
 }
 namespace systemInfo {
     void setConsoleColor(globalType::Color color);

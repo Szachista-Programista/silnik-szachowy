@@ -1,6 +1,5 @@
 #include "Notice.h"
 using namespace std;
-using namespace globalType;
 
 Notice::Notice(){//1
 //==============================================================================================================
@@ -8,31 +7,31 @@ Notice::Notice(){//1
         loadChars();
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
     void Notice::loadChars(){//0+
 //==============================================================================================================
     try{
-        ifstream reading;
-        string charArray;
+        std::ifstream reading;
+        std::string charArray;
         reading.open("chars.txt");
         if (!reading.is_open())
-            throw ifstream::failure("The 'chars.txt' file cannot be opened.");
+            throw std::ifstream::failure("The 'chars.txt' file cannot be opened.");
 
         for(int i=0; i<globalType::numberOfChars; i++)
         {
             if (!getline(reading, charArray))
-                throw ifstream::failure("Error reading character from 'chars.txt' file.");
+                throw std::ifstream::failure("Error reading character from 'chars.txt' file.");
             charArray.erase(0, 2);
             for(int j=0, k=0; j<globalType::letterHeight; j++, k++)
             {
                 for(; charArray[k] != '$'; k++)
                 {
                     if (k >= charArray.size())
-                        throw ifstream::failure("Unexpected line ending in 'chars.txt' file.");
+                        throw std::ifstream::failure("Unexpected line ending in 'chars.txt' file.");
                     pixelArtCharacterArray[i][j] += charArray[k];
                 }
             }
@@ -40,24 +39,24 @@ Notice::Notice(){//1
         reading.close();
 //#########################################################################
     }
-    catch(const ifstream::failure &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+    catch(const std::ifstream::failure &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
 void Notice::setConsoleSize()noexcept{
 //==============================================================================================================
     for(int i=0; i<globalType::chessboardHeight; i++)
-        cout<<string(globalType::chessboardwidth,'\333')<<endl;
-    cout<<"1. Prosze, wyswietl konsole na pelnym ekranie."<<endl
+        std::cout<<std::string(globalType::chessboardwidth,'\333')<<endl;
+    std::cout<<"1. Prosze, wyswietl konsole na pelnym ekranie."<<endl
         <<"2. Ustaw wieklosc wyswietlanego obrazu tak, aby powyzsze biale pole bylo widoczne w calej okazalosci."<<endl
         <<"3. Wcisnij dowolny klawisz, aby rozpoczac."
         <<"\n\n\n\n\n\n";
     systemInfo::getChar();
     systemInfo::clearScreen();
 }
-void Notice::communique(string text, int milliseconds){//*3
+void Notice::communique(std::string text, int milliseconds){//*3
 //==============================================================================================================
     try{
         clearCommuniqueArray();
@@ -69,8 +68,8 @@ void Notice::communique(string text, int milliseconds){//*3
             systemInfo::getChar();
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -79,13 +78,13 @@ void Notice::communique(string text, int milliseconds){//*3
     for(int i=0; i<globalType::communiqueHeight; i++)
         communiqueArray[i].clear();
 }
-    void Notice::addTextToCommuniqueArray(string text){//2
+    void Notice::addTextToCommuniqueArray(std::string text){//2
 //==============================================================================================================
     try{
-        communiqueArray[0]  += string(10, '\333');
-        communiqueArray[12] += string(10, '\333');
+        communiqueArray[0]  += std::string(10, '\333');
+        communiqueArray[12] += std::string(10, '\333');
         for(int i=1; i<12; i++)
-            communiqueArray[i] += string(2, '\333') + string(8, ' ');
+            communiqueArray[i] += std::string(2, '\333') + std::string(8, ' ');
         for(auto sign: text)
         {
             addCharToCommuniqueArray(sign);
@@ -94,14 +93,14 @@ void Notice::communique(string text, int milliseconds){//*3
             for(int i=1; i<12; i++)
                 communiqueArray[i] += ' ';
         }
-        communiqueArray[0]  += string(9, '\333');
-        communiqueArray[12] += string(9, '\333');
+        communiqueArray[0]  += std::string(9, '\333');
+        communiqueArray[12] += std::string(9, '\333');
         for(int i=1; i<12; i++)
-            communiqueArray[i] += string(7, ' ') + string(2, '\333');
+            communiqueArray[i] += std::string(7, ' ') + std::string(2, '\333');
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -111,10 +110,10 @@ void Notice::communique(string text, int milliseconds){//*3
         int charIndex = getCharIndex(cHar);
         int charWidth = pixelArtCharacterArray[charIndex][0].size();
 
-        communiqueArray[0]  += string(charWidth, '\333');
-        communiqueArray[1]  += string(charWidth,    ' ');
-        communiqueArray[11] += string(charWidth,    ' ');
-        communiqueArray[12] += string(charWidth, '\333');
+        communiqueArray[0]  += std::string(charWidth, '\333');
+        communiqueArray[1]  += std::string(charWidth,    ' ');
+        communiqueArray[11] += std::string(charWidth,    ' ');
+        communiqueArray[12] += std::string(charWidth, '\333');
 
         for(int i=2; i<11; i++)
         {
@@ -133,12 +132,12 @@ void Notice::communique(string text, int milliseconds){//*3
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -166,8 +165,8 @@ void Notice::communique(string text, int milliseconds){//*3
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
@@ -182,22 +181,22 @@ void Notice::communique(string text, int milliseconds){//*3
         for(int i=0; i<globalType::communiqueHeight; i++)
         {
             systemInfo::setCursorPosition(sideBorderWidth, 81+i);
-            cout<<communiqueArray[i];
+            std::cout<<communiqueArray[i];
         }
         systemInfo::setConsoleColor(globalType::white);
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-int Notice::checkbox(vector<string> options){//3
+int Notice::checkbox(std::vector<std::string> options){//3
 //==============================================================================================================
     try{
         if(options.size() == 0)
@@ -213,16 +212,16 @@ int Notice::checkbox(vector<string> options){//3
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-    void Notice::addValuesOfCheckbox(vector<string> options){//2
+    void Notice::addValuesOfCheckbox(std::vector<std::string> options){//2
 //==============================================================================================================
     try{
         longestOptionWidth = 0;
@@ -240,16 +239,16 @@ int Notice::checkbox(vector<string> options){//3
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-        int Notice::countTextWidth(string text){//1
+        int Notice::countTextWidth(std::string text){//1
 //==============================================================================================================
     try{
         int width = 0;
@@ -259,8 +258,8 @@ int Notice::checkbox(vector<string> options){//3
         return width;
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -349,8 +348,8 @@ int Notice::checkbox(vector<string> options){//3
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
@@ -359,16 +358,16 @@ int Notice::checkbox(vector<string> options){//3
     for(int i=0; i<globalType::checkboxHeight; i++)
     {
         checkboxArray[i].clear();
-        checkboxArray[i] = string(noticeWidth, ' ');
+        checkboxArray[i] = std::string(noticeWidth, ' ');
     }
 }
     void Notice::loadCheckboxBorder()noexcept{
 //==============================================================================================================
-    checkboxArray[0]                = string(noticeWidth, '\333');
-    checkboxArray[1]                = string(noticeWidth, '\333');
-    checkboxArray[noticeHeight -12] = string(noticeWidth, '\333');
-    checkboxArray[noticeHeight - 2] = string(noticeWidth, '\333');
-    checkboxArray[noticeHeight - 1] = string(noticeWidth, '\333');
+    checkboxArray[0]                = std::string(noticeWidth, '\333');
+    checkboxArray[1]                = std::string(noticeWidth, '\333');
+    checkboxArray[noticeHeight -12] = std::string(noticeWidth, '\333');
+    checkboxArray[noticeHeight - 2] = std::string(noticeWidth, '\333');
+    checkboxArray[noticeHeight - 1] = std::string(noticeWidth, '\333');
     for(int i=0; i<noticeHeight; i++)
     {
         checkboxArray[i][0] = '\333';
@@ -381,24 +380,26 @@ int Notice::checkbox(vector<string> options){//3
         checkboxArray[i][noticeWidth - 1] = '\333';
     }
 }
-    void Notice::addTextToCheckboxArray(vector<string> options){//2
+    void Notice::addTextToCheckboxArray(std::vector<std::string> options){//2
 //==============================================================================================================
     try{
+        std::string prefix  = globalType::getCommuniqueCotent({36})[0];
+        std::string postfix = globalType::getCommuniqueCotent({37})[0];
         for(int i=0; i<numberOfOptions; i++)
             addLineOfText(options[i], i);
         int CheckboxCentering = ((205 < noticeWidth)? ((noticeWidth-205)/14): 0);
-        addLineOfText(string(CheckboxCentering, ' ') + "wybierz 1-" + to_string(numberOfOptions) + " oraz Enter", numberOfOptions);
+        addLineOfText(std::string(CheckboxCentering, ' ') + prefix + to_string(numberOfOptions) + postfix, numberOfOptions);
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-        void Notice::addLineOfText(string text, int lineNumber){//1
+        void Notice::addLineOfText(std::string text, int lineNumber){//1
 //==============================================================================================================
     try{
-        string line[globalType::letterHeight];
+        std::string line[globalType::letterHeight];
         for(auto cHar: text)
         {
             addCharToLineOfText(cHar, line);
@@ -408,12 +409,12 @@ int Notice::checkbox(vector<string> options){//3
         rewriteLineOfTextToCheckboxArray(line, lineNumber);
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-            void Notice::addCharToLineOfText(char cHar, string line[]){//0+
+            void Notice::addCharToLineOfText(char cHar, std::string line[]){//0+
 //==============================================================================================================
     try{
         int charIndex = getCharIndex(cHar);
@@ -436,12 +437,12 @@ int Notice::checkbox(vector<string> options){//3
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
-            void Notice::rewriteLineOfTextToCheckboxArray(string line[], int lineNumber)noexcept{
+            void Notice::rewriteLineOfTextToCheckboxArray(std::string line[], int lineNumber)noexcept{
 //==============================================================================================================
     int lineCoordinateY =  lineNumber*10 + 2;
     int lineCoordinateX = ((lineNumber == numberOfOptions)? 10: 25);
@@ -459,15 +460,15 @@ int Notice::checkbox(vector<string> options){//3
         for(int i=0; i<noticeHeight; i++)
         {
             systemInfo::setCursorPosition(sideBorderWidth, topBorderWidth+i);
-            cout<<checkboxArray[i];
+            std::cout<<checkboxArray[i];
         }
 
         systemInfo::setCursorPosition(0, 0);
         systemInfo::setConsoleColor(globalType::white);
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -492,8 +493,8 @@ int Notice::checkbox(vector<string> options){//3
         }
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 
@@ -508,12 +509,12 @@ int Notice::checkbox(vector<string> options){//3
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -525,12 +526,12 @@ int Notice::checkbox(vector<string> options){//3
         for(int i=0; i<numberOfOptions*10-1; i++)
         {
             systemInfo::setCursorPosition(x, y+i);
-            cout<<string(9, ' ');
+            std::cout<<std::string(9, ' ');
         }
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -542,24 +543,24 @@ int Notice::checkbox(vector<string> options){//3
         int X = (globalType::chessboardwidth-noticeWidth)/2 + 10;
         int Y = (globalType::chessboardHeight-noticeHeight)/ 2 + 2 + optionNumber*10;
         systemInfo::setConsoleColor(globalType::chsenOption);
-        systemInfo::setCursorPosition(X, Y+0);  cout<<string(1, '\333') + string(1, '\334');
-        systemInfo::setCursorPosition(X, Y+1);  cout<<string(3, '\333') + string(1, '\334');
-        systemInfo::setCursorPosition(X, Y+2);  cout<<string(5, '\333') + string(1, '\334');
-        systemInfo::setCursorPosition(X, Y+3);  cout<<string(7, '\333')                    ;
-        systemInfo::setCursorPosition(X, Y+4);  cout<<string(5, '\333') + string(1, '\337');
-        systemInfo::setCursorPosition(X, Y+5);  cout<<string(3, '\333') + string(1, '\337');
-        systemInfo::setCursorPosition(X, Y+6);  cout<<string(1, '\333') + string(1, '\337');
+        systemInfo::setCursorPosition(X, Y+0);  std::cout<<std::string(1, '\333') + std::string(1, '\334');
+        systemInfo::setCursorPosition(X, Y+1);  std::cout<<std::string(3, '\333') + std::string(1, '\334');
+        systemInfo::setCursorPosition(X, Y+2);  std::cout<<std::string(5, '\333') + std::string(1, '\334');
+        systemInfo::setCursorPosition(X, Y+3);  std::cout<<std::string(7, '\333')                    ;
+        systemInfo::setCursorPosition(X, Y+4);  std::cout<<std::string(5, '\333') + std::string(1, '\337');
+        systemInfo::setCursorPosition(X, Y+5);  std::cout<<std::string(3, '\333') + std::string(1, '\337');
+        systemInfo::setCursorPosition(X, Y+6);  std::cout<<std::string(1, '\333') + std::string(1, '\337');
         systemInfo::setCursorPosition(0, 0);
         systemInfo::setConsoleColor(globalType::white);
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }

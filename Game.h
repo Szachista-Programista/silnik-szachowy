@@ -9,7 +9,8 @@ private:Chessboard chessboard;
         Notice notice;
         bool pastFirstPlay = false;
 //********************************************************************************
-public: void start();
+public: Game();
+        void start();
 private:    void gameMenu();
                 void runThePlay();
                     void userPiecesColorMenu(bool &color);

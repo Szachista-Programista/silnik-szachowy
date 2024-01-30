@@ -1,6 +1,5 @@
 #include "Engine.h"
 using namespace std;
-using namespace globalType;
 
 Engine::Engine(bool k): color{k}, movement{k}{//1
 //==============================================================================================================
@@ -9,12 +8,12 @@ Engine::Engine(bool k): color{k}, movement{k}{//1
         workingChessboardPointer   = initializeChessboard();
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-    chessboardPointer Engine::initializeChessboard(){//0+
+    globalType::chessboardPointer Engine::initializeChessboard(){//0+
 //==============================================================================================================
     try{
         return new char[8][8]{{'w','s','g',color?'k':'h',color?'h':'k','g','s','w'},
@@ -28,8 +27,8 @@ Engine::Engine(bool k): color{k}, movement{k}{//1
 //#########################################################################
     }
     catch(const bad_alloc &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
@@ -49,8 +48,8 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
         return true;
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -76,8 +75,8 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
@@ -88,7 +87,7 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
             throw invalid_argument("User movement coordinates out of range.");
         if (workingChessboardPointer == nullptr)
             throw invalid_argument("Nullptr of the chessboard.");
-        chessboardPointer wsk_X = workingChessboardPointer;
+        globalType::chessboardPointer wsk_X = workingChessboardPointer;
         if(wsk_X[u.fromY][u.fromX]<'g' && 'w'<wsk_X[u.fromY][u.fromX])
             return false;
         else
@@ -96,8 +95,8 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
@@ -108,7 +107,7 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
             throw invalid_argument("User movement coordinates out of range.");
         if (workingChessboardPointer == nullptr)
             throw invalid_argument("Nullptr of the chessboard.");
-        chessboardPointer wsk_X = workingChessboardPointer;
+        globalType::chessboardPointer wsk_X = workingChessboardPointer;
         if(wsk_X[u.toY][u.toX]<'g' || 'w'<wsk_X[u.toY][u.toX])
             return false;
         else
@@ -116,8 +115,8 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
@@ -128,7 +127,7 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
             throw invalid_argument("User movement coordinates out of range.");
         if (workingChessboardPointer == nullptr)
             throw invalid_argument("Nullptr of the chessboard.");
-        chessboardPointer wsk_X = workingChessboardPointer;
+        globalType::chessboardPointer wsk_X = workingChessboardPointer;
         int potentiallyUserKingLocationX;
         int potentiallyUserKingLocationY;
 
@@ -142,7 +141,7 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
             potentiallyUserKingLocationX = movement.userKingLocationX;
             potentiallyUserKingLocationY = movement.userKingLocationY;
         }
-        chessboardPointer cOpy = movement.copyChessboard(wsk_X);
+        globalType::chessboardPointer cOpy = movement.copyChessboard(wsk_X);
         cOpy[u.toY][u.toX]=cOpy[u.fromY][u.fromX];
         cOpy[u.fromY][u.fromX]=' ';
         if(movement.checkIfUserSquareCaptured(potentiallyUserKingLocationX, potentiallyUserKingLocationY, cOpy))
@@ -158,12 +157,12 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -176,7 +175,7 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
             throw invalid_argument("Engine movement coordinates out of range.");
         if (workingChessboardPointer == nullptr)
             throw invalid_argument("Nullptr of the chessboard.");
-        chessboardPointer wsk_X = workingChessboardPointer;
+        globalType::chessboardPointer wsk_X = workingChessboardPointer;
         switch(wsk_X[u.fromY][u.fromX])
         {
             case 'p':
@@ -282,12 +281,12 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -305,8 +304,8 @@ int Engine::makeMove(int userMoveCode){//2
         return engineMoveCoding();
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -317,8 +316,8 @@ int Engine::makeMove(int userMoveCode){//2
         markUserMoveOnChessboard(userMoveCode); // marks u.fromY u.toY u.fromX u.toX into comparativeChessboardPointer and workingChessboardPointer
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -375,8 +374,8 @@ int Engine::makeMove(int userMoveCode){//2
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
@@ -551,8 +550,8 @@ int Engine::makeMove(int userMoveCode){//2
         isItEndgameTime();
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }

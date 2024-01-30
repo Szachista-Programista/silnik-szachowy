@@ -1,11 +1,10 @@
 #include "Play.h"
 using namespace std;
-using namespace globalType;
 
 Play::Play(bool k)noexcept: color{k}, chessboard{k}, engine{k}, notebook{k}{
 //==============================================================================================================
 }
-void Play::playWithUser(){//*4
+void Play::playWithUser(){//*5
 //==============================================================================================================
     try{
         notebook.clearNotationColumn(0);
@@ -19,12 +18,12 @@ void Play::playWithUser(){//*4
         notationSavingMenu();
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-    bool Play::userMoveServive(){//*3
+    bool Play::userMoveServive(){//*4
 //==============================================================================================================
     try{
         while(true)
@@ -37,8 +36,8 @@ void Play::playWithUser(){//*4
             updateChessboard(SquareUpdateCode, true);
             if(!correcSquareChosen)
             {
-                notice.communique("to pole nie nalezy do ciebie", 1000);//this square does not belong to you
-                chessboard.deleteCommunique(240);
+                notice.communique(globalType::getCommuniqueCotent({19})[0], 1000);
+                chessboard.deleteCommunique(300);
                 updateChessboard(SquareUpdateCode, false);
                 continue;
             }
@@ -52,7 +51,7 @@ void Play::playWithUser(){//*4
                 updateChessboard(SquareUpdateCode, true);
                 if(!correctMovementMade)
                 {
-                    notice.communique("nieprawidlowy ruch", 1000);//wrong move
+                    notice.communique(globalType::getCommuniqueCotent({29})[0], 1000);
                     chessboard.deleteCommunique(170);
                     updateChessboard(currentChessboardUpdateCode, false);
                     continue;
@@ -61,7 +60,7 @@ void Play::playWithUser(){//*4
                 {
                     if(isUserMakesPromotion())
                     {
-                        vector<string> promotionOptions{"1. Skoczek", "2. Goniec", "3. Wieza", "4. Hetman"};
+                        std::vector<std::string> promotionOptions = globalType::getCommuniqueCotent({30,31,32,33});
                         EngineMoveunderlighted = notice.checkbox(promotionOptions)*10000;
                         chessboard.deleteCheckbox(220, 60);
                         userMoveCode += EngineMoveunderlighted;
@@ -76,15 +75,15 @@ void Play::playWithUser(){//*4
         }
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-        int Play::loadCoordinates(){//*2
+        int Play::loadCoordinates(){//*3
 //==============================================================================================================
     try{
-        string coordinates;
+        std::string coordinates;
         char cHar;
         bool charLoaded = false;
 
@@ -141,80 +140,102 @@ void Play::playWithUser(){//*4
         }
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-            bool Play::endgameMenu(char cHar){//*1
+            bool Play::endgameMenu(char cHar){//*2
 //==============================================================================================================
     try{
         if(cHar != 27)
             return false;
-        vector<string> endgameMenu{"1. kontynuuj", "2. ustawienia colorow", "3. zakoncz partie"};
+        std::vector<std::string> endgameMenu = globalType::getCommuniqueCotent({20,1,21});
         bool continueLoop = true;
+
         while(continueLoop)
             switch(notice.checkbox(endgameMenu))
            {
                case 1: chessboard.deleteCheckbox(205, 43); continueLoop = false; return false;
-               case 2: settingMenu(); break;
+               case 2: colorfullElementSettingMenu(); break;
                case 3: chessboard.deleteCheckbox(205, 43); continueLoop = false; return true;
                default: throw invalid_argument("Option selection error.");
            }
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-                void Play::settingMenu(){//*0
+                void Play::colorfullElementSettingMenu(){//*1
 //==============================================================================================================
     try{
-        vector<string> colorfullElementMenu{"1. color zaznaczonego pola", "2. color menu/errorMessageow", "3. color wybieranej opcji w menu", "4. color notacji"};
-        vector<string> colorsMenu{"1. czerwony", "2. zielony", "3. zolty", "4. niebieski"};
-
-        int chosenElement = notice.checkbox(colorfullElementMenu);
-        chessboard.deleteCheckbox(293, 53);
-
-        globalType::Color chosenColor = static_cast<globalType::Color>(notice.checkbox(colorsMenu));
-        switch(chosenElement)
-       {
-           case 1:  globalType::underlightedSquare = chosenColor; break;
-           case 2:  globalType::menu               = chosenColor; break;
-           case 3:  globalType::chsenOption        = chosenColor; break;
-           case 4:  globalType::notation           = chosenColor; break;
-           default: throw invalid_argument("Option selection error.");
-       }
-       chessboard.deleteCheckbox(205, 53);
+        std::vector<std::string> colorfullElementMenu = globalType::getCommuniqueCotent({4,5,6,7,8});
+        switch(notice.checkbox(colorfullElementMenu))
+        {
+            case 1:  colorSettingMenu(globalType::underlightedSquare);   break;
+            case 2:  colorSettingMenu(globalType::menu);                 break;
+            case 3:  colorSettingMenu(globalType::chsenOption);          break;
+            case 4:  colorSettingMenu(globalType::notation);             break;
+            case 5:  break;
+            default: throw invalid_argument("Option selection error.");
+        }
+        chessboard.deleteCheckbox(293, 63);
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-        string Play::generateSquareUpdateCode()noexcept{
+                    void Play::colorSettingMenu(globalType::Color &color){//*0
+//==============================================================================================================
+    try{
+        std::vector<std::string> colorsMenu = globalType::getCommuniqueCotent({12,13,14,15,8});
+        chessboard.deleteCheckbox(293, 63);
+        switch(notice.checkbox(colorsMenu))
+        {
+            case 1:  color = static_cast<globalType::Color>(1); break;
+            case 2:  color = static_cast<globalType::Color>(2); break;
+            case 3:  color = static_cast<globalType::Color>(3); break;
+            case 4:  color = static_cast<globalType::Color>(4); break;
+            case 5:  break;
+            default: throw invalid_argument("Option selection error.");
+        }
+//#########################################################################
+    }
+    catch(const invalid_argument &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
+    }
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
+        throw;
+    }
+}
+        std::string Play::generateSquareUpdateCode()noexcept{
 //==============================================================================================================
     int x     = userSquareChosenCoordinates / 10;
     int y     = userSquareChosenCoordinates % 10;
     char cHar = notebook.currentChessboard[y][x];
     return to_string(x) + to_string(y) + cHar;
 }
-        void Play::updateChessboard(string updateCode, bool underlight){//1
+        void Play::updateChessboard(std::string updateCode, bool underlight){//1
 //==============================================================================================================
     try{
-        string partialUpdateCode;
+        std::string partialUpdateCode;
         int x;
         int y;
         char cHar;
@@ -234,8 +255,8 @@ void Play::playWithUser(){//*4
         }
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -256,8 +277,8 @@ void Play::playWithUser(){//*4
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
@@ -278,8 +299,8 @@ void Play::playWithUser(){//*4
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
@@ -293,8 +314,8 @@ void Play::playWithUser(){//*4
         }
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -307,8 +328,8 @@ void Play::playWithUser(){//*4
         return (getPieceColor(piece) == color);
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -332,8 +353,8 @@ void Play::playWithUser(){//*4
         return !isItGameover();
 //#########################################################################
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
@@ -343,60 +364,58 @@ void Play::playWithUser(){//*4
         int additionalParameter = engineMoveCode / 10000;
         if(!additionalParameter)
             return false;
-        string information;
         switch(additionalParameter)
         {
             case 6:
-                information = "WYGRALES...";
+                notice.communique(globalType::getCommuniqueCotent({22})[0]);
                 break;
             case 7:
-                information = "spowodowales pata...";
+                notice.communique(globalType::getCommuniqueCotent({22})[0]);
                 break;
             case 8:
-                information = "PRZEGRALES...";
+                notice.communique(globalType::getCommuniqueCotent({22})[0]);
                 break;
             case 9:
-                information = "maszyna spowodowala pata...";
+                notice.communique(globalType::getCommuniqueCotent({22})[0]);
                 break;
             default: throw invalid_argument("Wrong additional parameter.");
         }
-        notice.communique(information);
-        chessboard.deleteCommunique(260);
+        chessboard.deleteCommunique(300);
         return true;
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
     void Play::notationSavingMenu(){//*0
 //==============================================================================================================
     try{
-        notice.communique("czy zapisac notacje w notebooku...");
-        chessboard.deleteCommunique(300);
-        vector<string> notationSavingMenu{"1. tak", "2. nie"};
+        notice.communique(globalType::getCommuniqueCotent({26})[0]);
+        chessboard.deleteCommunique(415);
+        std::vector<std::string> notationSavingMenu = globalType::getCommuniqueCotent({27,28});
         switch(notice.checkbox(notationSavingMenu))
         {
            case 1:  notebook.saveGameInNotebook(); break;
            case 2:  break;
            default: throw invalid_argument("Option selection error.");
         }
-        chessboard.deleteCheckbox(210, 40);
+        chessboard.deleteCheckbox(210, 33);
 //#########################################################################
     }
     catch(const invalid_argument &e){
-        errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + string(" >> error: ") + e.what();
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + string(" >>\n") + e.errorMessage;
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
