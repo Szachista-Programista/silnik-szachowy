@@ -1,22 +1,15 @@
-#include "Gra.h"
+#include "Game.h"
 
 
 int main(){
-    try{Gra gra;gra.start();}catch(globalType::obslugiwany_blad &e){std::cout<<e.komunikat;}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    try{
+        Game Game;
+        Game.start();
+        }
+    catch(globalType::errorType &e){
+        std::cout<<e.errorMessage;
+        }
 
 
     return 0;
