@@ -15,11 +15,11 @@ class Move{
     int userKingLocationY;
 
     int movementGeneration;
-    int lastMovementGeneration =  1;
+    int lastMovementGeneration;
     int engineMoveNumber       = -1;
     int worstMoveIndex         =  0;
-    int consideredEngineMovementsDepth[10]{12,7,4,1,1,1,1,1,1,1};
-    int consideredUserMovementsDepth  [10]{6,3,2,1,1,1,1,1,1,1};
+    int consideredEngineMovementsDepth[5];
+    int consideredUserMovementsDepth  [5];
 
     double LeastMaterialStatusOfconsideredMovements = 100.0;
 
@@ -37,22 +37,23 @@ class Move{
     bool gameOverStalemateByEngine = false;
     bool gameOverStalemateByUser   = false;
 //********************************************************************************
-    Move(bool k)noexcept;
+    Move(bool k, int x, std::initializer_list<int> engine, std::initializer_list<int> user) noexcept;
    ~Move()noexcept;
     void prepareMove()noexcept;
     double findNextMove(globalType::chessboardPointer &wsk_X);
+        void setDepthOfSearching(int moveNumberOfMiddlegame);
         void verifyKingsLocation(globalType::chessboardPointer wsk_X);
         void checkIfRooksAndKingsMoved(globalType::chessboardPointer wsk_X);
-        void checkIfEngineRookChecked(globalType::chessboardPointer wsk_X);
+        void checkIfEngineKingChecked(globalType::chessboardPointer wsk_X);
         double findBestMove(globalType::chessboardPointer &wsk_X);
             double beginningSearchingTreeService(globalType::chessboardPointer &wsk_X);
-                void endingSearchingService(globalType::chessboardPointer &wsk_X, int &index);
+                Move(Move* wskaznik,double &status_materialny,globalType::chessboardPointer wsk_X, int iteration, int depth, int engine[], int user[]);
+                    void rewriteKingsAndRooksMovesData(Move* wsk);
+                void checkmateAndStalemateSearching(globalType::chessboardPointer &wsk_X, int &index);
                     void checkIfGameFinishedByUser(globalType::chessboardPointer &wsk_X);
                     void checkIfGameFinishedByEngine(globalType::chessboardPointer &wsk_X, int &index);
             double endingSearchingTreeService()noexcept;
-            void resetMovements()noexcept;
-            Move(Move* wskaznik,double &status_materialny,globalType::chessboardPointer wsk_X, int iteration);
-                void rewriteKingsAndRooksMovesData(Move* wsk);
+                void resetMovements()noexcept;
     void makeEngineMoves(globalType::chessboardPointer wsk_X);
         void engineMovesService(int fromX, int fromY, int toX, int toY, char bierka, globalType::chessboardPointer wsk_X);
             void makeEngineMovesIfAllowed(int &y, int &x, globalType::chessboardPointer cOpy);

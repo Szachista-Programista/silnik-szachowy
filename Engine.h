@@ -4,10 +4,14 @@
 #include "Move.h"
 
 class Engine{
+        friend class Move;
 private:Move movement;
 
         int promotionCode;
         int openingMoveNumber = 0;
+        int movementNumber = 0;
+        int regulator = 1;
+
 
         bool color;
 
@@ -28,6 +32,7 @@ private:    void decipherUserMove(int userMoveCode);
 public: int makeMove(int userMoveCode);
 private:    void getEngineReadyForMove(int userMoveCode);
                 void markUserMoveOnChessboard(int userMoveCode);
+            void setSearchDepthOfMoveClass()noexcept;
             void makeOpeningMove()noexcept;
                 void blachOpeningMove()noexcept;
                 void whiteOpeningMove()noexcept;
@@ -40,6 +45,7 @@ private:    void getEngineReadyForMove(int userMoveCode);
                 int  encodeEngineMove()noexcept;
                 void markEngineMoveOnChessboard()noexcept;
                 int  isItGameOver()noexcept;
+
     //********************************************************************************************
         struct Movement{
             int fromX,
@@ -49,10 +55,10 @@ private:    void getEngineReadyForMove(int userMoveCode);
         }u,e;//user/engine
 
         enum GameStage{
-            opening       = 1,
+            opening    = 1,
             middlegame = 2,
-            endgame     = 3
-        }gameStage = middlegame;//opening;//XXXXXXXXXXXXXXXXX
+            endgame    = 3
+        }gameStage = opening;//XXXXXXXXXXXXXXXXX
 
 };
 #endif//ENGINE_H

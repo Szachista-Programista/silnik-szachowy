@@ -1,5 +1,4 @@
 #include "Notice.h"
-using namespace std;
 
 Notice::Notice(){//1
 //==============================================================================================================
@@ -48,9 +47,9 @@ Notice::Notice(){//1
 void Notice::setConsoleSize()noexcept{
 //==============================================================================================================
     for(int i=0; i<globalType::chessboardHeight; i++)
-        std::cout<<std::string(globalType::chessboardwidth,'\333')<<endl;
-    std::cout<<"1. Prosze, wyswietl konsole na pelnym ekranie."<<endl
-        <<"2. Ustaw wieklosc wyswietlanego obrazu tak, aby powyzsze biale pole bylo widoczne w calej okazalosci."<<endl
+        std::cout<<std::string(globalType::chessboardwidth,'\333')<<std::endl;
+    std::cout<<"1. Prosze, wyswietl konsole na pelnym ekranie."<<std::endl
+        <<"2. Ustaw wieklosc wyswietlanego obrazu tak, aby powyzsze biale pole bylo widoczne w calej okazalosci."<<std::endl
         <<"3. Wcisnij dowolny klawisz, aby rozpoczac."
         <<"\n\n\n\n\n\n";
     systemInfo::getChar();
@@ -125,13 +124,13 @@ void Notice::communique(std::string text, int milliseconds){//*3
                     case 'X': communiqueArray[i] += '\333'; break;
                     case 'D': communiqueArray[i] += '\334'; break;
                     case 'G': communiqueArray[i] += '\337'; break;
-                    default : throw invalid_argument("Error in 'chars.txt' file content.");
+                    default : throw std::invalid_argument("Error in 'chars.txt' file content.");
                 }
             }
         }
 //#########################################################################
     }
-    catch(const invalid_argument &e){
+    catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -160,11 +159,11 @@ void Notice::communique(std::string text, int milliseconds){//*3
             case '#': return 66;
             case ' ': return 67;
             case '/': return 68;
-            default: throw invalid_argument("Wrong char.");
+            default: throw std::invalid_argument("Wrong char.");
         }
 //#########################################################################
     }
-    catch(const invalid_argument &e){
+    catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -175,7 +174,7 @@ void Notice::communique(std::string text, int milliseconds){//*3
     try{
         int communiqueWidth = communiqueArray[0].size();
         if(370 < communiqueWidth)
-            throw invalid_argument("Communique too long.");
+            throw std::invalid_argument("Communique too long.");
         int sideBorderWidth = (globalType::chessboardwidth-communiqueWidth)/2;
         systemInfo::setConsoleColor(globalType::menu);
         for(int i=0; i<globalType::communiqueHeight; i++)
@@ -186,7 +185,7 @@ void Notice::communique(std::string text, int milliseconds){//*3
         systemInfo::setConsoleColor(globalType::white);
 //#########################################################################
     }
-    catch(const invalid_argument &e){
+    catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -200,9 +199,9 @@ int Notice::checkbox(std::vector<std::string> options){//3
 //==============================================================================================================
     try{
         if(options.size() == 0)
-            throw invalid_argument("Empty vector.");
+            throw std::invalid_argument("Empty vector.");
         if(options.size() > 6)
-            throw invalid_argument("Vector too large.");
+            throw std::invalid_argument("Vector too large.");
         addValuesOfCheckbox(options);
         clearCheckboxArray();
         loadCheckboxBorder();
@@ -211,7 +210,7 @@ int Notice::checkbox(std::vector<std::string> options){//3
         return selectOption();
 //#########################################################################
     }
-    catch(const invalid_argument &e){
+    catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -235,10 +234,10 @@ int Notice::checkbox(std::vector<std::string> options){//3
         noticeWidth = 35 + ((longestOptionWidth <= 171)? 170: longestOptionWidth);
         noticeHeight  = numberOfOptions*10 + 13;
         if(370 < noticeWidth)
-            throw invalid_argument("Option content too long.");
+            throw std::invalid_argument("Option content too long.");
 //#########################################################################
     }
-    catch(const invalid_argument &e){
+    catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -343,11 +342,11 @@ int Notice::checkbox(std::vector<std::string> options){//3
             case '.':
                 return 4;
             default:
-                throw invalid_argument("Wrong char.");
+                throw std::invalid_argument("Wrong char.");
         }
 //#########################################################################
     }
-    catch(const invalid_argument &e){
+    catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -388,7 +387,7 @@ int Notice::checkbox(std::vector<std::string> options){//3
         for(int i=0; i<numberOfOptions; i++)
             addLineOfText(options[i], i);
         int CheckboxCentering = ((205 < noticeWidth)? ((noticeWidth-205)/14): 0);
-        addLineOfText(std::string(CheckboxCentering, ' ') + prefix + to_string(numberOfOptions) + postfix, numberOfOptions);
+        addLineOfText(std::string(CheckboxCentering, ' ') + prefix + std::to_string(numberOfOptions) + postfix, numberOfOptions);
 //#########################################################################
     }
     catch(globalType::errorType &e){
@@ -430,13 +429,13 @@ int Notice::checkbox(std::vector<std::string> options){//3
                     case 'X': line[i] += '\333'; break;
                     case 'D': line[i] += '\334'; break;
                     case 'G': line[i] += '\337'; break;
-                    default : throw invalid_argument("Error in 'chars.txt' file content.");
+                    default : throw std::invalid_argument("Error in 'chars.txt' file content.");
                 }
             }
         }
 //#########################################################################
     }
-    catch(const invalid_argument &e){
+    catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -503,12 +502,12 @@ int Notice::checkbox(std::vector<std::string> options){//3
 //==============================================================================================================
     try{
         if (optionNumber<0 || 5<optionNumber)
-            throw invalid_argument("Number of option out of range.");
+            throw std::invalid_argument("Number of option out of range.");
         cancelBacklight();
         backlightOption(optionNumber);
 //#########################################################################
     }
-    catch(const invalid_argument &e){
+    catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -539,7 +538,7 @@ int Notice::checkbox(std::vector<std::string> options){//3
 //==============================================================================================================
     try{
         if (optionNumber<0 || 5<optionNumber)
-            throw invalid_argument("Number of option out of range.");
+            throw std::invalid_argument("Number of option out of range.");
         int X = (globalType::chessboardwidth-noticeWidth)/2 + 10;
         int Y = (globalType::chessboardHeight-noticeHeight)/ 2 + 2 + optionNumber*10;
         systemInfo::setConsoleColor(globalType::chsenOption);
@@ -554,7 +553,7 @@ int Notice::checkbox(std::vector<std::string> options){//3
         systemInfo::setConsoleColor(globalType::white);
 //#########################################################################
     }
-    catch(const invalid_argument &e){
+    catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;

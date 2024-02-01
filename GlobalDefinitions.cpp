@@ -1,6 +1,6 @@
 #include "GlobalDefinitions.h"
 
-namespace globalType{//globalType::
+namespace globalType{
     std::string communiquesArray[numberOfCommuniques][numberOfLanguages];
 
     Languages setLanguage;
@@ -131,7 +131,7 @@ namespace systemInfo {
                 case globalType::green: std::cout << "\033[32m";  break;
                 case globalType::yellow:std::cout << "\033[33m";  break;
                 case globalType::blue:  std::cout << "\033[34m";  break;
-                default:    throw invalid_argument("Unknown color.");
+                default:    throw std::invalid_argument("Unknown color.");
             }
         #elif __linux__
                 switch(color)
@@ -141,7 +141,7 @@ namespace systemInfo {
                 case globalType::green: std::cout << "\033[32m";  break;
                 case globalType::yellow:std::cout << "\033[33m";  break;
                 case globalType::blue:  std::cout << "\033[34m";  break;
-                default:    throw invalid_argument("Unknown color.");
+                default:    throw std::invalid_argument("Unknown color.");
             }
         #else
             #error the program only supports(Windosw/Mac_OS/Linux)

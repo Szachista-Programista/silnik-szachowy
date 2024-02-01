@@ -12,7 +12,7 @@ private:bool color;
         bool correcSquareChosen;
         bool correctMovementMade;
 
-        int engineMoveCode;
+        int endgineMoveCode;
         int userMoveCode;
         int userSquareChosenCoordinates;
         int promotionCode;

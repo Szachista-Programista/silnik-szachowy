@@ -16,17 +16,17 @@
 4. niebieski$4. blue$
 1. Polski$1. Polish$
 2. Angielski$2. English$
-Do zobaczenia.$See you.$
+Do zobaczenia.$Bye.$
 To pole nie nalezy do ciebie.$This square does not belong to you.$
 1. kontynuuj$1. continue$
-3. zakoncz partie$3. stop the game$
+3. zakoncz partie$3. quit the game$
 WYGRALES...$YOU WON...$
 spowodowales pata...$you caused a stalemate...$
 PRZEGRALES...$YOU LOSE...$
 maszyna spowodowala pata...$the engine caused a stalemate...$
 czy zapisac notacje...$do you want to save the notations...$
-1. TAK$1. YES$
-2. NIE$2. NO$
+1. Tak$1. Yes$
+2. Nie$2. No$
 Nieprawidlowy ruch.$Wrong move.$
 1. Skoczek$1. Knight$
 2. Goniec$2. Bishop$

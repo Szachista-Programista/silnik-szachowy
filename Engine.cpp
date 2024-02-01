@@ -1,7 +1,6 @@
 #include "Engine.h"
-using namespace std;
 
-Engine::Engine(bool k): color{k}, movement{k}{//1
+Engine::Engine(bool k): color{k}, movement{k,4,{8,3,2,2,1},{7,3,2,2,1}}{//1
 //==============================================================================================================
     try{
         comparativeChessboardPointer = initializeChessboard();
@@ -26,7 +25,7 @@ Engine::Engine(bool k): color{k}, movement{k}{//1
                               {'W','S','G',color?'K':'H',color?'H':'K','G','S','W'}};
 //#########################################################################
     }
-    catch(const bad_alloc &e){
+    catch(const std::bad_alloc &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -71,10 +70,10 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
         promotionCode = userMoveCode;
         }
         if (u.fromX < 0 || 7 < u.fromX || u.fromY < 0 || 7 < u.fromY || u.toX < 0 || 7 < u.toX || u.toY < 0 || 7 < u.toY)
-            throw invalid_argument("User movement coordinates out of range.");
+            throw std::invalid_argument("User movement coordinates out of range.");
 //#########################################################################
     }
-    catch(const invalid_argument &e){
+    catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -84,9 +83,9 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
 //==============================================================================================================
     try{
         if (u.fromX < 0 || 7 < u.fromX || u.fromY < 0 || 7 < u.fromY || u.toX < 0 || 7 < u.toX || u.toY < 0 || 7 < u.toY)
-            throw invalid_argument("User movement coordinates out of range.");
+            throw std::invalid_argument("User movement coordinates out of range.");
         if (workingChessboardPointer == nullptr)
-            throw invalid_argument("Nullptr of the chessboard.");
+            throw std::invalid_argument("Nullptr of the chessboard.");
         globalType::chessboardPointer wsk_X = workingChessboardPointer;
         if(wsk_X[u.fromY][u.fromX]<'g' && 'w'<wsk_X[u.fromY][u.fromX])
             return false;
@@ -94,7 +93,7 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
             return true;
 //#########################################################################
     }
-    catch(const invalid_argument &e){
+    catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -104,9 +103,9 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
 //==============================================================================================================
     try{
         if (u.fromX < 0 || 7 < u.fromX || u.fromY < 0 || 7 < u.fromY || u.toX < 0 || 7 < u.toX || u.toY < 0 || 7 < u.toY)
-            throw invalid_argument("User movement coordinates out of range.");
+            throw std::invalid_argument("User movement coordinates out of range.");
         if (workingChessboardPointer == nullptr)
-            throw invalid_argument("Nullptr of the chessboard.");
+            throw std::invalid_argument("Nullptr of the chessboard.");
         globalType::chessboardPointer wsk_X = workingChessboardPointer;
         if(wsk_X[u.toY][u.toX]<'g' || 'w'<wsk_X[u.toY][u.toX])
             return false;
@@ -114,7 +113,7 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
             return true;
 //#########################################################################
     }
-    catch(const invalid_argument &e){
+    catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -124,9 +123,9 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
 //==============================================================================================================
     try{
         if (u.fromX < 0 || 7 < u.fromX || u.fromY < 0 || 7 < u.fromY || u.toX < 0 || 7 < u.toX || u.toY < 0 || 7 < u.toY)
-            throw invalid_argument("User movement coordinates out of range.");
+            throw std::invalid_argument("User movement coordinates out of range.");
         if (workingChessboardPointer == nullptr)
-            throw invalid_argument("Nullptr of the chessboard.");
+            throw std::invalid_argument("Nullptr of the chessboard.");
         globalType::chessboardPointer wsk_X = workingChessboardPointer;
         int potentiallyUserKingLocationX;
         int potentiallyUserKingLocationY;
@@ -156,7 +155,7 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
         }
 //#########################################################################
     }
-    catch(const invalid_argument &e){
+    catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -170,11 +169,11 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
 //==============================================================================================================
     try{
         if (u.fromX < 0 || 7 < u.fromX || u.fromY < 0 || 7 < u.fromY || u.toX < 0 || 7 < u.toX || u.toY < 0 || 7 < u.toY)
-            throw invalid_argument("User movement coordinates out of range.");
+            throw std::invalid_argument("User movement coordinates out of range.");
         if (e.fromX < 0 || 7 < e.fromX || e.fromY < 0 || 7 < e.fromY || e.toX < 0 || 7 < e.toX || e.toY < 0 || 7 < e.toY)
-            throw invalid_argument("Engine movement coordinates out of range.");
+            throw std::invalid_argument("Engine movement coordinates out of range.");
         if (workingChessboardPointer == nullptr)
-            throw invalid_argument("Nullptr of the chessboard.");
+            throw std::invalid_argument("Nullptr of the chessboard.");
         globalType::chessboardPointer wsk_X = workingChessboardPointer;
         switch(wsk_X[u.fromY][u.fromX])
         {
@@ -280,7 +279,7 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
         }
 //#########################################################################
     }
-    catch(const invalid_argument &e){
+    catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -294,6 +293,7 @@ int Engine::makeMove(int userMoveCode){//2
 //==============================================================================================================
     try{
         getEngineReadyForMove(userMoveCode);
+        setSearchDepthOfMoveClass();
         switch(gameStage)
         {
             case opening:        makeOpeningMove(); break;
@@ -312,6 +312,7 @@ int Engine::makeMove(int userMoveCode){//2
     void Engine::getEngineReadyForMove(int userMoveCode){//1
 //==============================================================================================================
     try{
+        movementNumber++;
         decipherUserMove(userMoveCode); // changes e.g. 4456 into u.fromY u.toY u.fromX u.toX
         markUserMoveOnChessboard(userMoveCode); // marks u.fromY u.toY u.fromX u.toX into comparativeChessboardPointer and workingChessboardPointer
 //#########################################################################
@@ -325,9 +326,9 @@ int Engine::makeMove(int userMoveCode){//2
 //==============================================================================================================
     try{
         if (u.fromX < 0 || 7 < u.fromX || u.fromY < 0 || 7 < u.fromY || u.toX < 0 || 7 < u.toX || u.toY < 0 || 7 < u.toY)
-            throw invalid_argument("User movement coordinates out of range.");
+            throw std::invalid_argument("User movement coordinates out of range.");
         if (comparativeChessboardPointer == nullptr || workingChessboardPointer == nullptr)
-            throw invalid_argument("Nullptr of the chessboard.");
+            throw std::invalid_argument("Nullptr of the chessboard.");
         if(userMoveCode == 10000)
             return;
         char movedPiece = workingChessboardPointer[u.fromY][u.fromX];
@@ -373,10 +374,41 @@ int Engine::makeMove(int userMoveCode){//2
         }
 //#########################################################################
     }
-    catch(const invalid_argument &e){
+    catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
+    }
+}
+    void Engine::setSearchDepthOfMoveClass()noexcept{
+//==============================================================================================================
+    if(movementNumber == 7)//////////////////////////////////////
+    {
+        movement.lastMovementGeneration = 3;
+        movement.consideredEngineMovementsDepth[0] = 8 + regulator;
+        movement.consideredEngineMovementsDepth[1] = 4;
+        movement.consideredEngineMovementsDepth[2] = 3;
+        movement.consideredEngineMovementsDepth[3] = 1;
+        movement.consideredEngineMovementsDepth[4] = 1;
+        movement.consideredUserMovementsDepth[0]   = 8;
+        movement.consideredUserMovementsDepth[1]   = 4;
+        movement.consideredUserMovementsDepth[2]   = 3;
+        movement.consideredUserMovementsDepth[3]   = 1;
+        movement.consideredUserMovementsDepth[4]   = 1;
+    }
+    if(movementNumber == 11)///////////////////////////////////////
+    {
+        movement.lastMovementGeneration = 2;
+        movement.consideredEngineMovementsDepth[0] = 16 + regulator;
+        movement.consideredEngineMovementsDepth[1] = 8  + regulator;
+        movement.consideredEngineMovementsDepth[2] = 1;
+        movement.consideredEngineMovementsDepth[3] = 1;
+        movement.consideredEngineMovementsDepth[4] = 1;
+        movement.consideredUserMovementsDepth[0]   = 15 + regulator;
+        movement.consideredUserMovementsDepth[1]   = 6  + regulator;
+        movement.consideredUserMovementsDepth[2]   = 1;
+        movement.consideredUserMovementsDepth[3]   = 1;
+        movement.consideredUserMovementsDepth[4]   = 1;
     }
 }
     void Engine::makeOpeningMove()noexcept{
@@ -487,7 +519,7 @@ int Engine::makeMove(int userMoveCode){//2
             }
             break;
         case 2:
-            if(workingChessboardPointer[4][4]='P'){
+            if(workingChessboardPointer[4][4]=='P'){
                 if(randomChance(3))
                 {
                     workingChessboardPointer[7][1]=' ';
@@ -499,7 +531,7 @@ int Engine::makeMove(int userMoveCode){//2
                     workingChessboardPointer[5][5]='S';
                 }
             }
-            else if(workingChessboardPointer[4][3]='p')
+            else if(workingChessboardPointer[4][3]=='p')
             {
                 if(randomChance(3)){
                     workingChessboardPointer[7][6]=' ';
@@ -510,7 +542,7 @@ int Engine::makeMove(int userMoveCode){//2
                     workingChessboardPointer[5][2]='S';
                 }
             }
-            else if(workingChessboardPointer[5][2]='S'){
+            else if(workingChessboardPointer[5][2]=='S'){
                     workingChessboardPointer[7][6]=' ';
                     workingChessboardPointer[5][5]='S';
             }
@@ -547,7 +579,7 @@ int Engine::makeMove(int userMoveCode){//2
     try{
         movement.prepareMove();
         movement.findNextMove(workingChessboardPointer);
-        isItEndgameTime();
+        //isItEndgameTime();
 //#########################################################################
     }
     catch(globalType::errorType &e){

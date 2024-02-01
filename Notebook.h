@@ -6,8 +6,7 @@
 
 class Notebook{
 public: globalType::chessboardPointer currentChessboard;
-private:globalType::chessboardPointer previousChessboard
-;
+private:globalType::chessboardPointer previousChessboard;
 
         std::vector<std::string>entireNotation;
 

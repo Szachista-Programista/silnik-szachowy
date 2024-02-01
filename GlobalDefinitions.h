@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <initializer_list>
 #include <algorithm>
 #include <stdexcept>
 #include <chrono>
