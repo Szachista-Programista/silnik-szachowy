@@ -1,5 +1,5 @@
 #include "Move.h"
-#include <iostream>
+
 Move::Move(bool k, int x, std::initializer_list<int> engine, std::initializer_list<int> user)noexcept: color{k}, lastMovementGeneration{x}{
 //==============================================================================================================
     std::copy(engine.begin(), engine.end(), std::begin(consideredEngineMovementsDepth));
@@ -35,7 +35,6 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
     try{
         if(wsk_X == nullptr)
             throw std::invalid_argument("Nullptr of the chessboard.");
-        std::cout<<movementGeneration;
         verifyKingsLocation(wsk_X);
         checkIfRooksAndKingsMoved(wsk_X);
         checkIfEngineKingChecked(wsk_X);
@@ -131,7 +130,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         //among the best moves for the user (the worst status for the engine)
 
         double bestEngineMaterialStatus = -100;
-        int indexOfBestEngineMaterialStatusOfTheWorst;
+        int indexOfBestEngineMaterialStatus;
         for(int i=0; i<movements.size() && i<consideredEngineMovementsDepth[movementGeneration]; i++)//the best engine move is found here
         {
             double worstEngineMaterialStatus = 100;
@@ -145,10 +144,10 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
             if(bestEngineMaterialStatus < worstEngineMaterialStatus)
             {
                 bestEngineMaterialStatus = worstEngineMaterialStatus;
-                indexOfBestEngineMaterialStatusOfTheWorst = i;
+                indexOfBestEngineMaterialStatus = i;
             }
         }
-        checkmateAndStalemateSearching(wsk_X, indexOfBestEngineMaterialStatusOfTheWorst);
+        checkmateAndStalemateSearching(wsk_X, indexOfBestEngineMaterialStatus);
         resetMovements();
         return bestEngineMaterialStatus;
 //#########################################################################
@@ -784,7 +783,7 @@ void Move::makeEngineMoves(globalType::chessboardPointer wsk_X){//6
 }
 void Move::makeUserMoves(globalType::chessboardPointer wsk_X){//3
 //==============================================================================================================
-    try{
+    try{std::cout<<movementGeneration;
         if (wsk_X == nullptr)
             throw std::invalid_argument("Nullptr of the chessboard.");
         userKingChecked = checkIfUserSquareCaptured(userKingLocationX, userKingLocationY, wsk_X);
@@ -1320,8 +1319,9 @@ double Move::countMaterialStatus(const globalType::chessboardPointer wsk_X){//0+
         double knightValue     = 3.0;
         double sideBishopValue = 2.9;
         double bishopValue     = 3.0;
-        double rookValue       = 5.0;
-        double queenValue      = 7.0;
+        double rookValue       = 6.0;
+        double queenValue      = 9.0;
+        double kingValue       = 30.0;
 
         for(int i=0; i<8; i++)
             for(int j=0; j<8; j++)
@@ -1333,12 +1333,14 @@ double Move::countMaterialStatus(const globalType::chessboardPointer wsk_X){//0+
                     case 'g': materialStatus += (i==0 || i==7 || j==0 || j==7)? -sideBishopValue : -bishopValue; break;
                     case 'w': materialStatus += -rookValue;  break;
                     case 'h': materialStatus += -queenValue; break;
+                    case 'k': materialStatus += -kingValue;  break;
 
                     case 'P': materialStatus += (i==1)? 2*pawnValue : pawnValue; break;
                     case 'S': materialStatus += (i==0 || i==7 || j==0 || j==7)? sideKnightValue : knightValue; break;
                     case 'G': materialStatus += (i==0 || i==7 || j==0 || j==7)? sideBishopValue : bishopValue; break;
                     case 'W': materialStatus +=  rookValue;  break;
                     case 'H': materialStatus +=  queenValue; break;
+                    case 'K': materialStatus +=  kingValue;  break;
                     default: break;
                 }
             }

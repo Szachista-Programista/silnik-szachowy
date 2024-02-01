@@ -10,7 +10,7 @@ private:Move movement;
         int promotionCode;
         int openingMoveNumber = 0;
         int movementNumber = 0;
-        int regulator = 1;
+        int regulator = 0;/////////////////////////////////////
 
 
         bool color;
@@ -58,7 +58,7 @@ private:    void getEngineReadyForMove(int userMoveCode);
             opening    = 1,
             middlegame = 2,
             endgame    = 3
-        }gameStage = opening;//XXXXXXXXXXXXXXXXX
+        }gameStage = middlegame;//XXXXXXXXXXXXXXXXX
 
 };
 #endif//ENGINE_H

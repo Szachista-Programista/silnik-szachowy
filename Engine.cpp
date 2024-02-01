@@ -1,6 +1,6 @@
 #include "Engine.h"
 
-Engine::Engine(bool k): color{k}, movement{k,4,{8,3,2,2,1},{7,3,2,2,1}}{//1
+Engine::Engine(bool k): color{k}, movement{k,1,{100,100,1,1,1},{100,100,1,1,1}}{//1
 //==============================================================================================================
     try{
         comparativeChessboardPointer = initializeChessboard();
@@ -15,14 +15,27 @@ Engine::Engine(bool k): color{k}, movement{k,4,{8,3,2,2,1},{7,3,2,2,1}}{//1
     globalType::chessboardPointer Engine::initializeChessboard(){//0+
 //==============================================================================================================
     try{
-        return new char[8][8]{{'w','s','g',color?'k':'h',color?'h':'k','g','s','w'},
+        return new char[8][8]{
+{' ',' ','h',' ',' ',' ','k',' '},
+{' ',' ',' ',' ',' ',' ',' ',' '},
+{' ',' ',' ',' ',' ',' ',' ',' '},
+{' ',' ',' ','S',' ',' ',' ',' '},
+{' ',' ',' ',' ',' ',' ',' ',' '},
+{' ',' ',' ',' ','p',' ',' ',' '},
+{'P','P',' ',' ',' ',' ','P','P'},
+{'K',' ',' ',' ',' ',' ',' ',' '}
+};
+
+        /*{
+        {'w','s','g',color?'k':'h',color?'h':'k','g','s','w'},
                               {'p','p','p','p','p','p','p','p'},
                               {' ',' ',' ',' ',' ',' ',' ',' '},
                               {' ',' ',' ',' ',' ',' ',' ',' '},
                               {' ',' ',' ',' ',' ',' ',' ',' '},
                               {' ',' ',' ',' ',' ',' ',' ',' '},
                               {'P','P','P','P','P','P','P','P'},
-                              {'W','S','G',color?'K':'H',color?'H':'K','G','S','W'}};
+                              {'W','S','G',color?'K':'H',color?'H':'K','G','S','W'}
+                              };*/
 //#########################################################################
     }
     catch(const std::bad_alloc &e){
@@ -293,7 +306,7 @@ int Engine::makeMove(int userMoveCode){//2
 //==============================================================================================================
     try{
         getEngineReadyForMove(userMoveCode);
-        setSearchDepthOfMoveClass();
+        //setSearchDepthOfMoveClass();
         switch(gameStage)
         {
             case opening:        makeOpeningMove(); break;
@@ -382,7 +395,7 @@ int Engine::makeMove(int userMoveCode){//2
 }
     void Engine::setSearchDepthOfMoveClass()noexcept{
 //==============================================================================================================
-    if(movementNumber == 7)//////////////////////////////////////
+    /*if(movementNumber == 7)//////////////////////////////////////
     {
         movement.lastMovementGeneration = 3;
         movement.consideredEngineMovementsDepth[0] = 8 + regulator;
@@ -395,8 +408,8 @@ int Engine::makeMove(int userMoveCode){//2
         movement.consideredUserMovementsDepth[2]   = 3;
         movement.consideredUserMovementsDepth[3]   = 1;
         movement.consideredUserMovementsDepth[4]   = 1;
-    }
-    if(movementNumber == 11)///////////////////////////////////////
+    }*/
+    if(movementNumber == 4)///////////////////////////////////////
     {
         movement.lastMovementGeneration = 2;
         movement.consideredEngineMovementsDepth[0] = 16 + regulator;
