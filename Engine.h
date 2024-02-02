@@ -2,16 +2,14 @@
 #define ENGINE_H
 #include <cmath>
 #include "Move.h"
-
+#include "Chessboard.h"//////////////////////////////////////////////////////
+#include "Notice.h"///////////////////////////////////////////////////////////
 class Engine{
-        friend class Move;
 private:Move movement;
 
         int promotionCode;
         int openingMoveNumber = 0;
         int movementNumber = 0;
-        int regulator = 0;/////////////////////////////////////
-
 
         bool color;
 
@@ -25,14 +23,13 @@ private:    globalType::chessboardPointer initializeChessboard();
 public:~Engine()noexcept;
         bool canUserMakeSuchMove(int userMoveCode);
 private:    void decipherUserMove(int userMoveCode);
-            bool isPieceOnStartingUserSquare();
-            bool isPieceOnFinalUserSquare();
+            bool isPieceOfUserOnStartingSquare();
+            bool isPieceOfUserOnFinalSquare();
             bool isThisMoveExposesKingToCapture();
             bool ifAllowedMove();
 public: int makeMove(int userMoveCode);
 private:    void getEngineReadyForMove(int userMoveCode);
                 void markUserMoveOnChessboard(int userMoveCode);
-            void setSearchDepthOfMoveClass()noexcept;
             void makeOpeningMove()noexcept;
                 void blachOpeningMove()noexcept;
                 void whiteOpeningMove()noexcept;
@@ -58,7 +55,7 @@ private:    void getEngineReadyForMove(int userMoveCode);
             opening    = 1,
             middlegame = 2,
             endgame    = 3
-        }gameStage = middlegame;//XXXXXXXXXXXXXXXXX
+        }gameStage = opening;//XXXXXXXXXXXXXXXXX
 
 };
 #endif//ENGINE_H

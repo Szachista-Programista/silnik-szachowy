@@ -1,10 +1,10 @@
 #include "Engine.h"
 
-Engine::Engine(bool k): color{k}, movement{k,1,{100,100,1,1,1},{100,100,1,1,1}}{//1
+Engine::Engine(bool k): color{k}, movement{k}{//1
 //==============================================================================================================
     try{
         comparativeChessboardPointer = initializeChessboard();
-        workingChessboardPointer   = initializeChessboard();
+        workingChessboardPointer     = initializeChessboard();
 //#########################################################################
     }
     catch(globalType::errorType &e){
@@ -15,27 +15,14 @@ Engine::Engine(bool k): color{k}, movement{k,1,{100,100,1,1,1},{100,100,1,1,1}}{
     globalType::chessboardPointer Engine::initializeChessboard(){//0+
 //==============================================================================================================
     try{
-        return new char[8][8]{
-{' ',' ','h',' ',' ',' ','k',' '},
-{' ',' ',' ',' ',' ',' ',' ',' '},
-{' ',' ',' ',' ',' ',' ',' ',' '},
-{' ',' ',' ','S',' ',' ',' ',' '},
-{' ',' ',' ',' ',' ',' ',' ',' '},
-{' ',' ',' ',' ','p',' ',' ',' '},
-{'P','P',' ',' ',' ',' ','P','P'},
-{'K',' ',' ',' ',' ',' ',' ',' '}
-};
-
-        /*{
-        {'w','s','g',color?'k':'h',color?'h':'k','g','s','w'},
+        return new char[8][8]{{'w','s','g',color?'k':'h',color?'h':'k','g','s','w'},
                               {'p','p','p','p','p','p','p','p'},
                               {' ',' ',' ',' ',' ',' ',' ',' '},
                               {' ',' ',' ',' ',' ',' ',' ',' '},
                               {' ',' ',' ',' ',' ',' ',' ',' '},
                               {' ',' ',' ',' ',' ',' ',' ',' '},
                               {'P','P','P','P','P','P','P','P'},
-                              {'W','S','G',color?'K':'H',color?'H':'K','G','S','W'}
-                              };*/
+                              {'W','S','G',color?'K':'H',color?'H':'K','G','S','W'}};
 //#########################################################################
     }
     catch(const std::bad_alloc &e){
@@ -53,10 +40,10 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
 //==============================================================================================================
     try{
         decipherUserMove(userMoveCode);
-        if(!isPieceOnStartingUserSquare()   )return false;
-        if( isPieceOnFinalUserSquare()      )return false;
-        if( isThisMoveExposesKingToCapture())return false;
-        if(!ifAllowedMove()                 )return false;
+        if(!isPieceOfUserOnStartingSquare()   )return false;
+        if( isPieceOfUserOnFinalSquare()      )return false;
+        if( isThisMoveExposesKingToCapture()  )return false;
+        if(!ifAllowedMove()                   )return false;
         return true;
 //#########################################################################
     }
@@ -92,7 +79,7 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
         throw x;
     }
 }
-    bool Engine::isPieceOnStartingUserSquare(){//0+
+    bool Engine::isPieceOfUserOnStartingSquare(){//0+
 //==============================================================================================================
     try{
         if (u.fromX < 0 || 7 < u.fromX || u.fromY < 0 || 7 < u.fromY || u.toX < 0 || 7 < u.toX || u.toY < 0 || 7 < u.toY)
@@ -112,7 +99,7 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
         throw x;
     }
 }
-    bool Engine::isPieceOnFinalUserSquare(){//0+
+    bool Engine::isPieceOfUserOnFinalSquare(){//0+
 //==============================================================================================================
     try{
         if (u.fromX < 0 || 7 < u.fromX || u.fromY < 0 || 7 < u.fromY || u.toX < 0 || 7 < u.toX || u.toY < 0 || 7 < u.toY)
@@ -232,7 +219,7 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
                     return true;
                 }
             case 'w':
-                if(u.fromY==u.toY) //horizontal movements
+                if(u.fromY == u.toY) //horizontal movements
                 {
                     if(u.fromX>u.toX) //to left
                         for(int x=u.fromX-1; x>u.toX; x--)
@@ -244,7 +231,7 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
                                 return false;
                     return true;
                 }
-                if(u.fromX==u.toX) //vertical movements
+                if(u.fromX == u.toX) //vertical movements
                 {
                     if(u.fromY>u.toY)//up
                         for(int y=u.fromY-1; y>u.toY; y--)
@@ -256,6 +243,7 @@ bool Engine::canUserMakeSuchMove(int userMoveCode){//*1
                                 return false;
                     return true;
                 }
+                return false;
             case 'k':
                 if(abs(u.fromX-u.toX)<=1 && abs(u.fromY-u.toY)<=1)//ordinary king's movement
                 if(0<=u.toY-1                ? wsk_X[u.toY-1][u.toX  ] != 'K': true)
@@ -306,7 +294,6 @@ int Engine::makeMove(int userMoveCode){//2
 //==============================================================================================================
     try{
         getEngineReadyForMove(userMoveCode);
-        //setSearchDepthOfMoveClass();
         switch(gameStage)
         {
             case opening:        makeOpeningMove(); break;
@@ -391,37 +378,6 @@ int Engine::makeMove(int userMoveCode){//2
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
-    }
-}
-    void Engine::setSearchDepthOfMoveClass()noexcept{
-//==============================================================================================================
-    /*if(movementNumber == 7)//////////////////////////////////////
-    {
-        movement.lastMovementGeneration = 3;
-        movement.consideredEngineMovementsDepth[0] = 8 + regulator;
-        movement.consideredEngineMovementsDepth[1] = 4;
-        movement.consideredEngineMovementsDepth[2] = 3;
-        movement.consideredEngineMovementsDepth[3] = 1;
-        movement.consideredEngineMovementsDepth[4] = 1;
-        movement.consideredUserMovementsDepth[0]   = 8;
-        movement.consideredUserMovementsDepth[1]   = 4;
-        movement.consideredUserMovementsDepth[2]   = 3;
-        movement.consideredUserMovementsDepth[3]   = 1;
-        movement.consideredUserMovementsDepth[4]   = 1;
-    }*/
-    if(movementNumber == 4)///////////////////////////////////////
-    {
-        movement.lastMovementGeneration = 2;
-        movement.consideredEngineMovementsDepth[0] = 16 + regulator;
-        movement.consideredEngineMovementsDepth[1] = 8  + regulator;
-        movement.consideredEngineMovementsDepth[2] = 1;
-        movement.consideredEngineMovementsDepth[3] = 1;
-        movement.consideredEngineMovementsDepth[4] = 1;
-        movement.consideredUserMovementsDepth[0]   = 15 + regulator;
-        movement.consideredUserMovementsDepth[1]   = 6  + regulator;
-        movement.consideredUserMovementsDepth[2]   = 1;
-        movement.consideredUserMovementsDepth[3]   = 1;
-        movement.consideredUserMovementsDepth[4]   = 1;
     }
 }
     void Engine::makeOpeningMove()noexcept{
@@ -591,7 +547,11 @@ int Engine::makeMove(int userMoveCode){//2
 //==============================================================================================================
     try{
         movement.prepareMove();
-        movement.findNextMove(workingChessboardPointer);
+        Chessboard y(color);//////////////////////////////////////////////////////////////////////
+        Notice z;
+        int x = movement.findNextMove(workingChessboardPointer);/////////////////////////////////////////////////
+        z.communique(std::to_string(x), 1000);
+        y.deleteCommunique(50); /////////////////////////////////////////////////
         //isItEndgameTime();
 //#########################################################################
     }

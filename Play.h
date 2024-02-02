@@ -8,7 +8,7 @@
 
 class Play{
 private:bool color;
-        bool EngineMoveunderlighted;
+        bool engineMoveUnderlighted;
         bool correcSquareChosen;
         bool correctMovementMade;
 

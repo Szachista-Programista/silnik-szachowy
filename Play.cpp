@@ -60,9 +60,9 @@ void Play::playWithUser(){//*5
                     if(isUserMakesPromotion())
                     {
                         std::vector<std::string> promotionOptions = globalType::getCommuniqueCotent({30,31,32,33});
-                        EngineMoveunderlighted = notice.checkbox(promotionOptions)*10000;
+                        promotionCode = notice.checkbox(promotionOptions)*10000;
                         chessboard.deleteCheckbox(220, 60);
-                        userMoveCode += EngineMoveunderlighted;
+                        userMoveCode += promotionCode;
                     }
                     notebook.generateAndWriteNotation(userMoveCode);
                     currentChessboardUpdateCode = notebook.getChessboardUpdateCode();
@@ -306,10 +306,10 @@ void Play::playWithUser(){//*5
         void Play::offPreviousEngineMoveUnderlight(){//2
 //==============================================================================================================
     try{
-        if(EngineMoveunderlighted == true)
+        if(engineMoveUnderlighted == true)
         {
             updateChessboard(previousChessboardUpdateCode, false);
-            EngineMoveunderlighted = false;
+            engineMoveUnderlighted = false;
         }
 //#########################################################################
     }
@@ -347,7 +347,7 @@ void Play::playWithUser(){//*5
         currentChessboardUpdateCode = notebook.getChessboardUpdateCode();
         updateChessboard(previousChessboardUpdateCode, false);
         updateChessboard(currentChessboardUpdateCode, true);
-        EngineMoveunderlighted = true;
+        engineMoveUnderlighted = true;
         previousChessboardUpdateCode = currentChessboardUpdateCode;
         return !isItGameover();
 //#########################################################################

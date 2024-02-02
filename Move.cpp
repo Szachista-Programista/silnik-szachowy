@@ -1,10 +1,7 @@
 #include "Move.h"
 
-Move::Move(bool k, int x, std::initializer_list<int> engine, std::initializer_list<int> user)noexcept: color{k}, lastMovementGeneration{x}{
+Move::Move(bool k)noexcept: color{k}{
 //==============================================================================================================
-    std::copy(engine.begin(), engine.end(), std::begin(consideredEngineMovementsDepth));
-    std::copy(user.begin(),   user.end(),   std::begin(consideredUserMovementsDepth));
-
     movementGeneration = 0;
 
     machineKingLocationX = color?3:4;
@@ -23,12 +20,18 @@ Move::~Move()noexcept{
 //==============================================================================================================
     resetMovements();
 }
+    void Move::resetMovements()noexcept{
+//==============================================================================================================
+    for(auto oneDimensionalVector: movements)
+    {
+        for(auto singeMove: oneDimensionalVector)
+            delete[]singeMove;
+    }
+    movements.clear();
+}
 void Move::prepareMove()noexcept{
 //==============================================================================================================
-    potentialMovementMaterialStatus.clear();
     engineMoveNumber = -1 ;
-    worstMoveIndex   =  0 ;
-    LeastMaterialStatusOfconsideredMovements = 100.0;//////////////////////////////////////////////'L''l'
 }
 double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
 //==============================================================================================================
@@ -114,7 +117,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
     double Move::findBestMove(globalType::chessboardPointer &wsk_X){//r
 //==============================================================================================================
     try{
-        if(movementGeneration < lastMovementGeneration)  return beginningSearchingTreeService(wsk_X);
+        if(movementGeneration <  lastMovementGeneration) return beginningSearchingTreeService(wsk_X);
         if(movementGeneration == lastMovementGeneration) return endingSearchingTreeService();
 //#########################################################################
     }
@@ -128,28 +131,27 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
     try{
         //the engine finds the best move for itself (the highest status for the engine)
         //among the best moves for the user (the worst status for the engine)
-
-        double bestEngineMaterialStatus = -100;
-        int indexOfBestEngineMaterialStatus;
-        for(int i=0; i<movements.size() && i<consideredEngineMovementsDepth[movementGeneration]; i++)//the best engine move is found here
+        double bestMaterialStatus = -100.0;
+        int bestMaterialStatusIndex;
+        for(int i=0; i<movements.size(); i++)//the best engine move is found here
         {
-            double worstEngineMaterialStatus = 100;
-            double currentEngineMaterialStatus;
-            for(int j=1; j<movements[i].size() && j<=consideredUserMovementsDepth[movementGeneration]; j++)//the best user move is found here
+            double worstMaterialStatus = 100.0;
+            double currentMaterialStatus;
+            for(int j=1; j<movements[i].size(); j++)//the best user move is found here
             {
-                Move(this, currentEngineMaterialStatus, movements[i][j], movementGeneration + 1, lastMovementGeneration, consideredEngineMovementsDepth, consideredUserMovementsDepth);
-                if(currentEngineMaterialStatus < worstEngineMaterialStatus)
-                    worstEngineMaterialStatus = currentEngineMaterialStatus;
+                Move(this, currentMaterialStatus, movements[i][j], movementGeneration + 1);
+                if(currentMaterialStatus < worstMaterialStatus)
+                    worstMaterialStatus = currentMaterialStatus;
             }
-            if(bestEngineMaterialStatus < worstEngineMaterialStatus)
+            if(bestMaterialStatus < worstMaterialStatus)
             {
-                bestEngineMaterialStatus = worstEngineMaterialStatus;
-                indexOfBestEngineMaterialStatus = i;
+                bestMaterialStatus = worstMaterialStatus;
+                bestMaterialStatusIndex = i;
             }
         }
-        checkmateAndStalemateSearching(wsk_X, indexOfBestEngineMaterialStatus);
+        checkmateAndStalemateSearching(wsk_X, bestMaterialStatusIndex);
         resetMovements();
-        return bestEngineMaterialStatus;
+        return bestMaterialStatus;
 //#########################################################################
     }
     catch(globalType::errorType &e){
@@ -157,14 +159,9 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         throw;
     }
 }
-            Move::Move(Move* pointer, double &materialStatus, globalType::chessboardPointer wsk_X, int iteration, int depth, int engine[], int user[]): movementGeneration {iteration}, lastMovementGeneration{depth}{//r
+            Move::Move(Move* pointer, double &materialStatus, globalType::chessboardPointer wsk_X, int iteration): movementGeneration {iteration}{//r
 //==============================================================================================================
     try{
-        for(int i=0; i<5; i++)
-        {
-            consideredEngineMovementsDepth[i] = engine[i];
-            consideredUserMovementsDepth[i]   = user[i];
-        }
         rewriteKingsAndRooksMovesData(pointer);
         materialStatus = findNextMove(wsk_X);
 //#########################################################################
@@ -262,23 +259,78 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         throw;
     }
 }
-        double Move::endingSearchingTreeService()noexcept{
+        double Move::endingSearchingTreeService(){//1
 //==============================================================================================================
-    double bestMaterialStatus = -100;
-    for(auto element: potentialMovementMaterialStatus)
-        if(bestMaterialStatus < element)
-            bestMaterialStatus = element;
-    resetMovements();
-    return bestMaterialStatus;
-}
-            void Move::resetMovements()noexcept{
-//==============================================================================================================
-    for(auto oneDimensionalVector: movements)
-    {
-        for(auto singeMove: oneDimensionalVector)
-            delete[]singeMove;
+    try{
+        //the engine finds the best move for itself (the highest status for the engine)
+        //among the best moves for the user (the worst status for the engine)
+        double bestMaterialStatus = -100.0;
+        for(auto engineMovements: movements)//the best engine move is found here
+        {
+            double worstMaterialStatus = 100.0;
+            double currentMaterialStatus;
+            for(auto userMovements: engineMovements)//the best user move is found here
+            {
+                currentMaterialStatus = countMaterialStatus(userMovements);
+                if(currentMaterialStatus < worstMaterialStatus)
+                    worstMaterialStatus = currentMaterialStatus;
+            }
+            if(bestMaterialStatus < worstMaterialStatus)
+                bestMaterialStatus = worstMaterialStatus;
+        }
+        resetMovements();
+        return bestMaterialStatus;
+//#########################################################################
     }
-    movements.clear();
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
+        throw;
+    }
+}
+            double Move::countMaterialStatus(const globalType::chessboardPointer wsk_X){//0+
+//==============================================================================================================
+    try{
+        if (wsk_X == nullptr)
+            throw std::invalid_argument("Nullptr of the chessboard.");
+        double materialStatus  = 0.0;
+        double pawnValue       = 1.0;
+        double sideKnightValue = 2.9;
+        double knightValue     = 3.0;
+        double sideBishopValue = 2.9;
+        double bishopValue     = 3.0;
+        double rookValue       = 6.0;
+        double queenValue      = 9.0;
+        //double kingValue       = 30.0;
+
+        for(int i=0; i<8; i++)
+            for(int j=0; j<8; j++)
+            {
+                switch(wsk_X[i][j])
+                {
+                    case 'p': materialStatus += (i==6)? -2*pawnValue : -pawnValue; break;
+                    case 's': materialStatus += (i==0 || i==7 || j==0 || j==7)? -sideKnightValue : -knightValue; break;
+                    case 'g': materialStatus += (i==0 || i==7 || j==0 || j==7)? -sideBishopValue : -bishopValue; break;
+                    case 'w': materialStatus += -rookValue;  break;
+                    case 'h': materialStatus += -queenValue; break;
+                    //case 'k': materialStatus += -kingValue;  break;
+
+                    case 'P': materialStatus += (i==1)? 2*pawnValue : pawnValue; break;
+                    case 'S': materialStatus += (i==0 || i==7 || j==0 || j==7)? sideKnightValue : knightValue; break;
+                    case 'G': materialStatus += (i==0 || i==7 || j==0 || j==7)? sideBishopValue : bishopValue; break;
+                    case 'W': materialStatus +=  rookValue;  break;
+                    case 'H': materialStatus +=  queenValue; break;
+                    //case 'K': materialStatus +=  kingValue;  break;
+                    default: break;
+                }
+            }
+        return materialStatus;
+//#########################################################################
+    }
+    catch(const std::invalid_argument &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
+    }
 }
 void Move::makeEngineMoves(globalType::chessboardPointer wsk_X){//6
 //==============================================================================================================
@@ -632,7 +684,7 @@ void Move::makeEngineMoves(globalType::chessboardPointer wsk_X){//6
             movements.push_back(std::vector<globalType::chessboardPointer>());
             movements[engineMoveNumber].push_back(cOpy);
             makeUserMoves(cOpy);
-            discardWorstEngineMove();
+            //discardWorstEngineMove();
         }
         else if(checkIfEngineSquareCaptured(machineKingLocationX, machineKingLocationY, cOpy)==false)
         {//If it's there, isn't it captured after all?
@@ -640,7 +692,7 @@ void Move::makeEngineMoves(globalType::chessboardPointer wsk_X){//6
             movements.push_back(std::vector<globalType::chessboardPointer>());
             movements[engineMoveNumber].push_back(cOpy);
             makeUserMoves(cOpy);
-            discardWorstEngineMove();
+            //discardWorstEngineMove();
         }
         else delete[]cOpy;
 //#########################################################################
@@ -734,56 +786,9 @@ void Move::makeEngineMoves(globalType::chessboardPointer wsk_X){//6
         throw x;
     }
 }
-            void Move::discardWorstEngineMove(){//1
-//==============================================================================================================
-    try{
-        double LeastMaterialStatusOfconsideredMovements = 100.0;
-        for(int i=1; i < movements[engineMoveNumber].size(); i++) //finding the most profitable potential user move
-        {
-            LeastMaterialStatusOfconsideredMovements = std::min(LeastMaterialStatusOfconsideredMovements, countMaterialStatus(movements[engineMoveNumber][i]));
-        }
-        if(consideredEngineMovementsDepth[movementGeneration] >= movements.size()) //a situation in which the number of calculated moves does not exceed the limit
-        {
-            if(LeastMaterialStatusOfconsideredMovements < LeastMaterialStatusOfconsideredMovements)
-            {
-                LeastMaterialStatusOfconsideredMovements = LeastMaterialStatusOfconsideredMovements;
-                worstMoveIndex = engineMoveNumber;
-            }
-            potentialMovementMaterialStatus.push_back(LeastMaterialStatusOfconsideredMovements);
-        }
-        else  //a situation in which the number of calculated moves exceeds the limit and the worst move must be rejected
-        {
-            if(LeastMaterialStatusOfconsideredMovements <= LeastMaterialStatusOfconsideredMovements)//if we discard the current move
-            {
-                for(auto element: movements[engineMoveNumber])
-                    delete[]element;
-                movements.pop_back();
-                engineMoveNumber--;
-            }
-            else//if we reject any of the previous moves
-            {
-                potentialMovementMaterialStatus[worstMoveIndex] = LeastMaterialStatusOfconsideredMovements;
-                for(auto element: movements[worstMoveIndex])
-                    delete[]element;
-                movements[worstMoveIndex] = movements[engineMoveNumber];
-                movements.pop_back();
-                engineMoveNumber--;
-                worstMoveIndex = 0;//looking for from the beginning which move is potentially the worst
-                for(int i=0; i<consideredEngineMovementsDepth[movementGeneration]; i++)
-                    if(potentialMovementMaterialStatus[i] < potentialMovementMaterialStatus[worstMoveIndex])
-                        worstMoveIndex = i;
-            }
-        }
-//#########################################################################
-    }
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
-    }
-}
 void Move::makeUserMoves(globalType::chessboardPointer wsk_X){//3
 //==============================================================================================================
-    try{std::cout<<movementGeneration;
+    try{
         if (wsk_X == nullptr)
             throw std::invalid_argument("Nullptr of the chessboard.");
         userKingChecked = checkIfUserSquareCaptured(userKingLocationX, userKingLocationY, wsk_X);
@@ -1142,7 +1147,7 @@ void Move::makeUserMoves(globalType::chessboardPointer wsk_X){//3
                 default: break;
             }
         }
-    discardWorstUserMove();
+    //discardWorstUserMove();
 //#########################################################################
     }
     catch(const std::invalid_argument &e){
@@ -1273,78 +1278,6 @@ void Move::makeUserMoves(globalType::chessboardPointer wsk_X){//3
             if(x<=6 && cOpy[y+1][x+1]=='P') return true;
         }
         return false;
-//#########################################################################
-    }
-    catch(const std::invalid_argument &e){
-        globalType::errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
-        throw x;
-    }
-}
-    void Move::discardWorstUserMove(){//1
-//==============================================================================================================
-    try{
-        int userMovementsNumber = movements[engineMoveNumber].size()-1;
-        std::vector<double>materialStatus;
-        for(int i=0; i<userMovementsNumber; i++)                                                  //calculating the user's material status
-            materialStatus.push_back(countMaterialStatus(movements[engineMoveNumber][i+1]));
-
-        int biggestMaterialStatusMoveIndex;
-        while(userMovementsNumber > consideredUserMovementsDepth[movementGeneration])
-        {
-            biggestMaterialStatusMoveIndex = 0;
-            for(int i=1; i<userMovementsNumber; i++)        //looking for move with the highest material status
-                if(materialStatus[biggestMaterialStatusMoveIndex] < materialStatus[i])
-                    biggestMaterialStatusMoveIndex = i;
-            materialStatus.erase(materialStatus.begin() + biggestMaterialStatusMoveIndex);
-            delete[]movements[engineMoveNumber][biggestMaterialStatusMoveIndex+1];
-            movements[engineMoveNumber].erase(movements[engineMoveNumber].begin() + biggestMaterialStatusMoveIndex + 1);
-            userMovementsNumber--;
-        }
-//#########################################################################
-    }
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
-    }
-}
-double Move::countMaterialStatus(const globalType::chessboardPointer wsk_X){//0+
-//==============================================================================================================
-    try{
-        if (wsk_X == nullptr)
-            throw std::invalid_argument("Nullptr of the chessboard.");
-        double materialStatus  = 0.0;
-        double pawnValue       = 1.0;
-        double sideKnightValue = 2.9;
-        double knightValue     = 3.0;
-        double sideBishopValue = 2.9;
-        double bishopValue     = 3.0;
-        double rookValue       = 6.0;
-        double queenValue      = 9.0;
-        double kingValue       = 30.0;
-
-        for(int i=0; i<8; i++)
-            for(int j=0; j<8; j++)
-            {
-                switch(wsk_X[i][j])
-                {
-                    case 'p': materialStatus += (i==6)? -2*pawnValue : -pawnValue; break;
-                    case 's': materialStatus += (i==0 || i==7 || j==0 || j==7)? -sideKnightValue : -knightValue; break;
-                    case 'g': materialStatus += (i==0 || i==7 || j==0 || j==7)? -sideBishopValue : -bishopValue; break;
-                    case 'w': materialStatus += -rookValue;  break;
-                    case 'h': materialStatus += -queenValue; break;
-                    case 'k': materialStatus += -kingValue;  break;
-
-                    case 'P': materialStatus += (i==1)? 2*pawnValue : pawnValue; break;
-                    case 'S': materialStatus += (i==0 || i==7 || j==0 || j==7)? sideKnightValue : knightValue; break;
-                    case 'G': materialStatus += (i==0 || i==7 || j==0 || j==7)? sideBishopValue : bishopValue; break;
-                    case 'W': materialStatus +=  rookValue;  break;
-                    case 'H': materialStatus +=  queenValue; break;
-                    case 'K': materialStatus +=  kingValue;  break;
-                    default: break;
-                }
-            }
-        return materialStatus;
 //#########################################################################
     }
     catch(const std::invalid_argument &e){
