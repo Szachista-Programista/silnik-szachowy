@@ -28,6 +28,30 @@
 
 
 namespace globalType{
+
+    extern double(*userKingBehaviorPoints1)   (double,double);
+    extern double(*userKingBehaviorPoints2)   (double,double);
+    extern double(*engineKnightBehaviorPoints)(double,double);
+    extern double(*engineBishopBehaviorPoints)(double,double);
+    extern double(*engineRookBehaviorPoints1) (double,double);
+    extern double(*engineRookBehaviorPoints2) (double,double);
+    extern double(*engineQueenBehaviorPoints1)(double,double);
+    extern double(*engineQueenBehaviorPoints2)(double,double);
+    extern double(*engineKingBehaviorPoints)  (double,double);
+
+    extern double *userKingBehaviorPriority1;
+    extern double *userKingBehaviorPriority2;
+    extern double *engineKnightBehaviorPriority;
+    extern double *engineBishopBehaviorPriority;
+    extern double *engineRookBehaviorPriority1;
+    extern double *engineRookBehaviorPriority2;
+    extern double *engineQueenBehaviorPriority1;
+    extern double *engineQueenBehaviorPriority2;
+    extern double *engineKingBehaviorPriority;
+
+    extern double userKingX;
+    extern double userKingY;
+
     enum{
         numberOfLanguages      = 2,
         numberOfNotationColumn = 3,
@@ -51,8 +75,32 @@ namespace globalType{
         blue
     };
     enum Languages{
-        polish  = 0,
-        english = 1
+        polish,
+        english
+    };
+    enum GameStage{
+        opening,
+        middlegame,
+        endgame
+    };
+    enum KindOfEndgame{
+        twoRooksMate,
+        twoQueensMate,
+        queenAndRookMate,
+        queenMate,
+        rookMate
+    };
+    enum UserKingSideLocation{
+        engineRightSide,
+        engineDownSide,
+        engineLeftSide,
+        engineUpSide
+    };
+    enum UserKingCornerLocation{
+        engineUpRightCorner,
+        engineDownRightCorner,
+        engineDownLeftCorner,
+        engineUpLeftCorner
     };
 
     using chessboardPointer = char(*)[8];
@@ -63,8 +111,12 @@ namespace globalType{
     extern Color notation;
     extern Color underlightedSquare;
     extern Color chsenOption;
-
     extern Languages setLanguage;
+    extern GameStage gameStage;
+    extern KindOfEndgame choosenEndgame;
+    extern UserKingSideLocation userKingSideLocation;
+    extern UserKingCornerLocation userKingCornerLocation;
+
 //********************************************************************************
     void readConfigFile();
     void writeConfigFile();

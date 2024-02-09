@@ -3,8 +3,8 @@
 Notebook::Notebook(bool k): color{k}{//1
 //==============================================================================================================
     try{
-        currentChessboard = initializeChessboard();
-        previousChessboard  = initializeChessboard();
+        currentChessboard  = loadPiecesArrangement();
+        previousChessboard = loadPiecesArrangement();
         loadChars();
 //#########################################################################
     }
@@ -13,18 +13,51 @@ Notebook::Notebook(bool k): color{k}{//1
         throw;
     }
 }
-    globalType::chessboardPointer Notebook::initializeChessboard(){//0+
+    globalType::chessboardPointer Notebook::loadPiecesArrangement(){//0+
 //==============================================================================================================
     try{
-        return new char[8][8]{{'w','s','g',color?'k':'h',color?'h':'k','g','s','w'},
-                              {'p','p','p','p','p','p','p','p'},
-                              {' ',' ',' ',' ',' ',' ',' ',' '},
-                              {' ',' ',' ',' ',' ',' ',' ',' '},
-                              {' ',' ',' ',' ',' ',' ',' ',' '},
-                              {' ',' ',' ',' ',' ',' ',' ',' '},
-                              {'P','P','P','P','P','P','P','P'},
-                              {'W','S','G',color?'K':'H',color?'H':'K','G','S','W'}};
+        std::ifstream reading;
+        std::string line;
+        globalType::chessboardPointer chessboard = new char[8][8];
+        reading.open("chessboard.txt");
+        if (!reading.is_open())
+            throw std::ifstream::failure("The file 'chessboard.txt' cannot be opened .");
+
+        for(int i=0; i<8; i++)
+        {
+            if (!getline(reading, line))
+                throw std::ifstream::failure("Error reading character from 'chessboard.txt' file .");
+            for(int j=0; j<8; j++)
+                if(line[j] == '*')
+                    chessboard[i][j] = ' ';
+                else if(line[j] == '.')
+                {
+                    if(i==0)
+                    {
+                        if(j==3)
+                            chessboard[i][j] = color?'k':'h';
+                        if(j==4)
+                            chessboard[i][j] = color?'h':'k';
+                    }
+                    if(i==7)
+                    {
+                        if(j==3)
+                            chessboard[i][j] = color?'K':'H';
+                        if(j==4)
+                            chessboard[i][j] = color?'H':'K';
+                    }
+                }
+                else
+                    chessboard[i][j] = line[j];
+        }
+        reading.close();
+        return chessboard;
 //#########################################################################
+    }
+    catch(const std::ifstream::failure &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
     }
     catch(const std::bad_alloc &e){
         globalType::errorType x;
@@ -32,6 +65,7 @@ Notebook::Notebook(bool k): color{k}{//1
         throw x;
     }
 }
+
     void Notebook::loadChars(){//0+
 //==============================================================================================================
     try{
@@ -327,7 +361,7 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
                 case 'K': case 'k':
                     lastMoveNotation += 'K';
                     break;
-                default: std::cout<<moveFromY<<moveFromY; throw std::invalid_argument("Wrong piece.");///////////////////////////////////////////////////////////////
+                default: std::cout<<">"<<movedPiece<<"<"<<moveFromX<<moveFromY; throw std::invalid_argument("Wrong piece.");///////////////////////////////////////////////////////////////
             }
             if(moveWithCapture)
                 lastMoveNotation += 'x';

@@ -14,6 +14,7 @@ private:    void loadPiecesArray();
                 void loadCoodinates();
                     void loadSingeCoordinateChar(int coordX, int coordY, std::string cHar);
                 void loadPieces();
+                    globalType::chessboardPointer loadPiecesArrangement();
                     void loadSinglePiece(int squareCoordX, int squareCoordY, int piece, bool pieceColor, bool underlight = 0);
 public: void deleteCommunique(int szerokosc_obwieszczenia);
         void deleteCheckbox(int szerokosc_pola, int wysokosc_pola, bool deleteByChessboardWrite = true);

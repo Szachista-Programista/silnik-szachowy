@@ -43,7 +43,7 @@ private:globalType::chessboardPointer previousChessboard;
         bool gameOver = false;
 //********************************************************************************
 public: Notebook(bool k);
-private:    globalType::chessboardPointer initializeChessboard();
+private:    globalType::chessboardPointer loadPiecesArrangement();
             void loadChars();
 public:~Notebook()noexcept;
         void generateAndWriteNotation(int moveCode);

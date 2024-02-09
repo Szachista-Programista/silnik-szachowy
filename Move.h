@@ -8,8 +8,8 @@ class Move{
     Move* baseMoveClassPointer;
     std::vector<std::vector<globalType::chessboardPointer>> movements;
 
-    int machineKingLocationX;
-    int machineKingLocationY;
+    int engineKingLocationX;
+    int engineKingLocationY;
     int userKingLocationX;
     int userKingLocationY;
 
@@ -30,11 +30,11 @@ class Move{
     bool gameOverUserWin           = false;
     bool gameOverStalemateByEngine = false;
     bool gameOverStalemateByUser   = false;
-//********************************************************************************
+    bool endgame = false;
+    //********************************************************************************************
     Move(bool k) noexcept;
    ~Move()noexcept;
         void resetMovements()noexcept;
-    void prepareMove()noexcept;
     double findNextMove(globalType::chessboardPointer &wsk_X);
         void setDepthOfSearching(int moveNumberOfMiddlegame);
         void verifyKingsLocation(globalType::chessboardPointer wsk_X);
@@ -48,7 +48,17 @@ class Move{
                     void checkIfGameFinishedByUser(globalType::chessboardPointer &wsk_X);
                     void checkIfGameFinishedByEngine(globalType::chessboardPointer &wsk_X, int &index);
             double endingSearchingTreeService();
-                double countMaterialStatus(const globalType::chessboardPointer wsk_X);
+                double countMiddlegameMaterialStatus (const globalType::chessboardPointer wsk_X);
+                double countEndgameMaterialStatus    (const globalType::chessboardPointer wsk_X);
+                    static double goOppositeDirectionOfUserKing   (double x, double y);
+                    static double goToSideOfUserKing              (double x, double y);
+                    static double separateUserKingFromRestOfBoard (double x, double y);
+                    static double makeNothing                     (double x, double y);
+                    static double runSidewaysFromKing             (double x, double y);
+                    static double followUserKingToSide            (double x, double y);
+                    static double followUserKingToCorner          (double x, double y);
+                    static double goToCornerOfUserKing            (double x, double y);
+                    //static double ooooooo(int x, int y);
     void makeEngineMoves(globalType::chessboardPointer wsk_X);
         void engineMovesService(int fromX, int fromY, int toX, int toY, char bierka, globalType::chessboardPointer wsk_X);
             void makeEngineMovesIfAllowed(int &y, int &x, globalType::chessboardPointer cOpy);
@@ -58,6 +68,10 @@ class Move{
             void makeUserMovesIfAllowed(int &y, int &x, globalType::chessboardPointer cOpy);
                 bool checkIfUserSquareCaptured(const int &x, const int &y, globalType::chessboardPointer cOpy);
     globalType::chessboardPointer copyChessboard(const globalType::chessboardPointer oryginal);
+
+
+
+    void wypisz_szachownice(const globalType::chessboardPointer wsk_X);////!!!!!!!!!!!!!!!!!!!!!!!!!!11
 };
 #endif//MOVE_H
 

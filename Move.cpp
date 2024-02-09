@@ -4,8 +4,8 @@ Move::Move(bool k)noexcept: color{k}{
 //==============================================================================================================
     movementGeneration = 0;
 
-    machineKingLocationX = color?3:4;
-    machineKingLocationY =         7;
+    engineKingLocationX = color?3:4;
+    engineKingLocationY =         7;
     userKingLocationX    = color?3:4;
     userKingLocationY    =         0;
 
@@ -28,10 +28,6 @@ Move::~Move()noexcept{
             delete[]singeMove;
     }
     movements.clear();
-}
-void Move::prepareMove()noexcept{
-//==============================================================================================================
-    engineMoveNumber = -1 ;
 }
 double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
 //==============================================================================================================
@@ -64,8 +60,8 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
             for(int j=0; j<8; j++)
                 if(wsk_X[i][j]=='K')
                 {
-                    machineKingLocationX = j;
-                    machineKingLocationY = i;
+                    engineKingLocationX = j;
+                    engineKingLocationY = i;
                     break;
                 }
         for(int i=0; i<8; i++)
@@ -106,7 +102,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
     void Move::checkIfEngineKingChecked(globalType::chessboardPointer wsk_X){//1
 //==============================================================================================================
     try{
-        engineKingChecked = checkIfEngineSquareCaptured(machineKingLocationX, machineKingLocationY, wsk_X);
+        engineKingChecked = checkIfEngineSquareCaptured(engineKingLocationX, engineKingLocationY, wsk_X);
 //#########################################################################
     }
     catch(globalType::errorType &e){
@@ -126,7 +122,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         throw;
     }
 }
-        double Move::beginningSearchingTreeService(globalType::chessboardPointer &wsk_X){//r
+        double Move::beginningSearchingTreeService(globalType::chessboardPointer &wsk_X){//r###
 //==============================================================================================================
     try{
         //the engine finds the best move for itself (the highest status for the engine)
@@ -135,7 +131,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         int bestMaterialStatusIndex;
         for(int i=0; i<movements.size(); i++)//the best engine move is found here
         {
-            double worstMaterialStatus = 100.0;
+            double worstMaterialStatus = 110.0;
             double currentMaterialStatus;
             for(int j=1; j<movements[i].size(); j++)//the best user move is found here
             {
@@ -143,6 +139,15 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
                 if(currentMaterialStatus < worstMaterialStatus)
                     worstMaterialStatus = currentMaterialStatus;
             }
+            if(worstMaterialStatus == 110.0)
+                if(checkIfUserSquareCaptured(userKingLocationX, userKingLocationY, movements[i][0]))
+                {
+                    bestMaterialStatus = 100.0;
+
+                    break;
+                }
+                else
+                    break;
             if(bestMaterialStatus < worstMaterialStatus)
             {
                 bestMaterialStatus = worstMaterialStatus;
@@ -214,7 +219,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
     try{
         if(movements.size()==0)
         {
-            if(checkIfEngineSquareCaptured(machineKingLocationX, machineKingLocationY, wsk_X))
+            if(checkIfEngineSquareCaptured(engineKingLocationX, engineKingLocationY, wsk_X))
                 gameOverUserWin = true;
             else
                 gameOverStalemateByUser = true;
@@ -230,7 +235,6 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
 //==============================================================================================================
     try{
         for(int i=0, j=0; i<movements.size(); i++)
-        {
             if(movements[i].size()==1) // did the engine checkmate the user or cause a stalemate?
             {
                 j++;
@@ -251,7 +255,6 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
                     break;
                 }
             }
-        }
 //#########################################################################
     }
     catch(globalType::errorType &e){
@@ -259,22 +262,33 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         throw;
     }
 }
-        double Move::endingSearchingTreeService(){//1
+        double Move::endingSearchingTreeService(){//1    //???????????###
 //==============================================================================================================
     try{
         //the engine finds the best move for itself (the highest status for the engine)
         //among the best moves for the user (the worst status for the engine)
         double bestMaterialStatus = -100.0;
-        for(auto engineMovements: movements)//the best engine move is found here
+        for(int i=0; i<movements.size(); i++)//the best engine move is found here
         {
             double worstMaterialStatus = 100.0;
             double currentMaterialStatus;
-            for(auto userMovements: engineMovements)//the best user move is found here
+            for(int j=1; j<movements[i].size(); j++)//the best user move is found here
             {
-                currentMaterialStatus = countMaterialStatus(userMovements);
+                if(globalType::gameStage == globalType::middlegame)
+                    currentMaterialStatus = countMiddlegameMaterialStatus(movements[i][j]);
+                if(globalType::gameStage == globalType::endgame)
+                    currentMaterialStatus = countEndgameMaterialStatus(movements[i][j]);
                 if(currentMaterialStatus < worstMaterialStatus)
                     worstMaterialStatus = currentMaterialStatus;
             }
+            if(worstMaterialStatus == 100.0)
+                if(checkIfUserSquareCaptured(userKingLocationX, userKingLocationY, movements[i][0]))
+                {
+                    bestMaterialStatus = 100.0;
+                    break;
+                }
+                else
+                    break;
             if(bestMaterialStatus < worstMaterialStatus)
                 bestMaterialStatus = worstMaterialStatus;
         }
@@ -287,7 +301,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         throw;
     }
 }
-            double Move::countMaterialStatus(const globalType::chessboardPointer wsk_X){//0+
+            double Move::countMiddlegameMaterialStatus(const globalType::chessboardPointer wsk_X){//0+
 //==============================================================================================================
     try{
         if (wsk_X == nullptr)
@@ -298,28 +312,26 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         double knightValue     = 3.0;
         double sideBishopValue = 2.9;
         double bishopValue     = 3.0;
-        double rookValue       = 6.0;
+        double rookValue       = 5.0;
         double queenValue      = 9.0;
-        //double kingValue       = 30.0;
 
         for(int i=0; i<8; i++)
             for(int j=0; j<8; j++)
             {
                 switch(wsk_X[i][j])
                 {
-                    case 'p': materialStatus += (i==6)? -2*pawnValue : -pawnValue; break;
+                    case 'p': materialStatus += /*(i==6)? -pawnValue :*/ -pawnValue; break;
                     case 's': materialStatus += (i==0 || i==7 || j==0 || j==7)? -sideKnightValue : -knightValue; break;
                     case 'g': materialStatus += (i==0 || i==7 || j==0 || j==7)? -sideBishopValue : -bishopValue; break;
                     case 'w': materialStatus += -rookValue;  break;
                     case 'h': materialStatus += -queenValue; break;
-                    //case 'k': materialStatus += -kingValue;  break;
 
-                    case 'P': materialStatus += (i==1)? 2*pawnValue : pawnValue; break;
+                    case 'P': materialStatus += /*(i==1)? pawnValue :*/ pawnValue; break;
                     case 'S': materialStatus += (i==0 || i==7 || j==0 || j==7)? sideKnightValue : knightValue; break;
                     case 'G': materialStatus += (i==0 || i==7 || j==0 || j==7)? sideBishopValue : bishopValue; break;
                     case 'W': materialStatus +=  rookValue;  break;
                     case 'H': materialStatus +=  queenValue; break;
-                    //case 'K': materialStatus +=  kingValue;  break;
+
                     default: break;
                 }
             }
@@ -332,12 +344,215 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         throw x;
     }
 }
+            double Move::countEndgameMaterialStatus(const globalType::chessboardPointer wsk_X){
+//==============================================================================================================
+        if (wsk_X == nullptr)
+            throw std::invalid_argument("Nullptr of the chessboard.");
+        double materialStatus = 0.0;
+        double pawnValue      = 1.0;
+        double knightValue    = 3.0;
+        double bishopValue    = 3.0;
+        double rookValue      = 5.0;
+        double queenValue     = 9.0;
+
+        globalType::userKingX = userKingLocationX;
+        globalType::userKingY = userKingLocationY;
+
+        for(int i=0; i<8; i++)
+            for(int j=0; j<8; j++)
+            {
+                switch(wsk_X[i][j])
+                {
+                    case 'p': materialStatus += -pawnValue;   break;
+                    case 's': materialStatus += -knightValue; break;
+                    case 'g': materialStatus += -bishopValue; break;
+                    case 'w': materialStatus += -rookValue;   break;
+                    case 'h': materialStatus += -queenValue;  break;
+                    case 'k': materialStatus +=                *globalType::userKingBehaviorPriority1    * globalType::userKingBehaviorPoints1(j,i)
+                                                             + *globalType::userKingBehaviorPriority2    * globalType::userKingBehaviorPoints2(j,i);    break;
+                    case 'P': materialStatus +=  pawnValue;   break;
+                    case 'S': materialStatus +=  knightValue + *globalType::engineKnightBehaviorPriority * globalType::engineKnightBehaviorPoints(j,i); break;
+                    case 'G': materialStatus +=  bishopValue + *globalType::engineBishopBehaviorPriority * globalType::engineBishopBehaviorPoints(j,i); break;
+                    case 'W': materialStatus +=  rookValue   + *globalType::engineRookBehaviorPriority1  * globalType::engineRookBehaviorPoints1(j,i)
+                                                             + *globalType::engineRookBehaviorPriority2  * globalType::engineRookBehaviorPoints2(j,i);  break;
+                    case 'H': materialStatus +=  queenValue  + *globalType::engineQueenBehaviorPriority1 * globalType::engineQueenBehaviorPoints1(j,i)
+                                                             + *globalType::engineQueenBehaviorPriority2 * globalType::engineQueenBehaviorPoints2(j,i); break;
+                    case 'K': materialStatus +=                *globalType::engineKingBehaviorPriority   * globalType::engineKingBehaviorPoints(j,i);   break;
+                    default: break;
+                }
+            }
+        return materialStatus;
+}
+                double Move::goOppositeDirectionOfUserKing(double x, double y){
+//==============================================================================================================
+    if(globalType::userKingSideLocation == globalType::engineRightSide)
+        return 7.0-x;
+    if(globalType::userKingSideLocation == globalType::engineDownSide)
+        return 7.0-y;
+    if(globalType::userKingSideLocation == globalType::engineLeftSide)
+        return x;
+    if(globalType::userKingSideLocation == globalType::engineUpSide)
+        return y;
+}
+                double Move::goToSideOfUserKing(double x, double y){
+//==============================================================================================================
+    if(globalType::userKingSideLocation == globalType::engineRightSide)
+        return x;
+    if(globalType::userKingSideLocation == globalType::engineDownSide)
+        return y;
+    if(globalType::userKingSideLocation == globalType::engineLeftSide)
+        return 7.0-x;
+    if(globalType::userKingSideLocation == globalType::engineUpSide)
+        return 7.0-y;
+}
+                double Move::separateUserKingFromRestOfBoard(double x, double y){
+//==============================================================================================================
+    if(globalType::userKingSideLocation == globalType::engineRightSide)
+        return (x == globalType::userKingX-1.0)? 1.0: 0.0;
+    if(globalType::userKingSideLocation == globalType::engineDownSide)
+        return (y == globalType::userKingY-1.0)? 1.0: 0.0;
+    if(globalType::userKingSideLocation == globalType::engineLeftSide)
+        return (x == globalType::userKingX+1.0)? 1.0: 0.0;
+    if(globalType::userKingSideLocation == globalType::engineUpSide)
+        return (y == globalType::userKingY+1.0)? 1.0: 0.0;
+}
+                double Move::runSidewaysFromKing(double x, double y){
+//==============================================================================================================
+    if(abs(globalType::userKingX - x) <= 1.0 && abs(globalType::userKingY - y) <= 1.0)
+        if(globalType::userKingSideLocation % 2)
+            if(3 <= abs(globalType::userKingY - y))
+                return abs(globalType::userKingY - y);
+            else
+                return 0.0;
+        else
+            if(3 <= abs(globalType::userKingX - x))
+                return abs(globalType::userKingX - x);
+            else
+                return 0.0;
+    else
+        return 0.0;
+}
+                double Move::followUserKingToSide(double x, double y){
+//==============================================================================================================
+    double value{};
+
+    if(globalType::userKingSideLocation == globalType::engineRightSide)
+    {
+        value += 7.0 - abs(globalType::userKingY       - y);
+        value += 7.0 - abs(globalType::userKingX - 2.0 - x);
+        if(globalType::userKingX <= x)
+        {
+            if(globalType::userKingY == y)
+                value += -4.0;
+            else if(1.0 == abs(globalType::userKingY - y))
+                value += -2.0;
+        }
+        return value/2.0;
+    }
+    if(globalType::userKingSideLocation == globalType::engineDownSide)
+    {
+        value += 7.0 - abs(globalType::userKingY - 2.0 - y);
+        value += 7.0 - abs(globalType::userKingX       - x);
+        if(globalType::userKingY <= y)
+        {
+            if(globalType::userKingX == x)
+                value += -4.0;
+            else if(1.0 == abs(globalType::userKingX - x))
+                value += -2.0;
+        }
+        return value/2.0;
+    }
+    if(globalType::userKingSideLocation == globalType::engineLeftSide)
+    {
+        value += 7.0 - abs(globalType::userKingY       - y);
+        value += 7.0 - abs(globalType::userKingX + 2.0 - x);
+        if(globalType::userKingX >= x)
+        {
+            if(globalType::userKingY == y)
+                value += -4.0;
+            else if(1.0 == abs(globalType::userKingY - y))
+                value += -2.0;
+        }
+        return value/2.0;
+    }
+    if(globalType::userKingSideLocation == globalType::engineUpSide)
+    {
+        value += 7.0 - abs(globalType::userKingY + 2.0 - y);
+        value += 7.0 - abs(globalType::userKingX       - x);
+        if(globalType::userKingY >= y)
+        {
+            if(globalType::userKingX == x)
+                value += -4.0;
+            else if(1.0 == abs(globalType::userKingX - x))
+                value += -2.0;
+        }
+        return value/2.0;
+    }
+}
+                double Move::followUserKingToCorner(double x, double y){
+//==============================================================================================================
+    double value{};
+
+    if(globalType::userKingCornerLocation == globalType::engineUpRightCorner)
+    {
+        value += 7.0 - abs(globalType::userKingY + 1.0 - y);
+        value += 7.0 - abs(globalType::userKingX - 1.0 - x);
+        //if((x == globalType::userKingX || x+1 == globalType::userKingX) && (y == globalType::userKingY || y-1 == globalType::userKingY))
+            //value += 2.0;
+        return value/2.0;
+    }
+    if(globalType::userKingCornerLocation == globalType::engineDownRightCorner)
+    {
+        value += 7.0 - abs(globalType::userKingY - 1.0 - y);
+        value += 7.0 - abs(globalType::userKingX - 1.0 - x);
+        //if((x == globalType::userKingX || x+1 == globalType::userKingX) && (y == globalType::userKingY || y+1 == globalType::userKingY))
+            //value += 2.0;
+        return value/2.0;
+    }
+    if(globalType::userKingCornerLocation == globalType::engineDownLeftCorner)
+    {
+        value += 7.0 - abs(globalType::userKingY - 1.0 - y);
+        value += 7.0 - abs(globalType::userKingX + 1.0 - x);
+        //if((x == globalType::userKingX || x-1 == globalType::userKingX) && (y == globalType::userKingY || y+1 == globalType::userKingY))
+            //value += 2.0;
+        return value/2.0;
+    }
+    if(globalType::userKingCornerLocation == globalType::engineUpLeftCorner)
+    {
+        value += 7.0 - abs(globalType::userKingY + 1.0 - y);
+        value += 7.0 - abs(globalType::userKingX + 1.0 - x);
+        //if((x == globalType::userKingX || x-1 == globalType::userKingX) && (y == globalType::userKingY || y-1 == globalType::userKingY))
+            //value += 2.0;
+        return value/2.0;
+    }
+
+}
+                double Move::goToCornerOfUserKing(double x, double y){
+//==============================================================================================================
+    if(globalType::userKingCornerLocation == globalType::engineUpRightCorner)
+        return (x + 7.0-y)/2.0;
+    if(globalType::userKingCornerLocation == globalType::engineDownRightCorner)
+        return (x + y)/2.0;
+    if(globalType::userKingCornerLocation == globalType::engineDownLeftCorner)
+        return (7.0-x + y)/2.0;
+    if(globalType::userKingCornerLocation == globalType::engineUpLeftCorner)
+        return (7.0-x + 7.0-y)/2.0;
+}
+                //double Move::ooooooo(double x, double y){
+//==============================================================================================================
+//}
+                double Move::makeNothing(double x, double y){
+//==============================================================================================================
+    return 0.0;
+}
 void Move::makeEngineMoves(globalType::chessboardPointer wsk_X){//6
 //==============================================================================================================
     try{
         if (wsk_X == nullptr)
             throw std::invalid_argument("Nullptr of the chessboard.");
         std::vector<int>iterators = {3, 4, 2, 5, 1, 6, 0, 7};
+        engineMoveNumber = -1 ;
+
         for(int i=0; i<8; i++)
             for (int j: iterators)
             {
@@ -502,68 +717,68 @@ void Move::makeEngineMoves(globalType::chessboardPointer wsk_X){//6
                     case 'K':                                                       //king issue
                     {
                         if(0<=i-1 && (wsk_X[i-1][j]<'G' || 'W'<wsk_X[i-1][j]))                    //movement towards 12:00
-                        if(2<=abs(machineKingLocationX-userKingLocationX) || 2<=abs(machineKingLocationY-1-userKingLocationY))
+                        if(2<=abs(engineKingLocationX-userKingLocationX) || 2<=abs(engineKingLocationY-1-userKingLocationY))
                         {
-                            machineKingLocationY--;
+                            engineKingLocationY--;
                             engineMovesService(j,i,j,i-1,'K',wsk_X);
-                            machineKingLocationY++;
+                            engineKingLocationY++;
                         }
                         if(0<=i-1 && j+1<=7 && (wsk_X[i-1][j+1]<'G' || 'W'<wsk_X[i-1][j+1]))      //movement towards 1:30
-                        if(2<=abs(machineKingLocationX+1-userKingLocationX) || 2<=abs(machineKingLocationY-1-userKingLocationY))
+                        if(2<=abs(engineKingLocationX+1-userKingLocationX) || 2<=abs(engineKingLocationY-1-userKingLocationY))
                         {
-                            machineKingLocationX++;
-                            machineKingLocationY--;
+                            engineKingLocationX++;
+                            engineKingLocationY--;
                             engineMovesService(j,i,j+1,i-1,'K',wsk_X);
-                            machineKingLocationX--;
-                            machineKingLocationY++;
+                            engineKingLocationX--;
+                            engineKingLocationY++;
                         }
                         if(j+1<=7 && (wsk_X[i][j+1]<'G' || 'W'<wsk_X[i][j+1]))                    //movement towards 3:00
-                        if(2<=abs(machineKingLocationX+1-userKingLocationX) || 2<=abs(machineKingLocationY-userKingLocationY))
+                        if(2<=abs(engineKingLocationX+1-userKingLocationX) || 2<=abs(engineKingLocationY-userKingLocationY))
                         {
-                            machineKingLocationX++;
+                            engineKingLocationX++;
                             engineMovesService(j,i,j+1,i,'K',wsk_X);
-                            machineKingLocationX--;
+                            engineKingLocationX--;
                         }
                         if(i+1<=7 && j+1<=7 && (wsk_X[i+1][j+1]<'G' || 'W'<wsk_X[i+1][j+1]))      //movement towards 4:30
-                        if(2<=abs(machineKingLocationX+1-userKingLocationX) || 2<=abs(machineKingLocationY+1-userKingLocationY))
+                        if(2<=abs(engineKingLocationX+1-userKingLocationX) || 2<=abs(engineKingLocationY+1-userKingLocationY))
                         {
-                            machineKingLocationX++;
-                            machineKingLocationY++;
+                            engineKingLocationX++;
+                            engineKingLocationY++;
                             engineMovesService(j,i,j+1,i+1,'K',wsk_X);
-                            machineKingLocationX--;
-                            machineKingLocationY--;
+                            engineKingLocationX--;
+                            engineKingLocationY--;
                         }
                         if(i+1<=7 && (wsk_X[i+1][j]<'G' || 'W'<wsk_X[i+1][j]))                    //movement towards 6:00
-                        if(2<=abs(machineKingLocationX-userKingLocationX) || 2<=abs(machineKingLocationY+1-userKingLocationY))
+                        if(2<=abs(engineKingLocationX-userKingLocationX) || 2<=abs(engineKingLocationY+1-userKingLocationY))
                         {
-                            machineKingLocationY++;
+                            engineKingLocationY++;
                             engineMovesService(j,i,j,i+1,'K',wsk_X);
-                            machineKingLocationY--;
+                            engineKingLocationY--;
                         }
                         if(i+1<=7 && 0<=j-1 && (wsk_X[i+1][j-1]<'G' || 'W'<wsk_X[i+1][j-1]))      //movement towards 7:30
-                        if(2<=abs(machineKingLocationX-1-userKingLocationX) || 2<=abs(machineKingLocationY+1-userKingLocationY))
+                        if(2<=abs(engineKingLocationX-1-userKingLocationX) || 2<=abs(engineKingLocationY+1-userKingLocationY))
                         {
-                            machineKingLocationX--;
-                            machineKingLocationY++;
+                            engineKingLocationX--;
+                            engineKingLocationY++;
                             engineMovesService(j,i,j-1,i+1,'K',wsk_X);
-                            machineKingLocationX++;
-                            machineKingLocationY--;
+                            engineKingLocationX++;
+                            engineKingLocationY--;
                         }
                         if(0<=j-1 && (wsk_X[i][j-1]<'G' || 'W'<wsk_X[i][j-1]))                    //movement towards 9:00
-                        if(2<=abs(machineKingLocationX-1-userKingLocationX) || 2<=abs(machineKingLocationY-userKingLocationY))
+                        if(2<=abs(engineKingLocationX-1-userKingLocationX) || 2<=abs(engineKingLocationY-userKingLocationY))
                         {
-                            machineKingLocationX--;
+                            engineKingLocationX--;
                             engineMovesService(j,i,j-1,i,'K',wsk_X);
-                            machineKingLocationX++;
+                            engineKingLocationX++;
                         }
                         if(0<=i-1 && 0<=j-1 && (wsk_X[i-1][j-1]<'G' || 'W'<wsk_X[i-1][j-1]))      //movement towards 10:30
-                        if(2<=abs(machineKingLocationX-1-userKingLocationX) || 2<=abs(machineKingLocationY-1-userKingLocationY))
+                        if(2<=abs(engineKingLocationX-1-userKingLocationX) || 2<=abs(engineKingLocationY-1-userKingLocationY))
                         {
-                            machineKingLocationX--;
-                            machineKingLocationY--;
+                            engineKingLocationX--;
+                            engineKingLocationY--;
                             engineMovesService(j,i,j-1,i-1,'K',wsk_X);
-                            machineKingLocationX++;
-                            machineKingLocationY++;
+                            engineKingLocationX++;
+                            engineKingLocationY++;
                         }
                         if(!color)                                                                      //castling when the user play black
                         {
@@ -576,9 +791,9 @@ void Move::makeEngineMoves(globalType::chessboardPointer wsk_X){//6
                                     cOpy[7][4]=' ';
                                     cOpy[7][2]='K';
                                     cOpy[7][3]='W';
-                                    machineKingLocationX-=2;
+                                    engineKingLocationX-=2;
                                     makeEngineMovesIfAllowed(i, j, cOpy);
-                                    machineKingLocationX+=2;
+                                    engineKingLocationX+=2;
                                 }
                                 else delete[]cOpy;
                             }
@@ -591,9 +806,9 @@ void Move::makeEngineMoves(globalType::chessboardPointer wsk_X){//6
                                     cOpy[7][4]=' ';
                                     cOpy[7][6]='K';
                                     cOpy[7][5]='W';
-                                    machineKingLocationX+=2;
+                                    engineKingLocationX+=2;
                                     makeEngineMovesIfAllowed(i, j, cOpy);
-                                    machineKingLocationX-=2;
+                                    engineKingLocationX-=2;
                                 }
                                 else delete[]cOpy;
                             }
@@ -609,9 +824,9 @@ void Move::makeEngineMoves(globalType::chessboardPointer wsk_X){//6
                                     cOpy[7][3]=' ';
                                     cOpy[7][5]='K';
                                     cOpy[7][4]='W';
-                                    machineKingLocationX+=2;
+                                    engineKingLocationX+=2;
                                     makeEngineMovesIfAllowed(i, j, cOpy);
-                                    machineKingLocationX-=2;
+                                    engineKingLocationX-=2;
                                 }
                                 else delete[]cOpy;
                             }
@@ -624,9 +839,9 @@ void Move::makeEngineMoves(globalType::chessboardPointer wsk_X){//6
                                     cOpy[7][3]=' ';
                                     cOpy[7][1]='K';
                                     cOpy[7][2]='W';
-                                    machineKingLocationX-=2;
+                                    engineKingLocationX-=2;
                                     makeEngineMovesIfAllowed(i, j, cOpy);
-                                    machineKingLocationX+=2;
+                                    engineKingLocationX+=2;
                                 }
                                 else delete[]cOpy;
                             }
@@ -671,28 +886,26 @@ void Move::makeEngineMoves(globalType::chessboardPointer wsk_X){//6
         throw;
     }
 }
-        void Move::makeEngineMovesIfAllowed(int &y, int &x, globalType::chessboardPointer cOpy){//4
+        void Move::makeEngineMovesIfAllowed(int &y, int &x, globalType::chessboardPointer cOpy){//4###
 //==============================================================================================================
     try{
         if (x < 0 || 7 < x || y < 0 || 7 < y)
             throw std::invalid_argument("Chessboard coordinates out of range.");
         if (cOpy == nullptr)
             throw std::invalid_argument("Nullptr of the chessboard.");
-        if(engineKingChecked==false && x!=machineKingLocationX && y!=machineKingLocationY && (machineKingLocationX+machineKingLocationY!=x+y) && (machineKingLocationX-machineKingLocationY!=x-y))
+        if(engineKingChecked==false && x!=engineKingLocationX && y!=engineKingLocationY && (engineKingLocationX+engineKingLocationY!=x+y) && (engineKingLocationX-engineKingLocationY!=x-y))
         {//whether the king stands on the square line from which the move took place
             engineMoveNumber++;
             movements.push_back(std::vector<globalType::chessboardPointer>());
             movements[engineMoveNumber].push_back(cOpy);
             makeUserMoves(cOpy);
-            //discardWorstEngineMove();
         }
-        else if(checkIfEngineSquareCaptured(machineKingLocationX, machineKingLocationY, cOpy)==false)
+        else if(checkIfEngineSquareCaptured(engineKingLocationX, engineKingLocationY, cOpy)==false)
         {//If it's there, isn't it captured after all?
             engineMoveNumber++;
             movements.push_back(std::vector<globalType::chessboardPointer>());
             movements[engineMoveNumber].push_back(cOpy);
             makeUserMoves(cOpy);
-            //discardWorstEngineMove();
         }
         else delete[]cOpy;
 //#########################################################################
@@ -954,10 +1167,10 @@ void Move::makeUserMoves(globalType::chessboardPointer wsk_X){//3
                         }
                         break;
                     }
-                    case 'k':                                                       //queen issue
+                    case 'k':                                                       //king issue
                     {
                         if(0<=i-1 && (wsk_X[i-1][j]<'g' || 'w'<wsk_X[i-1][j]))                    //movement towards 12:00
-                        if(2<=abs(machineKingLocationX-userKingLocationX) || 2<=abs(machineKingLocationY-1-userKingLocationY))
+                        if(2<=abs(engineKingLocationX-userKingLocationX) || 2<=abs(engineKingLocationY+1-userKingLocationY))
                         {
                             globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                             cOpy[i][j]=' ';
@@ -971,7 +1184,7 @@ void Move::makeUserMoves(globalType::chessboardPointer wsk_X){//3
                             else delete[]cOpy;
                         }
                         if(0<=i-1 && j+1<=7 && (wsk_X[i-1][j+1]<'g' || 'w'<wsk_X[i-1][j+1]))      //movement towards 01:30
-                        if(2<=abs(machineKingLocationX+1-userKingLocationX) || 2<=abs(machineKingLocationY-1-userKingLocationY))
+                        if(2<=abs(engineKingLocationX-1-userKingLocationX) || 2<=abs(engineKingLocationY+1-userKingLocationY))
                         {
                             globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                             cOpy[i][j]=' ';
@@ -987,7 +1200,7 @@ void Move::makeUserMoves(globalType::chessboardPointer wsk_X){//3
                             else delete[]cOpy;
                         }
                         if(j+1<=7 && (wsk_X[i][j+1]<'g' || 'w'<wsk_X[i][j+1]))                    //movement towards 03:00
-                        if(2<=abs(machineKingLocationX+1-userKingLocationX) || 2<=abs(machineKingLocationY-userKingLocationY))
+                        if(2<=abs(engineKingLocationX-1-userKingLocationX) || 2<=abs(engineKingLocationY-userKingLocationY))
                         {
                             globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                             cOpy[i][j]=' ';
@@ -1001,7 +1214,7 @@ void Move::makeUserMoves(globalType::chessboardPointer wsk_X){//3
                             else delete[]cOpy;
                         }
                         if(i+1<=7 && j+1<=7 && (wsk_X[i+1][j+1]<'g' || 'w'<wsk_X[i+1][j+1]))      //movement towards 04:30
-                        if(2<=abs(machineKingLocationX+1-userKingLocationX) || 2<=abs(machineKingLocationY+1-userKingLocationY))
+                        if(2<=abs(engineKingLocationX-1-userKingLocationX) || 2<=abs(engineKingLocationY-1-userKingLocationY))
                         {
                             globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                             cOpy[i][j]=' ';
@@ -1017,7 +1230,7 @@ void Move::makeUserMoves(globalType::chessboardPointer wsk_X){//3
                             else delete[]cOpy;
                         }
                         if(i+1<=7 && (wsk_X[i+1][j]<'g' || 'w'<wsk_X[i+1][j]))                    //movement towards 06:00
-                        if(2<=abs(machineKingLocationX-userKingLocationX) || 2<=abs(machineKingLocationY+1-userKingLocationY))
+                        if(2<=abs(engineKingLocationX-userKingLocationX) || 2<=abs(engineKingLocationY-1-userKingLocationY))
                         {
                             globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                             cOpy[i][j]=' ';
@@ -1031,7 +1244,7 @@ void Move::makeUserMoves(globalType::chessboardPointer wsk_X){//3
                             else delete[]cOpy;
                         }
                         if(i+1<=7 && 0<=j-1 && (wsk_X[i+1][j-1]<'g' || 'w'<wsk_X[i+1][j-1]))      //movement towards 07:30
-                        if(2<=abs(machineKingLocationX-1-userKingLocationX) || 2<=abs(machineKingLocationY+1-userKingLocationY))
+                        if(2<=abs(engineKingLocationX+1-userKingLocationX) || 2<=abs(engineKingLocationY-1-userKingLocationY))
                         {
                             globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                             cOpy[i][j]=' ';
@@ -1047,7 +1260,7 @@ void Move::makeUserMoves(globalType::chessboardPointer wsk_X){//3
                             else delete[]cOpy;
                         }
                         if(0<=j-1 && (wsk_X[i][j-1]<'g' || 'w'<wsk_X[i][j-1]))                    //movement towards 09:00
-                        if(2<=abs(machineKingLocationX-1-userKingLocationX) || 2<=abs(machineKingLocationY-userKingLocationY))
+                        if(2<=abs(engineKingLocationX+1-userKingLocationX) || 2<=abs(engineKingLocationY-userKingLocationY))
                         {
                             globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                             cOpy[i][j]=' ';
@@ -1061,7 +1274,7 @@ void Move::makeUserMoves(globalType::chessboardPointer wsk_X){//3
                             else delete[]cOpy;
                         }
                         if(0<=i-1 && 0<=j-1 && (wsk_X[i-1][j-1]<'g' || 'w'<wsk_X[i-1][j-1]))      //movement towards 10:30
-                        if(2<=abs(machineKingLocationX-1-userKingLocationX) || 2<=abs(machineKingLocationY-1-userKingLocationY))
+                        if(2<=abs(engineKingLocationX+1-userKingLocationX) || 2<=abs(engineKingLocationY+1-userKingLocationY))
                         {
                             globalType::chessboardPointer cOpy = copyChessboard(wsk_X);
                             cOpy[i][j]=' ';
@@ -1312,7 +1525,25 @@ globalType::chessboardPointer Move::copyChessboard(const globalType::chessboardP
 
 
 
+void Move::wypisz_szachownice(const globalType::chessboardPointer wsk_X)////!!!!!!!!!!!!!!!!!!!!!!!!!!11
+{
 
+    std::cout<<std::string(23,'\333')<<std::endl;
+    std::cout<<"\333\333\333 0 1 2 3 4 5 6 7 \333\333\333"<<std::endl;
+    std::cout<<std::string(23,'\333')<<std::endl;
+    //for(int i=0; i<8; i++)
+    for(int i=7; i>=0; i--)
+    {
+        std::cout<<"\333"<<i<<"\333";
+        for(int j=7; j>=0; j--)
+            std::cout<<' '<<wsk_X[i][j];
+        std::cout<<' ';
+        std::cout<<"\333"<<i<<"\333"<<std::endl;
+    }
+    std::cout<<std::string(23,'\333')<<std::endl;
+    std::cout<<"\333\333\333 0 1 2 3 4 5 6 7 \333\333\333"<<std::endl;
+    std::cout<<std::string(23,'\333')<<std::endl;
+}
 
 
 

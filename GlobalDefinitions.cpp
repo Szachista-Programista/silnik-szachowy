@@ -1,13 +1,44 @@
 #include "GlobalDefinitions.h"
 
+
+
 namespace globalType{
+
+    double(*userKingBehaviorPoints1)   (double,double);
+    double(*userKingBehaviorPoints2)   (double,double);
+    double(*engineKnightBehaviorPoints)(double,double);
+    double(*engineBishopBehaviorPoints)(double,double);
+    double(*engineRookBehaviorPoints1) (double,double);
+    double(*engineRookBehaviorPoints2) (double,double);
+    double(*engineQueenBehaviorPoints1)(double,double);
+    double(*engineQueenBehaviorPoints2)(double,double);
+    double(*engineKingBehaviorPoints)  (double,double);
+
+    double *userKingBehaviorPriority1;
+    double *userKingBehaviorPriority2;
+    double *engineKnightBehaviorPriority;
+    double *engineBishopBehaviorPriority;
+    double *engineRookBehaviorPriority1;
+    double *engineRookBehaviorPriority2;
+    double *engineQueenBehaviorPriority1;
+    double *engineQueenBehaviorPriority2;
+    double *engineKingBehaviorPriority;
+
+    double userKingX;
+    double userKingY;
+
     std::string communiquesArray[numberOfCommuniques][numberOfLanguages];
 
-    Languages setLanguage;
     Color menu;
     Color notation;
     Color underlightedSquare;
     Color chsenOption;
+    Languages setLanguage;
+    GameStage gameStage;
+    KindOfEndgame choosenEndgame;
+    UserKingSideLocation userKingSideLocation;
+    UserKingCornerLocation userKingCornerLocation;
+
 //********************************************************************************
     void readConfigFile(){//0
 //==============================================================================================================

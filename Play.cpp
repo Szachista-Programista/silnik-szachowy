@@ -342,8 +342,8 @@ void Play::playWithUser(){//*5
     bool Play::engineMoveServive(int moveCode){//*1
 //==============================================================================================================
     try{
-        endgineMoveCode = engine.makeMove(moveCode);
-        notebook.generateAndWriteNotation(endgineMoveCode);
+        engineMoveCode = engine.makeMove(moveCode);
+        notebook.generateAndWriteNotation(engineMoveCode);
         currentChessboardUpdateCode = notebook.getChessboardUpdateCode();
         updateChessboard(previousChessboardUpdateCode, false);
         updateChessboard(currentChessboardUpdateCode, true);
@@ -360,7 +360,7 @@ void Play::playWithUser(){//*5
         bool Play::isItGameover(){//*0
 //==============================================================================================================
     try{
-        int additionalParameter = endgineMoveCode / 10000;
+        int additionalParameter = engineMoveCode / 10000;
         if( 0<= additionalParameter && additionalParameter <= 4)
             return false;
         switch(additionalParameter)

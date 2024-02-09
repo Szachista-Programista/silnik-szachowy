@@ -134,14 +134,7 @@ Chessboard::Chessboard(bool k): color{k}{//3
         void Chessboard::loadPieces(){//1
 //==============================================================================================================
     try{
-        char statringPositions[8][8] {{'w','s','g',color?'k':'h',color?'h':'k','g','s','w'},
-                                      {'p','p','p','p','p','p','p','p'},
-                                      {' ',' ',' ',' ',' ',' ',' ',' '},
-                                      {' ',' ',' ',' ',' ',' ',' ',' '},
-                                      {' ',' ',' ',' ',' ',' ',' ',' '},
-                                      {' ',' ',' ',' ',' ',' ',' ',' '},
-                                      {'P','P','P','P','P','P','P','P'},
-                                      {'W','S','G',color?'K':'H',color?'H':'K','G','S','W'}};
+        globalType::chessboardPointer statringPositions = loadPiecesArrangement();
 
         for(int i=0; i<8; i++)
             for(int j=0; j<8; j++)
@@ -164,6 +157,7 @@ Chessboard::Chessboard(bool k): color{k}{//3
                     default: throw std::invalid_argument("Error in starting positions.");
                 }
             }
+        delete[]statringPositions;
 //#########################################################################
     }
     catch(const std::invalid_argument &e){
@@ -174,6 +168,58 @@ Chessboard::Chessboard(bool k): color{k}{//3
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
+    }
+}
+            globalType::chessboardPointer Chessboard::loadPiecesArrangement(){//0+
+//==============================================================================================================
+    try{
+        std::ifstream reading;
+        std::string line;
+        globalType::chessboardPointer chessboard = new char[8][8];
+        reading.open("chessboard.txt");
+        if (!reading.is_open())
+            throw std::ifstream::failure("The file 'chessboard.txt' cannot be opened .");
+
+        for(int i=0; i<8; i++)
+        {
+            if (!getline(reading, line))
+                throw std::ifstream::failure("Error reading character from 'chessboard.txt' file .");
+            for(int j=0; j<8; j++)
+                if(line[j] == '*')
+                    chessboard[i][j] = ' ';
+                else if(line[j] == '.')
+                {
+                    if(i==0)
+                    {
+                        if(j==3)
+                            chessboard[i][j] = color?'k':'h';
+                        if(j==4)
+                            chessboard[i][j] = color?'h':'k';
+                    }
+                    if(i==7)
+                    {
+                        if(j==3)
+                            chessboard[i][j] = color?'K':'H';
+                        if(j==4)
+                            chessboard[i][j] = color?'H':'K';
+                    }
+                }
+                else
+                    chessboard[i][j] = line[j];
+        }
+        reading.close();
+        return chessboard;
+//#########################################################################
+    }
+    catch(const std::ifstream::failure &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
+    }
+    catch(const std::bad_alloc &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
     }
 }
             void Chessboard::loadSinglePiece(int squareCoordX, int squareCoordY, int piece, bool pieceColor, bool underlight){//0+
