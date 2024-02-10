@@ -24,9 +24,6 @@
 #endif
 
 
-
-
-
 namespace globalType{
 
     extern double(*userKingBehaviorPoints1)   (double,double);

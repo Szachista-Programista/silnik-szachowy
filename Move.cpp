@@ -22,7 +22,7 @@ Move::~Move()noexcept{
 }
     void Move::resetMovements()noexcept{
 //==============================================================================================================
-    for(auto oneDimensionalVector: movements)
+    for(auto& oneDimensionalVector: movements)
     {
         for(auto singeMove: oneDimensionalVector)
             delete[]singeMove;
@@ -128,11 +128,11 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         //the engine finds the best move for itself (the highest status for the engine)
         //among the best moves for the user (the worst status for the engine)
         double bestMaterialStatus = -100.0;
-        int bestMaterialStatusIndex;
+        int bestMaterialStatusIndex{};
         for(int i=0; i<movements.size(); i++)//the best engine move is found here
         {
             double worstMaterialStatus = 110.0;
-            double currentMaterialStatus;
+            double currentMaterialStatus{};
             for(int j=1; j<movements[i].size(); j++)//the best user move is found here
             {
                 Move(this, currentMaterialStatus, movements[i][j], movementGeneration + 1);
@@ -202,8 +202,9 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         {
             checkIfGameFinishedByUser(wsk_X);
             delete[]wsk_X;
-            wsk_X=nullptr;
-            checkIfGameFinishedByEngine(wsk_X, index);
+            wsk_X = nullptr;
+            if( ! gameOver)
+                checkIfGameFinishedByEngine(wsk_X, index);
             if(wsk_X == nullptr && movements.size() != 0)
                 wsk_X = copyChessboard(movements[index][0]);
         }
@@ -220,9 +221,15 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         if(movements.size()==0)
         {
             if(checkIfEngineSquareCaptured(engineKingLocationX, engineKingLocationY, wsk_X))
+            {
                 gameOverUserWin = true;
+                gameOver = true;
+            }
             else
+            {
                 gameOverStalemateByUser = true;
+                gameOver = true;
+            }
         }
 //#########################################################################
     }
@@ -246,12 +253,14 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
                 {
                     wsk_X = copyChessboard(movements[i][0]);
                     gameOverEngineWin = true;
+                    gameOver = true;
                     break;
                 }
                 else if(j == movements.size())
                 {
                     wsk_X = copyChessboard(movements[i][0]);
                     gameOverStalemateByEngine = true;
+                    gameOver = true;
                     break;
                 }
             }
@@ -271,7 +280,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         for(int i=0; i<movements.size(); i++)//the best engine move is found here
         {
             double worstMaterialStatus = 100.0;
-            double currentMaterialStatus;
+            double currentMaterialStatus{};
             for(int j=1; j<movements[i].size(); j++)//the best user move is found here
             {
                 if(globalType::gameStage == globalType::middlegame)
@@ -368,8 +377,8 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
                     case 'g': materialStatus += -bishopValue; break;
                     case 'w': materialStatus += -rookValue;   break;
                     case 'h': materialStatus += -queenValue;  break;
-                    case 'k': materialStatus +=                *globalType::userKingBehaviorPriority1    * globalType::userKingBehaviorPoints1(j,i)
-                                                             + *globalType::userKingBehaviorPriority2    * globalType::userKingBehaviorPoints2(j,i);    break;
+                    case 'k': materialStatus +=                *globalType::userKingBehaviorPriority1    * globalType::userKingBehaviorPoints1(j,i);
+                                                             /*+ *globalType::userKingBehaviorPriority2    * globalType::userKingBehaviorPoints2(j,i);*/break;
                     case 'P': materialStatus +=  pawnValue;   break;
                     case 'S': materialStatus +=  knightValue + *globalType::engineKnightBehaviorPriority * globalType::engineKnightBehaviorPoints(j,i); break;
                     case 'G': materialStatus +=  bishopValue + *globalType::engineBishopBehaviorPriority * globalType::engineBishopBehaviorPoints(j,i); break;
@@ -497,32 +506,32 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
     {
         value += 7.0 - abs(globalType::userKingY + 1.0 - y);
         value += 7.0 - abs(globalType::userKingX - 1.0 - x);
-        //if((x == globalType::userKingX || x+1 == globalType::userKingX) && (y == globalType::userKingY || y-1 == globalType::userKingY))
-            //value += 2.0;
+        if((x == globalType::userKingX || x+1 == globalType::userKingX) && (y == globalType::userKingY || y-1 == globalType::userKingY))
+            value += 2.0;
         return value/2.0;
     }
     if(globalType::userKingCornerLocation == globalType::engineDownRightCorner)
     {
         value += 7.0 - abs(globalType::userKingY - 1.0 - y);
         value += 7.0 - abs(globalType::userKingX - 1.0 - x);
-        //if((x == globalType::userKingX || x+1 == globalType::userKingX) && (y == globalType::userKingY || y+1 == globalType::userKingY))
-            //value += 2.0;
+        if((x == globalType::userKingX || x+1 == globalType::userKingX) && (y == globalType::userKingY || y+1 == globalType::userKingY))
+            value += 2.0;
         return value/2.0;
     }
     if(globalType::userKingCornerLocation == globalType::engineDownLeftCorner)
     {
         value += 7.0 - abs(globalType::userKingY - 1.0 - y);
         value += 7.0 - abs(globalType::userKingX + 1.0 - x);
-        //if((x == globalType::userKingX || x-1 == globalType::userKingX) && (y == globalType::userKingY || y+1 == globalType::userKingY))
-            //value += 2.0;
+        if((x == globalType::userKingX || x-1 == globalType::userKingX) && (y == globalType::userKingY || y+1 == globalType::userKingY))
+            value += 2.0;
         return value/2.0;
     }
     if(globalType::userKingCornerLocation == globalType::engineUpLeftCorner)
     {
         value += 7.0 - abs(globalType::userKingY + 1.0 - y);
         value += 7.0 - abs(globalType::userKingX + 1.0 - x);
-        //if((x == globalType::userKingX || x-1 == globalType::userKingX) && (y == globalType::userKingY || y-1 == globalType::userKingY))
-            //value += 2.0;
+        if((x == globalType::userKingX || x-1 == globalType::userKingX) && (y == globalType::userKingY || y-1 == globalType::userKingY))
+            value += 2.0;
         return value/2.0;
     }
 
@@ -1522,8 +1531,6 @@ globalType::chessboardPointer Move::copyChessboard(const globalType::chessboardP
         throw x;
     }
 }
-
-
 
 void Move::wypisz_szachownice(const globalType::chessboardPointer wsk_X)////!!!!!!!!!!!!!!!!!!!!!!!!!!11
 {

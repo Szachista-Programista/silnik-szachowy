@@ -154,9 +154,8 @@ void Game::start(){//*3
     try{
         globalType::writeConfigFile();
         chessboard.deleteCheckbox(220, 53, pastFirstPlay);
-
-
-        notice.communique(globalType::getCommuniqueCotent({18})[0]);
+        notice.communique(globalType::getCommuniqueCotent({18})[0],1);
+        systemInfo::setCursorPosition(0, globalType::chessboardHeight);
 //#########################################################################
     }
     catch(const std::invalid_argument &e){

@@ -30,7 +30,7 @@ class Move{
     bool gameOverUserWin           = false;
     bool gameOverStalemateByEngine = false;
     bool gameOverStalemateByUser   = false;
-    bool endgame = false;
+    bool gameOver                  = false;
     //********************************************************************************************
     Move(bool k) noexcept;
    ~Move()noexcept;

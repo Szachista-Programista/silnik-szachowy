@@ -580,10 +580,13 @@ int Engine::makeMove(int userMoveCode){//2
     try{
         //Chessboard y(color);//#####
         //Notice z;//#####
-        /*#####/double x = /#####*/movement.findNextMove(workingChessboardPointer);
+
+        /*#####/double x = /#####*/
+        movement.findNextMove(workingChessboardPointer);
         //z.communique(std::to_string(x), 1500);//#####
         //y.deleteCommunique(100);//#####
-        isItEndgameTime();
+        if( ! movement.gameOver)
+            isItEndgameTime();
 //#########################################################################
     }
     catch(globalType::errorType &e){
@@ -718,7 +721,7 @@ int Engine::makeMove(int userMoveCode){//2
     double A = 0.1, B = 0.04, C = 0.005, D = 0.001, zero = 0.0;
 
     globalType::userKingBehaviorPriority1    = &A;
-    globalType::userKingBehaviorPriority2    = &zero;
+    //globalType::userKingBehaviorPriority2    = &zero;
     globalType::engineKnightBehaviorPriority = &C;
     globalType::engineBishopBehaviorPriority = &C;
     globalType::engineRookBehaviorPriority1  = &B;
@@ -728,7 +731,7 @@ int Engine::makeMove(int userMoveCode){//2
     globalType::engineKingBehaviorPriority   = &C;
 
     globalType::userKingBehaviorPoints1    = &movement.goToSideOfUserKing;
-    globalType::userKingBehaviorPoints2    = &movement.makeNothing;
+    //globalType::userKingBehaviorPoints2    = &movement.makeNothing;
     globalType::engineKnightBehaviorPoints = &movement.goOppositeDirectionOfUserKing;
     globalType::engineBishopBehaviorPoints = &movement.goOppositeDirectionOfUserKing;
     globalType::engineRookBehaviorPoints1  = &movement.separateUserKingFromRestOfBoard;
@@ -744,7 +747,7 @@ int Engine::makeMove(int userMoveCode){//2
     double A = 0.1, B = 0.04, C = 0.005, D = 0.001, zero = 0.0;
 
     globalType::userKingBehaviorPriority1    = &A;
-    globalType::userKingBehaviorPriority2    = &zero;
+    //globalType::userKingBehaviorPriority2    = &zero;
     globalType::engineKnightBehaviorPriority = &C;
     globalType::engineBishopBehaviorPriority = &C;
     globalType::engineRookBehaviorPriority1  = &C;
@@ -754,7 +757,7 @@ int Engine::makeMove(int userMoveCode){//2
     globalType::engineKingBehaviorPriority   = &C;
 
     globalType::userKingBehaviorPoints1    = &movement.goToSideOfUserKing;
-    globalType::userKingBehaviorPoints2    = &movement.makeNothing;
+    //globalType::userKingBehaviorPoints2    = &movement.makeNothing;
     globalType::engineKnightBehaviorPoints = &movement.goOppositeDirectionOfUserKing;
     globalType::engineBishopBehaviorPoints = &movement.goOppositeDirectionOfUserKing;
     globalType::engineRookBehaviorPoints1  = &movement.goOppositeDirectionOfUserKing;
@@ -770,7 +773,7 @@ int Engine::makeMove(int userMoveCode){//2
     double A = 0.1, B = 0.04, C = 0.005, D = 0.001, zero = 0.0;
 
     globalType::userKingBehaviorPriority1    = &A;
-    globalType::userKingBehaviorPriority2    = &zero;
+    //globalType::userKingBehaviorPriority2    = &zero;
     globalType::engineKnightBehaviorPriority = &C;
     globalType::engineBishopBehaviorPriority = &C;
     globalType::engineRookBehaviorPriority1  = &B;
@@ -780,7 +783,7 @@ int Engine::makeMove(int userMoveCode){//2
     globalType::engineKingBehaviorPriority   = &C;
 
     globalType::userKingBehaviorPoints1    = &movement.goToSideOfUserKing;
-    globalType::userKingBehaviorPoints2    = &movement.makeNothing;
+    //globalType::userKingBehaviorPoints2    = &movement.makeNothing;
     globalType::engineKnightBehaviorPoints = &movement.goOppositeDirectionOfUserKing;
     globalType::engineBishopBehaviorPoints = &movement.goOppositeDirectionOfUserKing;
     globalType::engineRookBehaviorPoints1  = &movement.separateUserKingFromRestOfBoard;
@@ -793,20 +796,20 @@ int Engine::makeMove(int userMoveCode){//2
 }
         void Engine::makeRookMateMove(){
 //==============================================================================================================
-    double dot1 = 0.1, dot05 = 0.05, dot04 = 0.04, dot005 = 0.005, zero = 0.0;
+    double dot1 = 0.1, dot08 = 0.08, dot04 = 0.04, dot005 = 0.005, zero = 0.0;
 
     globalType::userKingBehaviorPriority1    = &dot1;
-    globalType::userKingBehaviorPriority2    = &zero;
+    //globalType::userKingBehaviorPriority2    = &zero;
     globalType::engineKnightBehaviorPriority = &dot005;
     globalType::engineBishopBehaviorPriority = &dot005;
-    globalType::engineRookBehaviorPriority1  = &dot05;
+    globalType::engineRookBehaviorPriority1  = &dot08;
     globalType::engineRookBehaviorPriority2  = &zero;
     globalType::engineQueenBehaviorPriority1 = &dot005;
     globalType::engineQueenBehaviorPriority2 = &zero;
     globalType::engineKingBehaviorPriority   = &dot04;
 
     globalType::userKingBehaviorPoints1    = &movement.goToCornerOfUserKing;
-    globalType::userKingBehaviorPoints2    = &movement.makeNothing;
+    //globalType::userKingBehaviorPoints2    = &movement.makeNothing;
     globalType::engineKnightBehaviorPoints = &movement.goOppositeDirectionOfUserKing;
     globalType::engineBishopBehaviorPoints = &movement.goOppositeDirectionOfUserKing;
     globalType::engineRookBehaviorPoints1  = &movement.followUserKingToCorner;

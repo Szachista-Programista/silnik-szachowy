@@ -1,7 +1,5 @@
 #include "GlobalDefinitions.h"
 
-
-
 namespace globalType{
 
     double(*userKingBehaviorPoints1)   (double,double);
