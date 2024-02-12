@@ -7,7 +7,7 @@
 #include "Notice.h"
 
 class Play{
-private:bool color;
+        bool color;
         bool engineMoveUnderlighted;
         bool correcSquareChosen;
         bool correctMovementMade;

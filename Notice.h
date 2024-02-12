@@ -4,14 +4,15 @@
 
 class Notice
 {
-private:std::string pixelArtCharacterArray[globalType::numberOfChars][globalType::letterHeight];
-        std::string communiqueArray[globalType::communiqueHeight];
-        std::string checkboxArray[globalType::checkboxHeight];
-
         int noticeWidth;
         int noticeHeight;
         int longestOptionWidth;
         int numberOfOptions;
+
+        std::string communiqueArray        [globalType::communiqueHeight];
+        std::string checkboxArray          [globalType::checkboxHeight];
+
+        std::string pixelArtCharacterArray [globalType::numberOfChars] [globalType::letterHeight];
     //******************************************************************************************************
 public: Notice();
 private:    void loadChars();

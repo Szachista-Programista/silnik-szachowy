@@ -23,7 +23,6 @@
     #error the program only supports(Windosw/Mac_OS/Linux)
 #endif
 
-
 namespace globalType{
 
     extern double(*userKingBehaviorPoints1)   (double,double);

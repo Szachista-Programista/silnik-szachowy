@@ -1,7 +1,6 @@
 #include "GlobalDefinitions.h"
 
 namespace globalType{
-
     double(*userKingBehaviorPoints1)   (double,double);
     double(*userKingBehaviorPoints2)   (double,double);
     double(*engineKnightBehaviorPoints)(double,double);
@@ -36,9 +35,8 @@ namespace globalType{
     KindOfEndgame choosenEndgame;
     UserKingSideLocation userKingSideLocation;
     UserKingCornerLocation userKingCornerLocation;
-
 //********************************************************************************
-    void readConfigFile(){//0
+    void readConfigFile(){//0+
 //==============================================================================================================
     try{
         std::ifstream reading;
@@ -65,7 +63,7 @@ namespace globalType{
         throw x;
     }
 }
-    void writeConfigFile(){//0
+    void writeConfigFile(){//0+
 //==============================================================================================================
     try{
         std::string data{};
@@ -89,19 +87,19 @@ namespace globalType{
         throw x;
     }
 }
-    void readCommuniqueFile(){//0
+    void readCommuniqueFile(){//0+
     //==============================================================================================================
     try{
         std::ifstream reading;
         std::string line;
         reading.open("communique.txt");
         if (!reading.is_open())
-            throw std::ifstream::failure("The file 'communique.txt' cannot be opened .");
+            throw std::ifstream::failure("The file 'communique.txt' cannot be opened.");
 
         for(int i=0; i<numberOfCommuniques; i++)
         {
             if (!getline(reading, line))
-                throw std::ifstream::failure("Error reading content from 'communique.txt' file .");
+                throw std::ifstream::failure("Error reading content from 'communique.txt' file.");
             for(int j=0, k=0; j<numberOfLanguages; j++, k++)
                 for(; line[k] != '$'; k++)
                 {
@@ -119,7 +117,7 @@ namespace globalType{
         throw x;
     }
 }
-    std::vector<std::string> getCommuniqueCotent(const std::vector<int> &indexes){//0
+    std::vector<std::string> getCommuniqueCotent(const std::vector<int> &indexes){//0+
 //==============================================================================================================
     try{
         std::vector<std::string> result;
@@ -138,6 +136,7 @@ namespace globalType{
     }
 }
 }
+
 namespace systemInfo {
     void setConsoleColor(globalType::Color color){//0+
     //==============================================================================================================
@@ -284,3 +283,10 @@ namespace systemInfo {
     }
 }
 }
+
+
+
+
+
+
+

@@ -5,17 +5,10 @@
 #include "GlobalDefinitions.h"
 
 class Notebook{
-public: globalType::chessboardPointer currentChessboard;
-private:globalType::chessboardPointer previousChessboard;
-
-        std::vector<std::string>entireNotation;
-
-        std::string lastMoveNotation;
-        std::string pixelArtCharacterArray[globalType::numberOfChars][globalType::letterHeight];
-        std::string notationColumnArray[globalType::numberOfNotationColumn][globalType::columnHeight];
-        std::string notationArray[globalType::letterHeight];
-        std::string chessboardUpdateCode;
-        std::string gameResult;
+        bool color;
+        bool engineMove;
+        bool moveMarked;
+        bool gameOver = false;
 
         int machineKingLocationX;
         int machineKingLocationY;
@@ -37,10 +30,19 @@ private:globalType::chessboardPointer previousChessboard;
         int previousNotationLine   = 0;
         int previousNotationColumn = 0;
 
-        bool color;
-        bool engineMove;
-        bool moveMarked;
-        bool gameOver = false;
+        std::string lastMoveNotation;
+        std::string gameResult;
+        std::string chessboardUpdateCode;
+
+        std::string notationArray          [globalType::letterHeight];
+
+        std::string pixelArtCharacterArray [globalType::numberOfChars]          [globalType::letterHeight];
+        std::string notationColumnArray    [globalType::numberOfNotationColumn] [globalType::columnHeight];
+
+        std::vector<std::string>entireNotation;
+
+        globalType::chessboardPointer previousChessboard;
+public: globalType::chessboardPointer currentChessboard;
 //********************************************************************************
 public: Notebook(bool k);
 private:    globalType::chessboardPointer loadPiecesArrangement();

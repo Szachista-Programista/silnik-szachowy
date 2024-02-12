@@ -29,7 +29,7 @@ Move::~Move()noexcept{
     }
     movements.clear();
 }
-double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
+double Move::findNextMove                          (globalType::chessboardPointer &wsk_X){//7
 //==============================================================================================================
     try{
         if(wsk_X == nullptr)
@@ -51,7 +51,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         throw;
     }
 }
-    void Move::verifyKingsLocation(globalType::chessboardPointer wsk_X){//0+
+    void Move::verifyKingsLocation                 (globalType::chessboardPointer  wsk_X){//0+
 //==============================================================================================================
     try{
         if(wsk_X == nullptr)
@@ -80,7 +80,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         throw x;
     }
 }
-    void Move::checkIfRooksAndKingsMoved(globalType::chessboardPointer wsk_X){//0+
+    void Move::checkIfRooksAndKingsMoved           (globalType::chessboardPointer  wsk_X){//0+
 //==============================================================================================================
     try{
         if (wsk_X == nullptr)
@@ -99,7 +99,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         throw x;
     }
 }
-    void Move::checkIfEngineKingChecked(globalType::chessboardPointer wsk_X){//1
+    void Move::checkIfEngineKingChecked            (globalType::chessboardPointer  wsk_X){//1
 //==============================================================================================================
     try{
         engineKingChecked = checkIfEngineSquareCaptured(engineKingLocationX, engineKingLocationY, wsk_X);
@@ -110,7 +110,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         throw;
     }
 }
-    double Move::findBestMove(globalType::chessboardPointer &wsk_X){//r
+    double Move::findBestMove                      (globalType::chessboardPointer &wsk_X){//r
 //==============================================================================================================
     try{
         if(movementGeneration <  lastMovementGeneration) return beginningSearchingTreeService(wsk_X);
@@ -122,7 +122,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         throw;
     }
 }
-        double Move::beginningSearchingTreeService(globalType::chessboardPointer &wsk_X){//r###
+        double Move::beginningSearchingTreeService (globalType::chessboardPointer &wsk_X){//r
 //==============================================================================================================
     try{
         //the engine finds the best move for itself (the highest status for the engine)
@@ -143,7 +143,6 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
                 if(checkIfUserSquareCaptured(userKingLocationX, userKingLocationY, movements[i][0]))
                 {
                     bestMaterialStatus = 100.0;
-
                     break;
                 }
                 else
@@ -195,7 +194,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         throw x;
     }
 }
-            void Move::checkmateAndStalemateSearching(globalType::chessboardPointer &wsk_X, int &index){//2
+            void Move::checkmateAndStalemateSearching  (globalType::chessboardPointer &wsk_X, int &index){//2
 //==============================================================================================================
     try{
         if(movementGeneration == 0)
@@ -215,7 +214,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         throw;
     }
 }
-                void Move::checkIfGameFinishedByUser(globalType::chessboardPointer &wsk_X){//1
+                void Move::checkIfGameFinishedByUser   (globalType::chessboardPointer &wsk_X){//1
 //==============================================================================================================
     try{
         if(movements.size()==0)
@@ -238,7 +237,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         throw;
     }
 }
-                void Move::checkIfGameFinishedByEngine(globalType::chessboardPointer &wsk_X, int &index){//1
+                void Move::checkIfGameFinishedByEngine (globalType::chessboardPointer &wsk_X, int &index){//1
 //==============================================================================================================
     try{
         for(int i=0, j=0; i<movements.size(); i++)
@@ -271,7 +270,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         throw;
     }
 }
-        double Move::endingSearchingTreeService(){//1    //???????????###
+        double Move::endingSearchingTreeService(){//1
 //==============================================================================================================
     try{
         //the engine finds the best move for itself (the highest status for the engine)
@@ -310,7 +309,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         throw;
     }
 }
-            double Move::countMiddlegameMaterialStatus(const globalType::chessboardPointer wsk_X){//0+
+            double Move::countMiddlegameMaterialStatus (const globalType::chessboardPointer wsk_X){//0+
 //==============================================================================================================
     try{
         if (wsk_X == nullptr)
@@ -341,7 +340,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
                     case 'W': materialStatus +=  rookValue;  break;
                     case 'H': materialStatus +=  queenValue; break;
 
-                    default: break;
+                    default: throw std::invalid_argument("Wrong sign.");
                 }
             }
         return materialStatus;
@@ -353,8 +352,9 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         throw x;
     }
 }
-            double Move::countEndgameMaterialStatus(const globalType::chessboardPointer wsk_X){
+            double Move::countEndgameMaterialStatus    (const globalType::chessboardPointer wsk_X){//0+
 //==============================================================================================================
+    try{
         if (wsk_X == nullptr)
             throw std::invalid_argument("Nullptr of the chessboard.");
         double materialStatus = 0.0;
@@ -387,12 +387,19 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
                     case 'H': materialStatus +=  queenValue  + *globalType::engineQueenBehaviorPriority1 * globalType::engineQueenBehaviorPoints1(j,i)
                                                              + *globalType::engineQueenBehaviorPriority2 * globalType::engineQueenBehaviorPoints2(j,i); break;
                     case 'K': materialStatus +=                *globalType::engineKingBehaviorPriority   * globalType::engineKingBehaviorPoints(j,i);   break;
-                    default: break;
+                    default: throw std::invalid_argument("Wrong sign.");
                 }
             }
         return materialStatus;
+//#########################################################################
+    }
+    catch(const std::invalid_argument &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
+    }
 }
-                double Move::goOppositeDirectionOfUserKing(double x, double y){
+                double Move::goOppositeDirectionOfUserKing   (double x, double y)noexcept{
 //==============================================================================================================
     if(globalType::userKingSideLocation == globalType::engineRightSide)
         return 7.0-x;
@@ -403,7 +410,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
     if(globalType::userKingSideLocation == globalType::engineUpSide)
         return y;
 }
-                double Move::goToSideOfUserKing(double x, double y){
+                double Move::goToSideOfUserKing              (double x, double y)noexcept{
 //==============================================================================================================
     if(globalType::userKingSideLocation == globalType::engineRightSide)
         return x;
@@ -414,7 +421,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
     if(globalType::userKingSideLocation == globalType::engineUpSide)
         return 7.0-y;
 }
-                double Move::separateUserKingFromRestOfBoard(double x, double y){
+                double Move::separateUserKingFromRestOfBoard (double x, double y)noexcept{
 //==============================================================================================================
     if(globalType::userKingSideLocation == globalType::engineRightSide)
         return (x == globalType::userKingX-1.0)? 1.0: 0.0;
@@ -425,7 +432,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
     if(globalType::userKingSideLocation == globalType::engineUpSide)
         return (y == globalType::userKingY+1.0)? 1.0: 0.0;
 }
-                double Move::runSidewaysFromKing(double x, double y){
+                double Move::runSidewaysFromKing             (double x, double y)noexcept{
 //==============================================================================================================
     if(abs(globalType::userKingX - x) <= 1.0 && abs(globalType::userKingY - y) <= 1.0)
         if(globalType::userKingSideLocation % 2)
@@ -441,7 +448,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
     else
         return 0.0;
 }
-                double Move::followUserKingToSide(double x, double y){
+                double Move::followUserKingToSide            (double x, double y)noexcept{
 //==============================================================================================================
     double value{};
 
@@ -498,7 +505,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
         return value/2.0;
     }
 }
-                double Move::followUserKingToCorner(double x, double y){
+                double Move::followUserKingToCorner          (double x, double y)noexcept{
 //==============================================================================================================
     double value{};
 
@@ -536,7 +543,7 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
     }
 
 }
-                double Move::goToCornerOfUserKing(double x, double y){
+                double Move::goToCornerOfUserKing            (double x, double y)noexcept{
 //==============================================================================================================
     if(globalType::userKingCornerLocation == globalType::engineUpRightCorner)
         return (x + 7.0-y)/2.0;
@@ -547,10 +554,10 @@ double Move::findNextMove(globalType::chessboardPointer &wsk_X){//7
     if(globalType::userKingCornerLocation == globalType::engineUpLeftCorner)
         return (7.0-x + 7.0-y)/2.0;
 }
-                //double Move::ooooooo(double x, double y){
+                //double Move::ooooooo                       (double x, double y)noexcept{
 //==============================================================================================================
 //}
-                double Move::makeNothing(double x, double y){
+                double Move::makeNothing                     (double x, double y)noexcept{
 //==============================================================================================================
     return 0.0;
 }
@@ -895,7 +902,7 @@ void Move::makeEngineMoves(globalType::chessboardPointer wsk_X){//6
         throw;
     }
 }
-        void Move::makeEngineMovesIfAllowed(int &y, int &x, globalType::chessboardPointer cOpy){//4###
+        void Move::makeEngineMovesIfAllowed(int &y, int &x, globalType::chessboardPointer cOpy){//4
 //==============================================================================================================
     try{
         if (x < 0 || 7 < x || y < 0 || 7 < y)
@@ -1531,31 +1538,35 @@ globalType::chessboardPointer Move::copyChessboard(const globalType::chessboardP
         throw x;
     }
 }
+void Move::writeChessboard(const globalType::chessboardPointer wsk_X){//0+
+//==============================================================================================================
+    try{
+        if (wsk_X == nullptr)
+            throw std::invalid_argument("Nullptr of the chessboard.");
 
-void Move::wypisz_szachownice(const globalType::chessboardPointer wsk_X)////!!!!!!!!!!!!!!!!!!!!!!!!!!11
-{
-
-    std::cout<<std::string(23,'\333')<<std::endl;
-    std::cout<<"\333\333\333 0 1 2 3 4 5 6 7 \333\333\333"<<std::endl;
-    std::cout<<std::string(23,'\333')<<std::endl;
-    //for(int i=0; i<8; i++)
-    for(int i=7; i>=0; i--)
-    {
-        std::cout<<"\333"<<i<<"\333";
-        for(int j=7; j>=0; j--)
-            std::cout<<' '<<wsk_X[i][j];
-        std::cout<<' ';
-        std::cout<<"\333"<<i<<"\333"<<std::endl;
+        std::cout<<std::string(23,'\333')<<std::endl;
+        std::cout<<std::string(3 ,'\333')<<" 0 1 2 3 4 5 6 7 "<<std::string(3 ,'\333')<<std::endl;
+        std::cout<<std::string(23,'\333')<<std::endl;
+        //for(int i=0; i<8; i++)
+        for(int i=7; i>=0; i--)
+        {
+            std::cout<<"\333"<<i<<"\333";
+            for(int j=7; j>=0; j--)
+                std::cout<<' '<<wsk_X[i][j];
+            std::cout<<' ';
+            std::cout<<"\333"<<i<<"\333"<<std::endl;
+        }
+        std::cout<<std::string(23,'\333')<<std::endl;
+        std::cout<<std::string(3 ,'\333')<<" 0 1 2 3 4 5 6 7 "<<std::string(3 ,'\333')<<std::endl;
+        std::cout<<std::string(23,'\333')<<std::endl;
+//#########################################################################
     }
-    std::cout<<std::string(23,'\333')<<std::endl;
-    std::cout<<"\333\333\333 0 1 2 3 4 5 6 7 \333\333\333"<<std::endl;
-    std::cout<<std::string(23,'\333')<<std::endl;
+    catch(const std::invalid_argument &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
+    }
 }
-
-
-
-
-
 
 
 

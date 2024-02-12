@@ -4,18 +4,19 @@
 #include "Move.h"
 #include "Chessboard.h"//#####################################################
 #include "Notice.h"//#####################################################
+
 class Engine{
-private:Move movement;
+        bool color;
 
         int promotionCode;
         int movementNumber = 0;
-
-        bool color;
 
         std::string userPiecesMovedInOpening;
 
         globalType::chessboardPointer comparativeChessboardPointer;
         globalType::chessboardPointer workingChessboardPointer;
+
+        Move movement;
     //********************************************************************************
 public: Engine(bool k);
 private:    globalType::chessboardPointer loadPiecesArrangement();
