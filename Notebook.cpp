@@ -245,10 +245,10 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
         lastMoveNotation += '=';
         switch(additionalParameter)
         {
-            case 1: lastMoveNotation += 'S'; currentChessboard[moveToY][moveToX] = (engineMove?'S':'s'); break;
-            case 2: lastMoveNotation += 'G'; currentChessboard[moveToY][moveToX] = (engineMove?'G':'g'); break;
-            case 3: lastMoveNotation += 'W'; currentChessboard[moveToY][moveToX] = (engineMove?'W':'w'); break;
-            case 4: lastMoveNotation += 'H'; currentChessboard[moveToY][moveToX] = (engineMove?'H':'h'); break;
+            case 1: lastMoveNotation += globalType::getCommuniqueCotent({38})[0]; currentChessboard[moveToY][moveToX] = (engineMove?'S':'s'); break;
+            case 2: lastMoveNotation += globalType::getCommuniqueCotent({39})[0]; currentChessboard[moveToY][moveToX] = (engineMove?'G':'g'); break;
+            case 3: lastMoveNotation += globalType::getCommuniqueCotent({40})[0]; currentChessboard[moveToY][moveToX] = (engineMove?'W':'w'); break;
+            case 4: lastMoveNotation += globalType::getCommuniqueCotent({41})[0]; currentChessboard[moveToY][moveToX] = (engineMove?'H':'h'); break;
             default: break;
         }
     }
@@ -286,7 +286,7 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
                     break;
                 case 'S': case 's':
                 {
-                    lastMoveNotation += 'S';
+                    lastMoveNotation += globalType::getCommuniqueCotent({38})[0];
 
                     int secondKnightX,
                         secondKnightY;
@@ -323,10 +323,10 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
                     break;
                 }
                 case 'G': case 'g':
-                    lastMoveNotation += 'G';
+                    lastMoveNotation += globalType::getCommuniqueCotent({39})[0];
                     break;
                 case 'W': case 'w':
-                    lastMoveNotation += 'W';
+                    lastMoveNotation += globalType::getCommuniqueCotent({40})[0];
                     if(moveFromY == moveToY)  //horizontal movement
                         for(int i=moveToX+((moveFromX<moveToX)? +1: -1); 0<=i && i<=7; (moveFromX<moveToX)? i++: i--)
                         {
@@ -355,10 +355,10 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
                         }
                     break;
                 case 'H': case 'h':
-                    lastMoveNotation += 'H';
+                    lastMoveNotation += globalType::getCommuniqueCotent({41})[0];
                     break;
                 case 'K': case 'k':
-                    lastMoveNotation += 'K';
+                    lastMoveNotation += globalType::getCommuniqueCotent({42})[0];
                     break;
                 default: std::cout<<">"<<movedPiece<<"<"<<moveFromX<<moveFromY; throw std::invalid_argument("Wrong piece.");///////////////////////////////////////////////////////////////
             }
@@ -787,6 +787,11 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
             case '#': return 66;
             case ' ': return 67;
             case '/': return 68;
+            case '!': return 69;
+            case '?': return 70;
+            case '"': return 71;
+            case ':': return 72;
+            case ';': return 73;
             default: throw std::invalid_argument("Wrong char.");
         }
 //#########################################################################
@@ -848,15 +853,15 @@ std::string Notebook::getChessboardUpdateCode()noexcept{
                 previousChessboard[i][j] = currentChessboard[i][j];
             }
 }
-void Notebook::saveGameInNotebook(){//0+
+std::string Notebook::saveGameInNotebook(){//0+
 //==============================================================================================================
     try{
         auto now = std::chrono::system_clock::now();
         time_t moment_t = std::chrono::system_clock::to_time_t(now);
         std::ostringstream streamOut;
-        streamOut << std::put_time(localtime(&moment_t), "zapis szachowy %Y-%m-%d %H;%M;%S");
-        std::string fileName = streamOut.str();
-        std::ofstream file(fileName);
+        streamOut << std::put_time(localtime(&moment_t), " %Y-%m-%d %H;%M;%S");
+        std::string fileName = globalType::getCommuniqueCotent({44})[0] + streamOut.str();
+        std::ofstream file("saved notations/" + fileName + ".txt");
         if (!file.is_open())
             throw std::ofstream::failure("The file could not be opened for writing.");
         file<<std::put_time(localtime(&moment_t), ">>> %Y-%m-%d %H:%M:%S <<<")<<std::endl;
@@ -864,6 +869,7 @@ void Notebook::saveGameInNotebook(){//0+
         for(auto line: entireNotation)
         file<<line<<std::endl;
         file.close();
+        return "\"" + fileName + "\"";
 //#########################################################################
     }
     catch(const std::ofstream::failure &e){

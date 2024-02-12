@@ -30,7 +30,7 @@ void Game::start(){//*3
         std::vector<std::string> gameMenu = globalType::getCommuniqueCotent({0,1,2,3});
         switch(notice.checkbox(gameMenu))
         {
-            case 1:  userPiecesColorMenu();                  break;
+            case 1:  userPiecesColorMenu();         break;
             case 2:  colorfullElementSettingMenu(); break;
             case 3:  languageSettingMenu();         break;
             case 4:  exitService();                 exit(0);

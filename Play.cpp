@@ -401,7 +401,12 @@ void Play::playWithUser(){//*5
         std::vector<std::string> notationSavingMenu = globalType::getCommuniqueCotent({27,28});
         switch(notice.checkbox(notationSavingMenu))
         {
-           case 1:  notebook.saveGameInNotebook(); break;
+           case 1:
+               chessboard.deleteCheckbox(210, 33, true);
+               notice.communique(globalType::getCommuniqueCotent({43})[0], 700);
+               notice.communique(notebook.saveGameInNotebook(), 1400);
+               chessboard.deleteCommunique(320);
+               break;
            case 2:  break;
            default: throw std::invalid_argument("Option selection error.");
         }

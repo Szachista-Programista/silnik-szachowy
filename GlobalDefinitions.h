@@ -55,9 +55,9 @@ namespace globalType{
         letterHeight           = 9,
         notationLineHeight     = 11,
         communiqueHeight       = 13,
-        numberOfCommuniques    = 38,
-        numberOfChars          = 69,
+        numberOfCommuniques    = 45,
         checkboxHeight         = 73,
+        numberOfChars          = 74,
         columnHeight           = 176,
         columnWidth            = 176,
         chessboardHeight       = 176,
@@ -80,9 +80,7 @@ namespace globalType{
         endgame
     };
     enum KindOfEndgame{
-        twoRooksMate,
-        twoQueensMate,
-        queenAndRookMate,
+        rooksAndQueensMate,
         queenMate,
         rookMate
     };

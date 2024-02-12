@@ -77,6 +77,6 @@ private:        void addNotationArrayContent(std::string content);
                 void rewriteNotationToColumn()noexcept;
 public: std::string getChessboardUpdateCode()noexcept;
 private:    void generateChessboardUpdateCode()noexcept;
-public: void saveGameInNotebook();
+public: std::string saveGameInNotebook();
 };
 #endif//NOTEBOOK_H

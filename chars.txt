@@ -1,5 +1,5 @@
 A-   DDDD   $  XXGGXX  $ XXX  XXX $ XXXXXXXX $DXX    XXD$XXX    XXX$          $          $          $
-B-DDDDDDD $GXXGGGXX$ XXDDDXG$ XX   XX$ XX   XX$XXXXXXXG$        $        $        $
+B-DDDDDDD $GXXGGGXX$ XXDDDXG$ XXGGXDD$ XX   XX$XXXXXXXG$        $        $        $
 C- DDDDDD $XXGGGGXX$XX    GG$XX      $XX    XX$GXXXXXG $        $        $        $
 D-DDDDDD  $GXXGGXXD$ XX   XX$ XX   XX$ XX  DXX$XXXXXXG $        $        $        $
 E-DDDDDDDD$XXGGGGGG$XXDDDDD $XXGGGGG $XX      $XXXXXXXX$        $        $        $
@@ -22,8 +22,8 @@ U-DD    DD$XX    XX$XX    XX$XX    XX$XXD  DXX$ GXXXXG $        $        $      
 V-DD      DD$XXD    DXX$ XXD  DXX $  XX  XX  $  GXDDXG  $   GXXG   $          $          $          $
 W-DD      DD$XX  XX  XX$XX XXXX XX$GXDXGGXDXG$ XXX  XXX $ XX    XX $          $          $          $
 X-DD      DD$GXXD  DXXG$  GXXXXG  $  DXXXXD  $ XXG  GXX $XXG    GXX$          $          $          $
-Y-DD      DD$GXXD  DXXG$  XXDDXX  $   XXXX   $    XX    $    XX    $          $          $          $
-Z-DDDDDDDD$GGGGGGXX$   DXXG $ DXXG   $XXG     $XXXXXXXX$        $        $        $
+Y-DD      DD$ XX    XX $  XXDDXX  $   XXXX   $    XX    $    XX    $          $          $          $
+Z-DDDDDDDD$GGGGGXXX$   DXXG $ DXXG   $XXX     $XXXXXXXX$        $        $        $
 a-        $        $ DXXXDXX$XXG  GXX$XXD  DXX$ GXXXGXX$        $        $        $
 b-DD      $XX      $XXDXXXD $XXG  GXX$XXD  DXX$XXGXXXG $        $        $        $
 c-       $       $ DXXXXD$XXG  GG$XXD  DD$ GXXXXG$       $       $       $
@@ -67,3 +67,8 @@ z-        $        $XXXXXXXX$   DDXGG$DXXGG   $XXXXXXXX$        $        $      
 #-   D   D  $DDXXDDXXDD$ GXXGGXXG $  XX  XX  $GXXXXXXXXG$  GX  GX  $          $          $          $
  -      $      $      $      $      $      $      $      $      $
 /-    XX$   XX $  DXG $  XX  $ XX   $DXG   $GG    $      $      $
+!- DD $XXXX$XXXX$ XX $ GG $DXXD$GXXG$    $    $
+?- DXXXXD $XXG  GXX$GG   DXX$  DXXGG $  GG    $ DXXD   $ GXXG   $        $        $
+"-       $XXX XXX$XXX XXX$ G   G $       $       $       $       $       $
+:-    $DXXD$GXXG$    $DXXD$GXXG$    $    $    $
+;-    $DXXD$GXXG$    $DXXD$GXXX$DDXG$    $    $

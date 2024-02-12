@@ -328,6 +328,10 @@ double Move::findNextMove                          (globalType::chessboardPointe
             {
                 switch(wsk_X[i][j])
                 {
+                    case ' ': break;
+                    case 'k': break;
+                    case 'K': break;
+
                     case 'p': materialStatus += /*(i==6)? -pawnValue :*/ -pawnValue; break;
                     case 's': materialStatus += (i==0 || i==7 || j==0 || j==7)? -sideKnightValue : -knightValue; break;
                     case 'g': materialStatus += (i==0 || i==7 || j==0 || j==7)? -sideBishopValue : -bishopValue; break;
@@ -372,6 +376,8 @@ double Move::findNextMove                          (globalType::chessboardPointe
             {
                 switch(wsk_X[i][j])
                 {
+                    case ' ': break;
+
                     case 'p': materialStatus += -pawnValue;   break;
                     case 's': materialStatus += -knightValue; break;
                     case 'g': materialStatus += -bishopValue; break;

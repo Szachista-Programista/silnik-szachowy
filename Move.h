@@ -6,14 +6,17 @@ class Move{
     friend class Engine;
 
     bool color;
+
     bool engineKingMoved;
     bool engineLeftRookMoved;
     bool engineRightRookMoved;
     bool userKingMoved;
     bool userLeftRookMoved;
     bool userRightRookMoved;
+
     bool engineKingChecked;
     bool userKingChecked;
+
     bool gameOverEngineWin         = false;
     bool gameOverUserWin           = false;
     bool gameOverStalemateByEngine = false;

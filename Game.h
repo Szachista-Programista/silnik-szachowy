@@ -5,9 +5,10 @@
 #include "Play.h"
 
 class Game{
-private:Chessboard chessboard;
-        Notice notice;
         bool pastFirstPlay = false;
+
+        Chessboard chessboard;
+        Notice notice;
 //********************************************************************************
 public: Game();
         void start();

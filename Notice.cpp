@@ -159,6 +159,11 @@ void Notice::communique(std::string text, int milliseconds){//*3
             case '#': return 66;
             case ' ': return 67;
             case '/': return 68;
+            case '!': return 69;
+            case '?': return 70;
+            case '"': return 71;
+            case ':': return 72;
+            case ';': return 73;
             default: throw std::invalid_argument("Wrong char.");
         }
 //#########################################################################
@@ -323,6 +328,7 @@ int Notice::checkbox(std::vector<std::string> options){//3
             case '8':
             case '9':
             case '+':
+            case '?':
                 return 8;
             case 'c':
             case 'e':
@@ -330,6 +336,7 @@ int Notice::checkbox(std::vector<std::string> options){//3
             case 't':
             case '-':
             case '=':
+            case '"':
                 return 7;
             case 'I':
             case 'j':
@@ -340,6 +347,9 @@ int Notice::checkbox(std::vector<std::string> options){//3
             case 'i':
             case 'l':
             case '.':
+            case '!':
+            case ':':
+            case ';':
                 return 4;
             default:
                 throw std::invalid_argument("Wrong char.");
