@@ -47,9 +47,12 @@ class Move{
             double beginningSearchingTreeService (globalType::chessboardPointer &wsk_X);
                 Move(Move* wskaznik,double &status_materialny,globalType::chessboardPointer wsk_X, int iteration);
                     void rewriteKingsAndRooksMovesData(Move* wsk);
-                void checkmateAndStalemateSearching  (globalType::chessboardPointer &wsk_X, int &index);
-                    void checkIfGameFinishedByUser   (globalType::chessboardPointer &wsk_X);
-                    void checkIfGameFinishedByEngine (globalType::chessboardPointer &wsk_X, int &index);
+                void checkmateAndStalemateSearching                    (globalType::chessboardPointer &wsk_X, int &index);
+                    void insufficientMaterialServiceAfterUserMove      (globalType::chessboardPointer  wsk_X);
+                        bool checkIfGameFinishedByInsufficientMaterial (globalType::chessboardPointer  wsk_X);
+                    void insufficientMaterialServiceAfterEngineMove    (globalType::chessboardPointer  wsk_X);
+                    void checkIfGameFinishedByUser                     (globalType::chessboardPointer &wsk_X);
+                    void checkIfGameFinishedByEngine                   (globalType::chessboardPointer &wsk_X, int &index);
             double endingSearchingTreeService();
                 double countMiddlegameMaterialStatus (const globalType::chessboardPointer wsk_X);
                 double countEndgameMaterialStatus    (const globalType::chessboardPointer wsk_X);

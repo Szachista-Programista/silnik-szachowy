@@ -2,14 +2,15 @@
 #define ENGINE_H
 #include <cmath>
 #include "Move.h"
-#include "Chessboard.h"//#####################################################
-#include "Notice.h"//#####################################################
 
 class Engine{
         bool color;
 
         int promotionCode;
         int movementNumber = 0;
+public://#####################
+        std::vector<globalType::chessboardPointer>arrangements;
+        std::vector<uint64_t>controlNumbersOfArrangements;
 
         std::string userPiecesMovedInOpening;
 
@@ -21,7 +22,8 @@ class Engine{
 public: Engine(bool k);
 private:    globalType::chessboardPointer loadPiecesArrangement();
 public:~Engine()noexcept;
-        bool canUserMakeSuchMove(int userMoveCode);
+private:    void clearArrangements()noexcept;
+public: bool canUserMakeSuchMove(int userMoveCode);
 private:    void decipherUserMove(int userMoveCode);
             bool isPieceOfUserOnStartingSquare();
             bool isPieceOfUserOnFinalSquare();
@@ -30,6 +32,12 @@ private:    void decipherUserMove(int userMoveCode);
 public: int makeMove(int userMoveCode);
 private:    void getEngineReadyForMove(int userMoveCode);
                 void markUserMoveOnChessboard(int userMoveCode);
+            void arrangementServiceAfterUserMove(int userMoveCode);
+                void setArrangements(globalType::chessboardPointer wsk_X);
+                bool checkIfArrangementRepeatedThirdTime();
+                    bool checkIfControlNumberRepeatedThirdTime();
+                    bool compareChessboards(globalType::chessboardPointer A, globalType::chessboardPointer B);
+            void arrangementServiceAfterEngineMove();
             void makeOpeningMove()noexcept;
                 void blackOpeningMove()noexcept;
                 void whiteOpeningMove()noexcept;
@@ -40,14 +48,16 @@ private:    void getEngineReadyForMove(int userMoveCode);
                     void setUserKingSideLocation();
                     void setUserKingCornerLocation();
             void makeEndgameMove();
-                void makeRooksAndQueensMateMove();
-                void makeRookMateMove();
-                void makeQueenMateMove();
+                void makeRooksAndQueensMateMove()noexcept;
+                void makeSingleRookOrQueenMateMove()noexcept;
             int engineMoveCoding()noexcept;
                 void findEngineMove()noexcept;
                 int  encodeEngineMove()noexcept;
                 void markEngineMoveOnChessboard()noexcept;
                 int  isItGameOver()noexcept;
+
+
+public://#####################
     //********************************************************************************************
         struct Movement{
             int fromX,

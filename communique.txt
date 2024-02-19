@@ -21,9 +21,9 @@ To pole nie nalezy do ciebie.$This square does not belong to you.$
 1. kontynuuj$1. continue$
 3. zakoncz partie$3. quit the game$
 WYGRALES...$YOU WON...$
-Spowodowales pata...$You caused a stalemate...$
+Remis...$Stalemate...$
 PRZEGRALES...$YOU LOSE...$
-Maszyna spowodowala pata...$The engine caused a stalemate...$
+###$###$
 Czy zapisac notacje?$Do you want to save the notations?$
 1. Tak$1. Yes$
 2. Nie$2. No$

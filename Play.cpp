@@ -349,7 +349,7 @@ void Play::playWithUser(){//*5
         updateChessboard(currentChessboardUpdateCode, true);
         engineMoveUnderlighted = true;
         previousChessboardUpdateCode = currentChessboardUpdateCode;
-        return !isItGameover();
+        return ( ! isItGameover());
 //#########################################################################
     }
     catch(globalType::errorType &e){
@@ -375,7 +375,7 @@ void Play::playWithUser(){//*5
                 notice.communique(globalType::getCommuniqueCotent({24})[0]);
                 break;
             case 9:
-                notice.communique(globalType::getCommuniqueCotent({25})[0]);
+                notice.communique(globalType::getCommuniqueCotent({23})[0]);
                 break;
             default: throw std::invalid_argument("Wrong additional parameter.");
         }

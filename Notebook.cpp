@@ -147,7 +147,7 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
         moveFromX  = moveCode % 10;
         moveCode /=10;
         additionalParameter = moveCode;
-        if(6<=additionalParameter && additionalParameter<=9)
+        if(6 <= additionalParameter && additionalParameter <= 9)
             gameOver = true;
         if (moveFromX < 0 || 7 < moveFromX || moveFromY < 0 || 7 < moveFromY || moveToX < 0 || 7 < moveToX || moveToY < 0 || 7 < moveToY)
             throw std::invalid_argument("Movement coordinates out of range.");

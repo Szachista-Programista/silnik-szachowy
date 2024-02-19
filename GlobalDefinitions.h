@@ -26,7 +26,6 @@
 namespace globalType{
 
     extern double(*userKingBehaviorPoints1)   (double,double);
-    extern double(*userKingBehaviorPoints2)   (double,double);
     extern double(*engineKnightBehaviorPoints)(double,double);
     extern double(*engineBishopBehaviorPoints)(double,double);
     extern double(*engineRookBehaviorPoints1) (double,double);
@@ -36,7 +35,6 @@ namespace globalType{
     extern double(*engineKingBehaviorPoints)  (double,double);
 
     extern double *userKingBehaviorPriority1;
-    extern double *userKingBehaviorPriority2;
     extern double *engineKnightBehaviorPriority;
     extern double *engineBishopBehaviorPriority;
     extern double *engineRookBehaviorPriority1;
@@ -81,8 +79,7 @@ namespace globalType{
     };
     enum KindOfEndgame{
         rooksAndQueensMate,
-        queenMate,
-        rookMate
+        rookOrQueenMate
     };
     enum UserKingSideLocation{
         engineRightSide,

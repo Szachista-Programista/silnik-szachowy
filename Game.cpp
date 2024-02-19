@@ -158,11 +158,6 @@ void Game::start(){//*3
         systemInfo::setCursorPosition(0, globalType::chessboardHeight);
 //#########################################################################
     }
-    catch(const std::invalid_argument &e){
-        globalType::errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
-        throw x;
-    }
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;

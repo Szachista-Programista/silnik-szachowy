@@ -2,7 +2,6 @@
 
 namespace globalType{
     double(*userKingBehaviorPoints1)   (double,double);
-    double(*userKingBehaviorPoints2)   (double,double);
     double(*engineKnightBehaviorPoints)(double,double);
     double(*engineBishopBehaviorPoints)(double,double);
     double(*engineRookBehaviorPoints1) (double,double);
@@ -12,7 +11,6 @@ namespace globalType{
     double(*engineKingBehaviorPoints)  (double,double);
 
     double *userKingBehaviorPriority1;
-    double *userKingBehaviorPriority2;
     double *engineKnightBehaviorPriority;
     double *engineBishopBehaviorPriority;
     double *engineRookBehaviorPriority1;

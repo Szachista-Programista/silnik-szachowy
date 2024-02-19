@@ -194,29 +194,128 @@ double Move::findNextMove                          (globalType::chessboardPointe
         throw x;
     }
 }
-            void Move::checkmateAndStalemateSearching  (globalType::chessboardPointer &wsk_X, int &index){//2
+            void Move::checkmateAndStalemateSearching                    (globalType::chessboardPointer &wsk_X, int &index){//2
 //==============================================================================================================
     try{
+        if (wsk_X == nullptr)
+            throw std::invalid_argument("Nullptr of wsk_X pointer.");
         if(movementGeneration == 0)
         {
-            checkIfGameFinishedByUser(wsk_X);
+            insufficientMaterialServiceAfterUserMove(wsk_X);
+            if( ! gameOver)
+                checkIfGameFinishedByUser(wsk_X);
             delete[]wsk_X;
             wsk_X = nullptr;
             if( ! gameOver)
                 checkIfGameFinishedByEngine(wsk_X, index);
-            if(wsk_X == nullptr && movements.size() != 0)
+            if( ! gameOver)
+            {
                 wsk_X = copyChessboard(movements[index][0]);
+                insufficientMaterialServiceAfterEngineMove(wsk_X);
+            }
         }
 //#########################################################################
+    }
+    catch(const std::invalid_argument &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
     }
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-                void Move::checkIfGameFinishedByUser   (globalType::chessboardPointer &wsk_X){//1
+                void Move::insufficientMaterialServiceAfterUserMove      (globalType::chessboardPointer  wsk_X){//1
 //==============================================================================================================
     try{
+        if (wsk_X == nullptr)
+            throw std::invalid_argument("Nullptr of wsk_X pointer.");
+        if(checkIfGameFinishedByInsufficientMaterial(wsk_X))
+        {
+            gameOver = true;
+            gameOverStalemateByUser = true;
+        }
+//#########################################################################
+    }
+    catch(const std::invalid_argument &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
+    }
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
+        throw;
+    }
+}
+                    bool Move::checkIfGameFinishedByInsufficientMaterial (globalType::chessboardPointer  wsk_X){//0+
+//==============================================================================================================
+    try{
+        if (wsk_X == nullptr)
+            throw std::invalid_argument("Nullptr of wsk_X pointer.");
+        int nrOfKnights     {};
+        int nrOfBishops     {};
+        int nrOfOtherPieces {};
+
+        for(int i=0; i<8; i++)
+            for(int j=0; j<8; j++)
+                switch(wsk_X[i][j])
+                {
+                    case ' ':                    break;
+                    case 's':
+                    case 'S': nrOfKnights++;     break;
+                    case 'g':
+                    case 'G': nrOfBishops++;     break;
+                    case 'p':
+                    case 'P':
+                    case 'w':
+                    case 'W':
+                    case 'h':
+                    case 'H':
+                    case 'k':
+                    case 'K': nrOfOtherPieces++; break;
+                    default: throw std::invalid_argument("Wrong char.");
+                }
+        if(2 < nrOfOtherPieces) return false;
+        else if(nrOfKnights == 1 && nrOfBishops == 0) return true;
+        else if(nrOfKnights == 0 && nrOfBishops == 1) return true;
+        else if(nrOfKnights == 0 && nrOfBishops == 0) return true;
+        else return false;
+//#########################################################################
+    }
+    catch(const std::invalid_argument &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
+    }
+}
+                void Move::insufficientMaterialServiceAfterEngineMove    (globalType::chessboardPointer  wsk_X){//1
+//==============================================================================================================
+    try{
+        if (wsk_X == nullptr)
+            throw std::invalid_argument("Nullptr of wsk_X pointer.");
+        if(checkIfGameFinishedByInsufficientMaterial(wsk_X))
+        {
+            gameOver = true;
+            gameOverStalemateByEngine = true;
+        }
+//#########################################################################
+    }
+    catch(const std::invalid_argument &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
+    }
+    catch(globalType::errorType &e){
+        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
+        throw;
+    }
+}
+                void Move::checkIfGameFinishedByUser                     (globalType::chessboardPointer &wsk_X){//1
+//==============================================================================================================
+    try{
+        if (wsk_X == nullptr)
+            throw std::invalid_argument("Nullptr of wsk_X pointer.");
         if(movements.size()==0)
         {
             if(checkIfEngineSquareCaptured(engineKingLocationX, engineKingLocationY, wsk_X))
@@ -232,12 +331,17 @@ double Move::findNextMove                          (globalType::chessboardPointe
         }
 //#########################################################################
     }
+    catch(const std::invalid_argument &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
+    }
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-                void Move::checkIfGameFinishedByEngine (globalType::chessboardPointer &wsk_X, int &index){//1
+                void Move::checkIfGameFinishedByEngine                   (globalType::chessboardPointer &wsk_X, int &index){//1
 //==============================================================================================================
     try{
         for(int i=0, j=0; i<movements.size(); i++)
@@ -383,8 +487,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
                     case 'g': materialStatus += -bishopValue; break;
                     case 'w': materialStatus += -rookValue;   break;
                     case 'h': materialStatus += -queenValue;  break;
-                    case 'k': materialStatus +=                *globalType::userKingBehaviorPriority1    * globalType::userKingBehaviorPoints1(j,i);
-                                                             /*+ *globalType::userKingBehaviorPriority2    * globalType::userKingBehaviorPoints2(j,i);*/break;
+                    case 'k': materialStatus +=                *globalType::userKingBehaviorPriority1    * globalType::userKingBehaviorPoints1(j,i);    break;
                     case 'P': materialStatus +=  pawnValue;   break;
                     case 'S': materialStatus +=  knightValue + *globalType::engineKnightBehaviorPriority * globalType::engineKnightBehaviorPoints(j,i); break;
                     case 'G': materialStatus +=  bishopValue + *globalType::engineBishopBehaviorPriority * globalType::engineBishopBehaviorPoints(j,i); break;
@@ -462,7 +565,9 @@ double Move::findNextMove                          (globalType::chessboardPointe
     {
         value += 7.0 - abs(globalType::userKingY       - y);
         value += 7.0 - abs(globalType::userKingX - 2.0 - x);
-        if(globalType::userKingX <= x)
+        if(globalType::userKingX-2 > x)
+            value += -1.0;
+        if(globalType::userKingX < x)
         {
             if(globalType::userKingY == y)
                 value += -4.0;
@@ -475,7 +580,9 @@ double Move::findNextMove                          (globalType::chessboardPointe
     {
         value += 7.0 - abs(globalType::userKingY - 2.0 - y);
         value += 7.0 - abs(globalType::userKingX       - x);
-        if(globalType::userKingY <= y)
+        if(globalType::userKingY-2 > y)
+            value += -1.0;
+        if(globalType::userKingY < y)
         {
             if(globalType::userKingX == x)
                 value += -4.0;
@@ -488,7 +595,9 @@ double Move::findNextMove                          (globalType::chessboardPointe
     {
         value += 7.0 - abs(globalType::userKingY       - y);
         value += 7.0 - abs(globalType::userKingX + 2.0 - x);
-        if(globalType::userKingX >= x)
+        if(globalType::userKingX+2 < x)
+            value += -1.0;
+        if(globalType::userKingX > x)
         {
             if(globalType::userKingY == y)
                 value += -4.0;
@@ -501,7 +610,9 @@ double Move::findNextMove                          (globalType::chessboardPointe
     {
         value += 7.0 - abs(globalType::userKingY + 2.0 - y);
         value += 7.0 - abs(globalType::userKingX       - x);
-        if(globalType::userKingY >= y)
+        if(globalType::userKingY+2 < y)
+            value += -1.0;
+        if(globalType::userKingY > y)
         {
             if(globalType::userKingX == x)
                 value += -4.0;
@@ -519,32 +630,24 @@ double Move::findNextMove                          (globalType::chessboardPointe
     {
         value += 7.0 - abs(globalType::userKingY + 1.0 - y);
         value += 7.0 - abs(globalType::userKingX - 1.0 - x);
-        if((x == globalType::userKingX || x+1 == globalType::userKingX) && (y == globalType::userKingY || y-1 == globalType::userKingY))
-            value += 2.0;
         return value/2.0;
     }
     if(globalType::userKingCornerLocation == globalType::engineDownRightCorner)
     {
         value += 7.0 - abs(globalType::userKingY - 1.0 - y);
         value += 7.0 - abs(globalType::userKingX - 1.0 - x);
-        if((x == globalType::userKingX || x+1 == globalType::userKingX) && (y == globalType::userKingY || y+1 == globalType::userKingY))
-            value += 2.0;
         return value/2.0;
     }
     if(globalType::userKingCornerLocation == globalType::engineDownLeftCorner)
     {
         value += 7.0 - abs(globalType::userKingY - 1.0 - y);
         value += 7.0 - abs(globalType::userKingX + 1.0 - x);
-        if((x == globalType::userKingX || x-1 == globalType::userKingX) && (y == globalType::userKingY || y+1 == globalType::userKingY))
-            value += 2.0;
         return value/2.0;
     }
     if(globalType::userKingCornerLocation == globalType::engineUpLeftCorner)
     {
         value += 7.0 - abs(globalType::userKingY + 1.0 - y);
         value += 7.0 - abs(globalType::userKingX + 1.0 - x);
-        if((x == globalType::userKingX || x-1 == globalType::userKingX) && (y == globalType::userKingY || y-1 == globalType::userKingY))
-            value += 2.0;
         return value/2.0;
     }
 
@@ -560,9 +663,6 @@ double Move::findNextMove                          (globalType::chessboardPointe
     if(globalType::userKingCornerLocation == globalType::engineUpLeftCorner)
         return (7.0-x + 7.0-y)/2.0;
 }
-                //double Move::ooooooo                       (double x, double y)noexcept{
-//==============================================================================================================
-//}
                 double Move::makeNothing                     (double x, double y)noexcept{
 //==============================================================================================================
     return 0.0;
