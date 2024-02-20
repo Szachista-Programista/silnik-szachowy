@@ -6,8 +6,8 @@ Notebook::Notebook(bool k): color{k}{//1
         currentChessboard  = loadPiecesArrangement();
         previousChessboard = loadPiecesArrangement();
         loadChars();
-//#########################################################################
     }
+//#########################################################################
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
@@ -52,8 +52,8 @@ Notebook::Notebook(bool k): color{k}{//1
         }
         reading.close();
         return chessboard;
-//#########################################################################
     }
+//#########################################################################
     catch(const std::ifstream::failure &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -80,18 +80,16 @@ Notebook::Notebook(bool k): color{k}{//1
                 throw std::ifstream::failure("Error reading character from 'chars.txt' file .");
             charArray.erase(0, 2);
             for(int j=0, k=0; j<globalType::letterHeight; j++, k++)
-            {
                 for(; charArray[k] != '$'; k++)
                 {
                     if (k >= charArray.size())
                         throw std::ifstream::failure("Unexpected line ending in 'chars.txt' file.");
                     pixelArtCharacterArray[i][j] += charArray[k];
                 }
-            }
         }
         reading.close();
-//#########################################################################
     }
+//#########################################################################
     catch(const std::ifstream::failure &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -103,21 +101,21 @@ Notebook::~Notebook()noexcept{
     delete[]currentChessboard;
     delete[]previousChessboard;
 }
-void Notebook::generateAndWriteNotation(int moveCode){//*5
+void Notebook::generateAndWriteNotation  (int moveCode){//*5
 //==============================================================================================================
     try{
         updateParameterValues(moveCode);
         markMoveAndWriteNotation();
         updateEntireNotation();
         writeNotation();
-//#########################################################################
     }
+//#########################################################################
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-    void Notebook::updateParameterValues(int moveCode){//1
+    void Notebook::updateParameterValues (int moveCode){//1
 //==============================================================================================================
     try{
         lastMoveNotation.clear();
@@ -128,8 +126,8 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
         moveMarked = false;
         decipherMoveCode();
         updateKingsLocation();
-//#########################################################################
     }
+//#########################################################################
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
@@ -150,10 +148,10 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
         if(6 <= additionalParameter && additionalParameter <= 9)
             gameOver = true;
         if (moveFromX < 0 || 7 < moveFromX || moveFromY < 0 || 7 < moveFromY || moveToX < 0 || 7 < moveToX || moveToY < 0 || 7 < moveToY)
-            throw std::invalid_argument("Movement coordinates out of range.");
-//#########################################################################
+            throw std::runtime_error("Movement coordinates out of range.");
     }
-    catch(const std::invalid_argument &e){
+//#########################################################################
+    catch(const std::runtime_error &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -189,8 +187,8 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
              lastMoveNotation += '#';
         else if(isThereCheck())
             lastMoveNotation += '+';
-//#########################################################################
     }
+//#########################################################################
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
@@ -360,7 +358,7 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
                 case 'K': case 'k':
                     lastMoveNotation += globalType::getCommuniqueCotent({42})[0];
                     break;
-                default: std::cout<<">"<<movedPiece<<"<"<<moveFromX<<moveFromY; throw std::invalid_argument("Wrong piece.");///////////////////////////////////////////////////////////////
+                default: std::cout<<">"<<movedPiece<<"<"<<moveFromX<<moveFromY; throw std::runtime_error("Wrong piece.");///////////////////////////////////////////////////////////////
             }
             if(moveWithCapture)
                 lastMoveNotation += 'x';
@@ -368,9 +366,9 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
             currentChessboard[moveToY][moveToX] = movedPiece;
             currentChessboard[moveFromY][moveFromX]   = ' ';
         }
-//#########################################################################
     }
-    catch(const std::invalid_argument &e){
+//#########################################################################
+    catch(const std::runtime_error &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -397,8 +395,8 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
             coordinates += std::to_string(abs(y-8));
         }
         return coordinates;
-//#########################################################################
     }
+//#########################################################################
     catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -504,8 +502,8 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
                 entireNotation.push_back(note.str());
             }
         }
-//#########################################################################
     }
+//#########################################################################
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
@@ -529,11 +527,11 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
             case 9:// stalemate by engine
                 gameResult = "1/2-1/2";
                 break;
-            default: throw std::invalid_argument("Wrong additional parameter.");
+            default: throw std::runtime_error("Wrong additional parameter.");
         }
-//#########################################################################
     }
-    catch(const std::invalid_argument &e){
+//#########################################################################
+    catch(const std::runtime_error &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -551,8 +549,8 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
         if (index_plusa == std::string::npos)
             throw std::runtime_error("The '+' sign was not found in the edited text fragment.");
         entireNotation[index_edytowanego_stringa][index_plusa] = '#';
-//#########################################################################
     }
+//#########################################################################
     catch(const std::runtime_error &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -589,8 +587,8 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
                 writeNotation();
             }
         }
-//#########################################################################
     }
+//#########################################################################
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
@@ -623,8 +621,8 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
             systemInfo::setCursorPosition(x, y+i);
             std::cout<<notationColumnArray[previousNotationColumn][y+i];
         }
-//#########################################################################
     }
+//#########################################################################
     catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -646,8 +644,8 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
         clearNotationColumn(2);
         previousNotationColumn--;
         currentNotationColumn--;
-//#########################################################################
     }
+//#########################################################################
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
@@ -662,8 +660,8 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
             throw std::invalid_argument("Wrong patternIndex.");
         for(int i=0; i<globalType::columnHeight; i++)
             notationColumnArray[copyIndex][i] = notationColumnArray[patternIndex][i];
-//#########################################################################
     }
+//#########################################################################
     catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -677,8 +675,8 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
             throw std::invalid_argument("Wrong column.");
         for(int i=0; i<globalType::columnHeight; i++)
             notationColumnArray[columnNumber][i].clear();
-//#########################################################################
     }
+//#########################################################################
     catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -688,6 +686,8 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
             void Notebook::writeNotationColumn(int columnNumber){//*0
 //==============================================================================================================
     try{
+        if(columnNumber<0 || 2<columnNumber)
+            throw std::invalid_argument("Wrong column.");
         int x = globalType::chessboardwidth + columnNumber*globalType::columnWidth;
         for(int i=0; i<globalType::columnHeight; i++)
         {
@@ -697,7 +697,12 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
             std::cout<<notationColumnArray[columnNumber][i];
         }
         systemInfo::setConsoleColor(globalType::white);
+    }
 //#########################################################################
+    catch(const std::invalid_argument &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
     }
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
@@ -707,13 +712,20 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
             void Notebook::clearNotationColumn(int columnNumber){//*0
 //==============================================================================================================
     try{
+        if(columnNumber<0 || 2<columnNumber)
+            throw std::invalid_argument("Wrong column.");
         int x = globalType::chessboardwidth + columnNumber*globalType::columnWidth;
         for(int i=0; i<globalType::columnHeight; i++)
         {
             systemInfo::setCursorPosition(x, i);
             std::cout<<std::string(globalType::columnWidth, ' ');
         }
+    }
 //#########################################################################
+    catch(const std::invalid_argument &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
     }
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
@@ -729,8 +741,8 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
             for(int i=0; i<globalType::letterHeight; i++)
                 notationArray[i] += ' ';
         }
-//#########################################################################
     }
+//#########################################################################
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
@@ -743,22 +755,18 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
         int charWidth = pixelArtCharacterArray[charIndex][0].size();
 
         for(int i=0; i<globalType::letterHeight; i++)
-        {
             for(int j=0; j<charWidth; j++)
-            {
                 switch(pixelArtCharacterArray[charIndex][i][j])
                 {
                     case ' ': notationArray[i] += ' '   ; break;
                     case 'X': notationArray[i] += '\333'; break;
                     case 'D': notationArray[i] += '\334'; break;
                     case 'G': notationArray[i] += '\337'; break;
-                    default : throw std::invalid_argument("Error in 'chars.txt' file content.");
+                    default : throw std::runtime_error("Error in 'chars.txt' file content.");
                 }
-            }
-        }
-//#########################################################################
     }
-    catch(const std::invalid_argument &e){
+//#########################################################################
+    catch(const std::runtime_error &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -792,11 +800,11 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
             case '"': return 71;
             case ':': return 72;
             case ';': return 73;
-            default: throw std::invalid_argument("Wrong char.");
+            default: throw std::runtime_error("Wrong char.");
         }
-//#########################################################################
     }
-    catch(const std::invalid_argument &e){
+//#########################################################################
+    catch(const std::runtime_error &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -820,8 +828,8 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
         }
         if(backlight)
             systemInfo::setConsoleColor(globalType::white);
-//#########################################################################
     }
+//#########################################################################
     catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -832,12 +840,12 @@ void Notebook::generateAndWriteNotation(int moveCode){//*5
         throw;
     }
 }
-        void Notebook::rewriteNotationToColumn()noexcept{
+        void Notebook::rewriteNotationToColumn ()noexcept{
 //==============================================================================================================
     for(int i=0; i<globalType::letterHeight; i++)
         notationColumnArray[currentNotationColumn][currentNotationLine * globalType::notationLineHeight + i] = notationArray[i];
 }
-std::string Notebook::getChessboardUpdateCode()noexcept{
+std::string Notebook::getChessboardUpdateCode  ()noexcept{
 //==============================================================================================================
     chessboardUpdateCode.clear();
     generateChessboardUpdateCode();
@@ -870,8 +878,8 @@ std::string Notebook::saveGameInNotebook(){//0+
         file<<line<<std::endl;
         file.close();
         return "\"" + fileName + "\"";
-//#########################################################################
     }
+//#########################################################################
     catch(const std::ofstream::failure &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();

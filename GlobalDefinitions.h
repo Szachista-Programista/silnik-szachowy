@@ -53,7 +53,7 @@ namespace globalType{
         letterHeight           = 9,
         notationLineHeight     = 11,
         communiqueHeight       = 13,
-        numberOfCommuniques    = 45,
+        numberOfCommuniques    = 48,
         checkboxHeight         = 73,
         numberOfChars          = 74,
         columnHeight           = 176,

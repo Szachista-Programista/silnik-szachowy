@@ -53,8 +53,8 @@ namespace globalType{
         notation           = static_cast<Color>    (data[2]-'0');
         underlightedSquare = static_cast<Color>    (data[3]-'0');
         chsenOption        = static_cast<Color>    (data[4]-'0');
-//#########################################################################
     }
+//#########################################################################
     catch(const std::ifstream::failure &e){
         errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -77,8 +77,8 @@ namespace globalType{
 
         file << data;
         file.close();
-//#########################################################################
     }
+//#########################################################################
     catch(const std::ofstream::failure &e){
         errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -107,8 +107,8 @@ namespace globalType{
                 }
         }
         reading.close();
-//#########################################################################
     }
+//#########################################################################
     catch(const std::ifstream::failure &e){
         errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -125,8 +125,8 @@ namespace globalType{
             result.push_back(communiquesArray[index][setLanguage]);
         }
         return result;
-//#########################################################################
     }
+//#########################################################################
     catch(const std::invalid_argument &e){
         errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -147,7 +147,7 @@ namespace systemInfo {
                 case globalType::green: SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 2);  break;
                 case globalType::yellow:SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 6);  break;
                 case globalType::blue:  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 1);  break;
-                default:    throw std::invalid_argument("Unknown color.");
+                default:    throw std::runtime_error("Unknown color.");
             }
         #elif __APPLE__
                 switch(color)
@@ -157,7 +157,7 @@ namespace systemInfo {
                 case globalType::green: std::cout << "\033[32m";  break;
                 case globalType::yellow:std::cout << "\033[33m";  break;
                 case globalType::blue:  std::cout << "\033[34m";  break;
-                default:    throw std::invalid_argument("Unknown color.");
+                default:    throw std::runtime_error("Unknown color.");
             }
         #elif __linux__
                 switch(color)
@@ -167,14 +167,14 @@ namespace systemInfo {
                 case globalType::green: std::cout << "\033[32m";  break;
                 case globalType::yellow:std::cout << "\033[33m";  break;
                 case globalType::blue:  std::cout << "\033[34m";  break;
-                default:    throw std::invalid_argument("Unknown color.");
+                default:    throw std::runtime_error("Unknown color.");
             }
         #else
             #error the program only supports(Windosw/Mac_OS/Linux)
         #endif
-//#########################################################################
     }
-    catch(const std::invalid_argument &e){
+//#########################################################################
+    catch(const std::runtime_error &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -198,9 +198,14 @@ namespace systemInfo {
         #else
             #error the program only supports(Windosw/Mac_OS/Linux)
         #endif
-//#########################################################################
     }
+//#########################################################################
     catch(const std::invalid_argument &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
+    }
+    catch(const std::runtime_error &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -238,8 +243,8 @@ namespace systemInfo {
         #else
             #error the program only supports(Windosw/Mac_OS/Linux)
         #endif
-//#########################################################################
     }
+//#########################################################################
     catch(const std::runtime_error &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -272,8 +277,8 @@ namespace systemInfo {
         #else
             #error the program only supports(Windosw/Mac_OS/Linux)
         #endif
-//#########################################################################
     }
+//#########################################################################
     catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -281,6 +286,19 @@ namespace systemInfo {
     }
 }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

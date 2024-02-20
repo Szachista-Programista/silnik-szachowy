@@ -5,8 +5,8 @@ Chessboard::Chessboard(bool k): color{k}{//3
     try{
         loadPiecesArray();
         loadChessboardArray();
-//#########################################################################
     }
+//#########################################################################
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
@@ -23,8 +23,8 @@ Chessboard::Chessboard(bool k): color{k}{//3
             if (!getline(reading, piecesArray[i]))
                 throw std::ifstream::failure("Error reading character from 'pieces.txt' file.");
         reading.close();
-//#########################################################################
     }
+//#########################################################################
     catch(const std::ifstream::failure &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -37,8 +37,8 @@ Chessboard::Chessboard(bool k): color{k}{//3
         loadChessboard();
         loadCoodinates();
         loadPieces();
-//#########################################################################
     }
+//#########################################################################
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
@@ -92,8 +92,8 @@ Chessboard::Chessboard(bool k): color{k}{//3
             loadSingeCoordinateChar(6,   y, coordinates[i]);
             loadSingeCoordinateChar(402, y, coordinates[i]);
         }
-//#########################################################################
     }
+//#########################################################################
     catch(const std::ifstream::failure &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -113,19 +113,22 @@ Chessboard::Chessboard(bool k): color{k}{//3
             throw std::invalid_argument("Error in line length of 'coordinatesChars.txt' file.");
         for(int i=0, y=coordY; i<40; y++ )
             for(int x=coordX; x<coordX+8; i++, x++)
-            {
                 switch(cHar[i])
                 {
                     case 'X': chessboardArray[y][x] = '\333'; break;
                     case 'D': chessboardArray[y][x] = '\334'; break;
                     case 'G': chessboardArray[y][x] = '\337'; break;
                     case ' ':                                 break;
-                    default : throw std::invalid_argument("Error in 'coordinatesChars.txt' file content.");
+                    default : throw std::runtime_error("Error in 'coordinatesChars.txt' file content.");
                 }
-            }
-//#########################################################################
     }
+//#########################################################################
     catch(const std::invalid_argument &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
+    }
+    catch(const std::runtime_error &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -138,7 +141,6 @@ Chessboard::Chessboard(bool k): color{k}{//3
 
         for(int i=0; i<8; i++)
             for(int j=0; j<8; j++)
-            {
                 switch (statringPositions[i][j])
                 {
                     case 'p': loadSinglePiece(7-j,7-i , pawn,    color); break;
@@ -154,13 +156,12 @@ Chessboard::Chessboard(bool k): color{k}{//3
                     case 'k': loadSinglePiece(7-j,7-i , king,    color); break;
                     case 'K': loadSinglePiece(7-j,7-i , king,   !color); break;
                     case ' ': loadSinglePiece(7-j,7-i , no,      color); break;
-                    default: throw std::invalid_argument("Error in starting positions.");
+                    default: throw std::runtime_error("Error in starting positions.");
                 }
-            }
         delete[]statringPositions;
-//#########################################################################
     }
-    catch(const std::invalid_argument &e){
+//#########################################################################
+    catch(const std::runtime_error &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -209,8 +210,8 @@ Chessboard::Chessboard(bool k): color{k}{//3
         }
         reading.close();
         return chessboard;
-//#########################################################################
     }
+//#########################################################################
     catch(const std::ifstream::failure &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -238,7 +239,6 @@ Chessboard::Chessboard(bool k): color{k}{//3
             squareColor = true;
         for(int i=0, y=coordY; i<874; y++)
             for(int x=coordX; x<coordX+squareWidth; i++, x++)
-            {
                 switch(piecesArray[piece][i])
                 {
                     case 'T': chessboardArray[y][x] = squareColor  ?'\333'                   :' '   ;                   break;
@@ -248,12 +248,16 @@ Chessboard::Chessboard(bool k): color{k}{//3
                     case '2': chessboardArray[y][x] = squareColor  ?(pieceColor?'\337':' '):(pieceColor?'\333':'\334'); break;
                     case '3': chessboardArray[y][x] = squareColor  ?'\334'                   :'\337' ;                  break;
                     case '4': chessboardArray[y][x] = squareColor  ?'\337'                   :'\334' ;                  break;
-                    default :  throw std::invalid_argument("Error in 'pieces.txt' file content.");
+                    default :  throw std::runtime_error("Error in 'pieces.txt' file content.");
                 }
-            }
-//#########################################################################
     }
+//#########################################################################
     catch(const std::invalid_argument &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
+    }
+    catch(const std::runtime_error &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -266,8 +270,8 @@ void Chessboard::deleteCommunique(int communiqueWidth){//*1
             throw std::invalid_argument("Wrong width of the communique.");
         int communiqueBeginningX = (globalType::chessboardwidth-communiqueWidth)/2;
         refreshChessboardPartially(communiqueBeginningX, 81, communiqueBeginningX + communiqueWidth - 1, 93);
-//#########################################################################
     }
+//#########################################################################
     catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -295,8 +299,8 @@ void Chessboard::deleteCheckbox(int Width, int Height, bool deleteByChessboardWr
                 std::cout<<std::string(Width,' ');
 
         }
-//#########################################################################
     }
+//#########################################################################
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
@@ -312,8 +316,8 @@ void Chessboard::writeChessboardArray(){//*0
                 std::cout<<chessboardArray[i][j];
             std::cout<<std::endl;
         }
-//#########################################################################
     }
+//#########################################################################
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
@@ -328,8 +332,8 @@ void Chessboard::updateSquare(int squareCoordX, int squareCoordY, int piece, boo
             throw std::invalid_argument("Wrong piece.");
         loadSinglePiece(squareCoordX, squareCoordY, piece, pieceColor, underlight);
         writePiece(squareCoordX, squareCoordY, underlight);
-//#########################################################################
     }
+//#########################################################################
     catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -351,8 +355,8 @@ void Chessboard::updateSquare(int squareCoordX, int squareCoordY, int piece, boo
         int coordY = (squareCoordY)*squareHeight +topMargin;
         refreshChessboardPartially(coordX, coordY, coordX+squareWidth-1, coordY+squareHeight-1);
         systemInfo::setConsoleColor(globalType::white);
-//#########################################################################
     }
+//#########################################################################
     catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -375,8 +379,8 @@ void Chessboard::updateSquare(int squareCoordX, int squareCoordY, int piece, boo
                 std::cout<<chessboardArray[i][j];
         }
         systemInfo::setCursorPosition(0, 180);
-//#########################################################################
     }
+//#########################################################################
     catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();

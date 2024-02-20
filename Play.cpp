@@ -1,8 +1,6 @@
 #include "Play.h"
 
-Play::Play(bool k)noexcept: color{k}, chessboard{k}, engine{k}, notebook{k}{
-//==============================================================================================================
-}
+Play::Play(bool k)noexcept: color{k}, chessboard{k}, engine{k}, notebook{k}{}
 void Play::playWithUser(){//*5
 //==============================================================================================================
     try{
@@ -72,8 +70,8 @@ void Play::playWithUser(){//*5
                 }
             }
         }
-//#########################################################################
     }
+//#########################################################################
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
@@ -137,8 +135,8 @@ void Play::playWithUser(){//*5
             int coordY = 7-(coordinates[1]-'1');
             return  coordX*10 + coordY;
         }
-//#########################################################################
     }
+//#########################################################################
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
@@ -149,20 +147,20 @@ void Play::playWithUser(){//*5
     try{
         if(cHar != 27)
             return false;
-        std::vector<std::string> endgameMenu = globalType::getCommuniqueCotent({20,1,21});
+        //std::vector<std::string> endgameMenu = globalType::getCommuniqueCotent({20,1,21});
         bool continueLoop = true;
 
         while(continueLoop)
-            switch(notice.checkbox(endgameMenu))
+            switch(notice.checkbox(globalType::getCommuniqueCotent({20,1,21})))
            {
                case 1: chessboard.deleteCheckbox(205, 43); continueLoop = false; return false;
                case 2: colorfullElementSettingMenu(); break;
                case 3: chessboard.deleteCheckbox(205, 43); continueLoop = false; return true;
-               default: throw std::invalid_argument("Option selection error.");
+               default: throw std::runtime_error("Option selection error.");
            }
-//#########################################################################
     }
-    catch(const std::invalid_argument &e){
+//#########################################################################
+    catch(const std::runtime_error &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -175,20 +173,20 @@ void Play::playWithUser(){//*5
                 void Play::colorfullElementSettingMenu(){//*1
 //==============================================================================================================
     try{
-        std::vector<std::string> colorfullElementMenu = globalType::getCommuniqueCotent({4,5,6,7,8});
-        switch(notice.checkbox(colorfullElementMenu))
+        //std::vector<std::string> colorfullElementMenu = globalType::getCommuniqueCotent({4,5,6,7,8});
+        switch(notice.checkbox(globalType::getCommuniqueCotent({4,5,6,7,8})))
         {
             case 1:  colorSettingMenu(globalType::underlightedSquare);   break;
             case 2:  colorSettingMenu(globalType::menu);                 break;
             case 3:  colorSettingMenu(globalType::chsenOption);          break;
             case 4:  colorSettingMenu(globalType::notation);             break;
             case 5:  break;
-            default: throw std::invalid_argument("Option selection error.");
+            default: throw std::runtime_error("Option selection error.");
         }
         chessboard.deleteCheckbox(293, 63);
-//#########################################################################
     }
-    catch(const std::invalid_argument &e){
+//#########################################################################
+    catch(const std::runtime_error &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -201,20 +199,20 @@ void Play::playWithUser(){//*5
                     void Play::colorSettingMenu(globalType::Color &color){//*0
 //==============================================================================================================
     try{
-        std::vector<std::string> colorsMenu = globalType::getCommuniqueCotent({12,13,14,15,8});
+        //std::vector<std::string> colorsMenu = globalType::getCommuniqueCotent({12,13,14,15,8});
         chessboard.deleteCheckbox(293, 63);
-        switch(notice.checkbox(colorsMenu))
+        switch(notice.checkbox(globalType::getCommuniqueCotent({12,13,14,15,8})))
         {
             case 1:  color = static_cast<globalType::Color>(1); break;
             case 2:  color = static_cast<globalType::Color>(2); break;
             case 3:  color = static_cast<globalType::Color>(3); break;
             case 4:  color = static_cast<globalType::Color>(4); break;
             case 5:  break;
-            default: throw std::invalid_argument("Option selection error.");
+            default: throw std::runtime_error("Option selection error.");
         }
-//#########################################################################
     }
-    catch(const std::invalid_argument &e){
+//#########################################################################
+    catch(const std::runtime_error &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -234,9 +232,10 @@ void Play::playWithUser(){//*5
         void Play::updateChessboard(std::string updateCode, bool underlight){//1
 //==============================================================================================================
     try{
+        if(updateCode.size()%3 != 0)
+            throw std::invalid_argument("Wrong updateCode.");
         std::string partialUpdateCode;
-        int x;
-        int y;
+        int x,y;
         char cHar;
         int piece;
         bool pieceColor;
@@ -252,14 +251,19 @@ void Play::playWithUser(){//*5
             pieceColor = getPieceColor(cHar);
             chessboard.updateSquare(x, y, piece, pieceColor, underlight);
         }
+    }
 //#########################################################################
+    catch(const std::invalid_argument &e){
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
     }
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
     }
 }
-            int Play::getPieceCode(char cHar){//0+
+            int Play::getPieceCode   (char cHar){//0+
 //==============================================================================================================
     try{
         switch(cHar)
@@ -271,17 +275,17 @@ void Play::playWithUser(){//*5
             case 'W': case 'w': return 4;
             case 'H': case 'h': return 5;
             case 'K': case 'k': return 6;
-            default: throw std::invalid_argument("Wrong char.");
+            default: throw std::runtime_error("Wrong char.");
         }
-//#########################################################################
     }
-    catch(const std::invalid_argument &e){
+//#########################################################################
+    catch(const std::runtime_error &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
-            bool Play::getPieceColor(char cHar){//0+
+            bool Play::getPieceColor (char cHar){//0+
 //==============================================================================================================
     try{
         if(isalpha(cHar))
@@ -295,8 +299,8 @@ void Play::playWithUser(){//*5
             return !color;
         else
             throw std::invalid_argument("Wrong char.");
-//#########################################################################
     }
+//#########################################################################
     catch(const std::invalid_argument &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
@@ -311,8 +315,8 @@ void Play::playWithUser(){//*5
             updateChessboard(previousChessboardUpdateCode, false);
             engineMoveUnderlighted = false;
         }
-//#########################################################################
     }
+//#########################################################################
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
@@ -325,8 +329,8 @@ void Play::playWithUser(){//*5
         int y      = userSquareChosenCoordinates % 10;
         char piece = notebook.currentChessboard[y][x];
         return (getPieceColor(piece) == color);
-//#########################################################################
     }
+//#########################################################################
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
@@ -350,8 +354,8 @@ void Play::playWithUser(){//*5
         engineMoveUnderlighted = true;
         previousChessboardUpdateCode = currentChessboardUpdateCode;
         return ( ! isItGameover());
-//#########################################################################
     }
+//#########################################################################
     catch(globalType::errorType &e){
         e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
         throw;
@@ -377,13 +381,13 @@ void Play::playWithUser(){//*5
             case 9:
                 notice.communique(globalType::getCommuniqueCotent({23})[0]);
                 break;
-            default: throw std::invalid_argument("Wrong additional parameter.");
+            default: throw std::runtime_error("Wrong additional parameter.");
         }
         chessboard.deleteCommunique(300);
         return true;
-//#########################################################################
     }
-    catch(const std::invalid_argument &e){
+//#########################################################################
+    catch(const std::runtime_error &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
@@ -398,8 +402,8 @@ void Play::playWithUser(){//*5
     try{
         notice.communique(globalType::getCommuniqueCotent({26})[0]);
         chessboard.deleteCommunique(415);
-        std::vector<std::string> notationSavingMenu = globalType::getCommuniqueCotent({27,28});
-        switch(notice.checkbox(notationSavingMenu))
+        //std::vector<std::string> notationSavingMenu = globalType::getCommuniqueCotent({27,28});
+        switch(notice.checkbox(globalType::getCommuniqueCotent({27,28})))
         {
            case 1:
                chessboard.deleteCheckbox(210, 33, true);
@@ -408,12 +412,12 @@ void Play::playWithUser(){//*5
                chessboard.deleteCommunique(320);
                break;
            case 2:  break;
-           default: throw std::invalid_argument("Option selection error.");
+           default: throw std::runtime_error("Option selection error.");
         }
         chessboard.deleteCheckbox(210, 33);
-//#########################################################################
     }
-    catch(const std::invalid_argument &e){
+//#########################################################################
+    catch(const std::runtime_error &e){
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;

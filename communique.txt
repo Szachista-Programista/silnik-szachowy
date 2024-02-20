@@ -43,3 +43,6 @@ H$Q$
 K$K$
 Zapisano: $Saved: $
 notacja gry$game notation$
+1. Prosze, wyswietl konsole na pelnym ekranie.$1. Please display the console in full screen.$
+2. Ustaw wieklosc wyswietlanego obrazu tak, aby powyzsze biale pole bylo widoczne w calej okazalosci.$2. Set the size of the displayed image so that the above white field is visible in all its glory.$
+3. Wcisnij dowolny klawisz, aby rozpoczac.$3. Press any key to start.$
