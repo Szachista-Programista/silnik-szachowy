@@ -210,6 +210,7 @@ void Play::playWithUser(){//*5
             case 5:  break;
             default: throw std::runtime_error("Option selection error.");
         }
+        globalType::writeConfigFile();
     }
 //#########################################################################
     catch(const std::runtime_error &e){

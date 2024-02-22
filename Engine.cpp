@@ -741,51 +741,32 @@ int Engine::makeMove                             (int userMoveCode){//3
 }
         void Engine::isItEndgameTime      ()noexcept{
 //==============================================================================================================
-    bool isItEndgame = true;
-        for(int i=0; i<8; i++)
-        {
-            for(int j=0; j<8; j++)
-            {
-                if('g' <= workingChessboardPointer[i][j] && workingChessboardPointer[i][j] <= 'w' && workingChessboardPointer[i][j] != 'k')
-                {
-                    isItEndgame = false;
-                    break;
-                }
-            }
-            if(isItEndgame == false)
-                break;
-        }
-    if(isItEndgame == true)
-    {
-        setUserKingSideLocation();
-        setUserKingCornerLocation();
-        globalType::gameStage = globalType::endgame;
-        setKindOfEndgame();
-    }
-}
-            void Engine::setKindOfEndgame ()noexcept{
-//==============================================================================================================
-    int nrOfPawns   {};
-    int nrOfKnights {};
-    int nrOfBishops {};
-    int nrOfRooks   {};
-    int nrOfQueens  {};
+    int nrOfUserPawns   {};
+    int nrOfUserKnights {};
+    int nrOfUserBishops {};
+    int nrOfUserRooks   {};
+    int nrOfUserQueens  {};
 
     for(int i=0; i<8; i++)
         for(int j=0; j<8; j++)
             switch(workingChessboardPointer[i][j])
             {
-                case 'P': nrOfPawns++;   break;
-                case 'S': nrOfKnights++; break;
-                case 'G': nrOfBishops++; break;
-                case 'W': nrOfRooks++;   break;
-                case 'H': nrOfQueens++;  break;
+                case 'p': nrOfUserPawns++;     break;
+                case 's': nrOfUserKnights++;   break;
+                case 'g': nrOfUserBishops++;   break;
+                case 'w': nrOfUserRooks++;     break;
+                case 'h': nrOfUserQueens++;    break;
             }
-    if      (2 <= (nrOfRooks+nrOfQueens)) {globalType::choosenEndgame = globalType::rooksAndQueensMate; return;}
-    else if (1 == (nrOfRooks+nrOfQueens)) {globalType::choosenEndgame = globalType::rookOrQueenMate;    return;}
-    //else ?????????
+    if(( nrOfUserRooks + nrOfUserQueens <= 1 )
+     &&( nrOfUserKnights + nrOfUserBishops + nrOfUserRooks + nrOfUserQueens <= 3 )
+     &&( nrOfUserPawns <= 3 ))
+    {
+        globalType::gameStage = globalType::endgame;
+        setUserKingSideLocation();
+        setUserKingCornerLocation();
+    }
 }
-            void Engine::setUserKingSideLocation(){
+            void Engine::setUserKingSideLocation()noexcept{
 //==============================================================================================================
     //if(globalType::gameStage == globalType::middlegame)
        for(int i=0; i<8; i++)
@@ -808,7 +789,7 @@ int Engine::makeMove                             (int userMoveCode){//3
                     if(i <= 1)  {globalType::userKingSideLocation = globalType::engineUpSide;     return;}
                 }*/
 }
-            void Engine::setUserKingCornerLocation(){
+            void Engine::setUserKingCornerLocation()noexcept{
 //==============================================================================================================
     //if(globalType::gameStage == globalType::middlegame)
         for(int i=0; i<8; i++)
@@ -834,10 +815,12 @@ int Engine::makeMove                             (int userMoveCode){//3
     void Engine::makeEndgameMove(){//0+
 //==============================================================================================================
     try{
+        setKindOfEndgame();
         switch(globalType::choosenEndgame)
         {
             case globalType::rooksAndQueensMate: makeRooksAndQueensMateMove();    break;
             case globalType::rookOrQueenMate:    makeSingleRookOrQueenMateMove(); break;
+            case globalType::unspecifiedMate:    makeUnspecifiedMateMove();       break;
             default: throw std::runtime_error("Wrong kind of endgame.");
         }
     }
@@ -847,6 +830,29 @@ int Engine::makeMove                             (int userMoveCode){//3
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
+}
+        void Engine::setKindOfEndgame ()noexcept{
+//==============================================================================================================
+    //int nrOfEnginePawns   {};
+    //int nrOfEngineKnights {};
+    //int nrOfEngineBishops {};
+    int nrOfEngineRooks   {};
+    int nrOfEngineQueens  {};
+
+    for(int i=0; i<8; i++)
+        for(int j=0; j<8; j++)
+            switch(workingChessboardPointer[i][j])
+            {
+                //case 'P': nrOfEnginePawns++;   break;
+                //case 'S': nrOfEngineKnights++; break;
+                //case 'G': nrOfEngineBishops++; break;
+                case 'W': nrOfEngineRooks++;   break;
+                case 'H': nrOfEngineQueens++;  break;
+            }
+
+    if      ( 2 <= nrOfEngineRooks + nrOfEngineQueens ) {globalType::choosenEndgame = globalType::rooksAndQueensMate; return;}
+    else if ( 1 == nrOfEngineRooks + nrOfEngineQueens ) {globalType::choosenEndgame = globalType::rookOrQueenMate;    return;}
+    else                                                {globalType::choosenEndgame = globalType::unspecifiedMate;    return;}
 }
         void Engine::makeRooksAndQueensMateMove    ()noexcept{
 //==============================================================================================================
@@ -893,6 +899,30 @@ int Engine::makeMove                             (int userMoveCode){//3
     globalType::engineQueenBehaviorPoints1 = &movement.followUserKingToCorner;
     globalType::engineQueenBehaviorPoints2 = &movement.makeNothing;
     globalType::engineKingBehaviorPoints   = &movement.followUserKingToSide;
+
+    movement.findNextMove(workingChessboardPointer);
+}
+        void Engine::makeUnspecifiedMateMove       ()noexcept{
+//==============================================================================================================
+    double dot1 = 0.1, dot04 = 0.04, dot01 = 0.01, zero = 0.0;
+
+    globalType::userKingBehaviorPriority1    = &dot1;//?
+    globalType::engineKnightBehaviorPriority = &dot01;//?
+    globalType::engineBishopBehaviorPriority = &dot01;//?
+    globalType::engineRookBehaviorPriority1  = &zero;
+    globalType::engineRookBehaviorPriority2  = &zero;
+    globalType::engineQueenBehaviorPriority1 = &zero;
+    globalType::engineQueenBehaviorPriority2 = &zero;
+    globalType::engineKingBehaviorPriority   = &dot04;//?
+
+    globalType::userKingBehaviorPoints1    = &movement.goToCornerOfUserKing;//?
+    globalType::engineKnightBehaviorPoints = &movement.followUserKingToCorner;//?
+    globalType::engineBishopBehaviorPoints = &movement.followUserKingToCorner;//?
+    globalType::engineRookBehaviorPoints1  = &movement.makeNothing;
+    globalType::engineRookBehaviorPoints2  = &movement.makeNothing;
+    globalType::engineQueenBehaviorPoints1 = &movement.makeNothing;
+    globalType::engineQueenBehaviorPoints2 = &movement.makeNothing;
+    globalType::engineKingBehaviorPoints   = &movement.followUserKingToCorner;//?
 
     movement.findNextMove(workingChessboardPointer);
 }

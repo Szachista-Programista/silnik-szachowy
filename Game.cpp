@@ -113,6 +113,7 @@ void Game::start(){//*3
             case 5:  break;
             default: throw std::runtime_error("Option selection error.");
         }
+        globalType::writeConfigFile();
     }
 //#########################################################################
     catch(const std::runtime_error &e){
@@ -137,6 +138,7 @@ void Game::start(){//*3
            case 3:  break;
            default: throw std::runtime_error("Option selection error.");
        }
+       globalType::writeConfigFile();
     }
 //#########################################################################
     catch(const std::runtime_error &e){
@@ -152,7 +154,6 @@ void Game::start(){//*3
         void Game::exitService(){//*0
 //==============================================================================================================
     try{
-        globalType::writeConfigFile();
         chessboard.deleteCheckbox(220, 53, pastFirstPlay);
         notice.communique(globalType::getCommuniqueCotent({18})[0],1);
         systemInfo::setCursorPosition(0, globalType::chessboardHeight);

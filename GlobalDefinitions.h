@@ -79,7 +79,8 @@ namespace globalType{
     };
     enum KindOfEndgame{
         rooksAndQueensMate,
-        rookOrQueenMate
+        rookOrQueenMate,
+        unspecifiedMate
     };
     enum UserKingSideLocation{
         engineRightSide,
