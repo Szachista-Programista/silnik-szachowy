@@ -735,7 +735,7 @@ void Notebook::generateAndWriteNotation  (int moveCode){//*5
         void Notebook::addNotationArrayContent(std::string content){//2
 //==============================================================================================================
     try{
-        for(auto cHar: content)
+        for(auto& cHar: content)
         {
             addCharToNotationArray(cHar);
             for(int i=0; i<globalType::letterHeight; i++)
@@ -874,7 +874,7 @@ std::string Notebook::saveGameInNotebook(){//0+
             throw std::ofstream::failure("The file could not be opened for writing.");
         file<<std::put_time(localtime(&moment_t), ">>> %Y-%m-%d %H:%M:%S <<<")<<std::endl;
         file<<"==========================="<<std::endl;
-        for(auto line: entireNotation)
+        for(auto& line: entireNotation)
         file<<line<<std::endl;
         file.close();
         return "\"" + fileName + "\"";

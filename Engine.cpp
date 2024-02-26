@@ -3,7 +3,7 @@
 Engine::Engine(bool k): color{k}, movement{k}{//1
 //==============================================================================================================
     try{
-        globalType::gameStage        = globalType::middlegame;//opening;
+        globalType::gameStage        = globalType::opening;
         comparativeChessboardPointer = loadPiecesArrangement();
         workingChessboardPointer     = loadPiecesArrangement();
         setArrangements(workingChessboardPointer);
@@ -513,7 +513,7 @@ int Engine::makeMove                             (int userMoveCode){//3
         uint64_t currentControlNumber = controlNumbersOfArrangements.back();
         int occurrenceNumber{};
 
-        for(auto element: controlNumbersOfArrangements)
+        for(auto& element: controlNumbersOfArrangements)
             if(currentControlNumber == element)
                 occurrenceNumber++;
         if(occurrenceNumber >= 3)

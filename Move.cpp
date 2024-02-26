@@ -3,7 +3,6 @@
 Move::Move(bool k)noexcept: color{k}{
 //==============================================================================================================
     movementGeneration = 0;
-    lastMovementGeneration =  2;
 
     engineKingLocationX = color?3:4;
     engineKingLocationY =         7;
@@ -118,7 +117,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
         for(auto& userMovements: movements)
             for(auto& singleMove: userMovements)
                 movementsNumber++;
-        if(movementsNumber < 200)
+        if(movementsNumber < 200 && !engineKingChecked)
             lastMovementGeneration = 2;
         else
             lastMovementGeneration = 1;
@@ -566,6 +565,17 @@ double Move::findNextMove                          (globalType::chessboardPointe
     if(globalType::userKingSideLocation == globalType::engineUpSide)
         return 7.0-y;
 }
+                double Move::goToCornerOfUserKing            (double x, double y)noexcept{
+//==============================================================================================================
+    if(globalType::userKingCornerLocation == globalType::engineUpRightCorner)
+        return (x + 7.0-y)/2.0;
+    if(globalType::userKingCornerLocation == globalType::engineDownRightCorner)
+        return (x + y)/2.0;
+    if(globalType::userKingCornerLocation == globalType::engineDownLeftCorner)
+        return (7.0-x + y)/2.0;
+    if(globalType::userKingCornerLocation == globalType::engineUpLeftCorner)
+        return (7.0-x + 7.0-y)/2.0;
+}
                 double Move::separateUserKingFromRestOfBoard (double x, double y)noexcept{
 //==============================================================================================================
     if(globalType::userKingSideLocation == globalType::engineRightSide)
@@ -687,17 +697,6 @@ double Move::findNextMove                          (globalType::chessboardPointe
         return value/2.0;
     }
 
-}
-                double Move::goToCornerOfUserKing            (double x, double y)noexcept{
-//==============================================================================================================
-    if(globalType::userKingCornerLocation == globalType::engineUpRightCorner)
-        return (x + 7.0-y)/2.0;
-    if(globalType::userKingCornerLocation == globalType::engineDownRightCorner)
-        return (x + y)/2.0;
-    if(globalType::userKingCornerLocation == globalType::engineDownLeftCorner)
-        return (7.0-x + y)/2.0;
-    if(globalType::userKingCornerLocation == globalType::engineUpLeftCorner)
-        return (7.0-x + 7.0-y)/2.0;
 }
                 double Move::makeNothing                     (double x, double y)noexcept{
 //==============================================================================================================

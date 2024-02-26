@@ -156,6 +156,7 @@ void Game::start(){//*3
     try{
         chessboard.deleteCheckbox(220, 53, pastFirstPlay);
         notice.communique(globalType::getCommuniqueCotent({18})[0],1);
+        systemInfo::delay(500);
         systemInfo::setCursorPosition(0, globalType::chessboardHeight);
     }
 //#########################################################################

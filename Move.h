@@ -59,12 +59,12 @@ class Move{
                 double countEndgameMaterialStatus    (const globalType::chessboardPointer ptr_X);
                     static double goOppositeDirectionOfUserKing   (double x, double y)noexcept;
                     static double goToSideOfUserKing              (double x, double y)noexcept;
+                    static double goToCornerOfUserKing            (double x, double y)noexcept;
                     static double separateUserKingFromRestOfBoard (double x, double y)noexcept;
                     static double makeNothing                     (double x, double y)noexcept;
                     static double runSidewaysFromKing             (double x, double y)noexcept;
                     static double followUserKingToSide            (double x, double y)noexcept;
                     static double followUserKingToCorner          (double x, double y)noexcept;
-                    static double goToCornerOfUserKing            (double x, double y)noexcept;
     void makeEngineMoves                                                              (globalType::chessboardPointer ptr_X);
         void engineMovesService  (int fromX, int fromY, int toX, int toY, char bierka, globalType::chessboardPointer ptr_X);
             void makeEngineMovesIfAllowed                             (int &x, int &y, globalType::chessboardPointer cOpy);
