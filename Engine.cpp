@@ -36,16 +36,16 @@ Engine::Engine(bool k): color{k}, movement{k}{//1
                     if(i==0)
                     {
                         if(j==3)
-                            chessboard[i][j] = color?'k':'h';
+                            chessboard[i][j] = color?'k':'q';
                         if(j==4)
-                            chessboard[i][j] = color?'h':'k';
+                            chessboard[i][j] = color?'Q':'k';
                     }
                     if(i==7)
                     {
                         if(j==3)
-                            chessboard[i][j] = color?'K':'H';
+                            chessboard[i][j] = color?'K':'Q';
                         if(j==4)
-                            chessboard[i][j] = color?'H':'K';
+                            chessboard[i][j] = color?'q':'K';
                     }
                 }
                 else
@@ -86,7 +86,7 @@ bool Engine::canUserMakeSuchMove  (int userMoveCode){//*1
         if(!isPieceOfUserOnStartingSquare()   )return false;
         if( isPieceOfUserOnFinalSquare()      )return false;
         if( isThisMoveExposesKingToCapture()  )return false;
-        if(!ifAllowedMove()                   )return false;
+        if(!isAllowedMove()                   )return false;
         return true;
     }
 //#########################################################################
@@ -130,7 +130,7 @@ bool Engine::canUserMakeSuchMove  (int userMoveCode){//*1
         if (workingChessboardPointer == nullptr)
             throw std::runtime_error("Nullptr of the chessboard.");
         globalType::chessboardPointer ptr_X = workingChessboardPointer;
-        if(ptr_X[u.fromY][u.fromX]<'g' && 'w'<ptr_X[u.fromY][u.fromX])
+        if(ptr_X[u.fromY][u.fromX]<'b' && 'r'<ptr_X[u.fromY][u.fromX])
             return false;
         else
             return true;
@@ -150,7 +150,7 @@ bool Engine::canUserMakeSuchMove  (int userMoveCode){//*1
         if (workingChessboardPointer == nullptr)
             throw std::runtime_error("Nullptr of the chessboard.");
         globalType::chessboardPointer ptr_X = workingChessboardPointer;
-        if(ptr_X[u.toY][u.toX]<'g' || 'w'<ptr_X[u.toY][u.toX])
+        if(ptr_X[u.toY][u.toX]<'b' || 'r'<ptr_X[u.toY][u.toX])
             return false;
         else
             return true;
@@ -186,7 +186,7 @@ bool Engine::canUserMakeSuchMove  (int userMoveCode){//*1
         globalType::chessboardPointer cOpy = movement.copyChessboard(ptr_X);
         cOpy[u.toY][u.toX]=cOpy[u.fromY][u.fromX];
         cOpy[u.fromY][u.fromX]=' ';
-        if(movement.checkIfUserSquareCaptured(potentiallyUserKingLocationX, potentiallyUserKingLocationY, cOpy))
+        if(movement.isUserSquareCaptured(potentiallyUserKingLocationX, potentiallyUserKingLocationY, cOpy))
         {
             delete[]cOpy;
             return true;
@@ -208,7 +208,7 @@ bool Engine::canUserMakeSuchMove  (int userMoveCode){//*1
         throw;
     }
 }
-    bool Engine::ifAllowedMove(){//*0
+    bool Engine::isAllowedMove(){//*0
 //==============================================================================================================
     try{
         if (u.fromX < 0 || 7 < u.fromX || u.fromY < 0 || 7 < u.fromY || u.toX < 0 || 7 < u.toX || u.toY < 0 || 7 < u.toY)
@@ -223,20 +223,20 @@ bool Engine::canUserMakeSuchMove  (int userMoveCode){//*1
             case 'p':
                 if(u.fromY==1 && u.toY-u.fromY==2 && u.fromX==u.toX && ptr_X[u.fromY+1][u.toX]==' ' && ptr_X[u.toY][u.toX]==' ') return true;//move 2 forward
                 if(u.toY-u.fromY==1 && u.fromX==u.toX && ptr_X[u.toY][u.toX]==' ')                                               return true;//move 1 forward
-                if(u.toY-u.fromY==1 && u.fromX-u.toX==1 && 'G'<=ptr_X[u.toY][u.toX] && ptr_X[u.toY][u.toX]<='W')                 return true;//capture <<
-                if(u.toY-u.fromY==1 && u.toX-u.fromX==1 && 'G'<=ptr_X[u.toY][u.toX] && ptr_X[u.toY][u.toX]<='W')                 return true;//capture >>
+                if(u.toY-u.fromY==1 && u.fromX-u.toX==1 && 'B'<=ptr_X[u.toY][u.toX] && ptr_X[u.toY][u.toX]<='R')                 return true;//capture <<
+                if(u.toY-u.fromY==1 && u.toX-u.fromX==1 && 'B'<=ptr_X[u.toY][u.toX] && ptr_X[u.toY][u.toX]<='R')                 return true;//capture >>
                 if(ptr_X[e.toY][e.toX] == 'P' && e.fromY-e.toY == 2 && e.toX == u.toX && u.fromY == e.toY)
                 {
                     if(u.toY-u.fromY==1 && u.fromX-u.toX==1 && ' ' == ptr_X[u.toY][u.toX]) return true;//En passant <<
                     if(u.toY-u.fromY==1 && u.toX-u.fromX==1 && ' ' == ptr_X[u.toY][u.toX]) return true;//En passant >>
                 }
                 return false;
-            case 's':
+            case 'n':
                 if((abs(u.fromX-u.toX)==2 && abs(u.fromY-u.toY)==1) || (abs(u.fromX-u.toX)==1 && abs(u.fromY-u.toY)==2))
                     return true;
                 return false;
-            case 'g':
-            case 'h':
+            case 'b':
+            case 'q':
                 if(u.fromX-u.fromY==u.toX-u.toY) // slant movements (\)
                 {
                     if(u.fromX<u.toX) //movement towards 04:30
@@ -261,7 +261,7 @@ bool Engine::canUserMakeSuchMove  (int userMoveCode){//*1
                                 return false;
                     return true;
                 }
-            case 'w':
+            case 'r':
                 if(u.fromY == u.toY) //horizontal movements
                 {
                     if(u.fromX>u.toX) //to left
@@ -303,19 +303,19 @@ bool Engine::canUserMakeSuchMove  (int userMoveCode){//*1
                     if(color==0)//when user play black
                     {
                         if(u.toX==2 && movement.userLeftRookMoved ==false && ptr_X[0][1]==' ' && ptr_X[0][2]==' ' && ptr_X[0][3]==' ')//long castle
-                        if(!movement.checkIfUserSquareCaptured(2, 0, ptr_X) && !movement.checkIfUserSquareCaptured(3, 0, ptr_X) && !movement.checkIfUserSquareCaptured(4, 0, ptr_X))
+                        if(!movement.isUserSquareCaptured(2, 0, ptr_X) && !movement.isUserSquareCaptured(3, 0, ptr_X) && !movement.isUserSquareCaptured(4, 0, ptr_X))
                             return true;
                         if(u.toX==6 && movement.userRightRookMoved==false && ptr_X[0][5]==' ' && ptr_X[0][6]==' ')//short castle
-                        if(!movement.checkIfUserSquareCaptured(4, 0, ptr_X) && !movement.checkIfUserSquareCaptured(5, 0, ptr_X) && !movement.checkIfUserSquareCaptured(6, 0, ptr_X))
+                        if(!movement.isUserSquareCaptured(4, 0, ptr_X) && !movement.isUserSquareCaptured(5, 0, ptr_X) && !movement.isUserSquareCaptured(6, 0, ptr_X))
                             return true;
                     }
                     if(color==1)//when user play white
                     {
                         if(u.toX==5 && movement.userRightRookMoved==false && ptr_X[0][4]==' ' && ptr_X[0][5]==' ' && ptr_X[0][6]==' ')//long castle
-                        if(!movement.checkIfUserSquareCaptured(3, 0, ptr_X) && !movement.checkIfUserSquareCaptured(4, 0, ptr_X) && !movement.checkIfUserSquareCaptured(5, 0, ptr_X))
+                        if(!movement.isUserSquareCaptured(3, 0, ptr_X) && !movement.isUserSquareCaptured(4, 0, ptr_X) && !movement.isUserSquareCaptured(5, 0, ptr_X))
                             return true;
                         if(u.toX==1 && movement.userLeftRookMoved ==false && ptr_X[0][1]==' ' && ptr_X[0][2]==' ')//short castle
-                        if(!movement.checkIfUserSquareCaptured(1, 0, ptr_X) && !movement.checkIfUserSquareCaptured(2, 0, ptr_X) && !movement.checkIfUserSquareCaptured(3, 0, ptr_X))
+                        if(!movement.isUserSquareCaptured(1, 0, ptr_X) && !movement.isUserSquareCaptured(2, 0, ptr_X) && !movement.isUserSquareCaptured(3, 0, ptr_X))
                             return true;
                     }
                 }
@@ -338,7 +338,7 @@ int Engine::makeMove                             (int userMoveCode){//3
 //==============================================================================================================
     try{
         getEngineReadyForMove(userMoveCode);
-        arrangementServiceAfterUserMove(userMoveCode);
+        arrangeServiceAfterUserMove(userMoveCode);
         if( ! movement.gameOver)
             switch(globalType::gameStage)
             {
@@ -347,7 +347,7 @@ int Engine::makeMove                             (int userMoveCode){//3
                 case globalType::endgame:     makeEndgameMove();    break;
             }
         if( ! movement.gameOver)
-            arrangementServiceAfterEngineMove();
+            arrangeServiceAfterEngineMove();
         return engineMoveCoding();
     }
 //#########################################################################
@@ -389,10 +389,10 @@ int Engine::makeMove                             (int userMoveCode){//3
         if(promotionCode)
             switch(promotionCode)
             {
-                case 1: comparativeChessboardPointer[u.toY][u.toX] = workingChessboardPointer[u.toY][u.toX] = 's'; break;
-                case 2: comparativeChessboardPointer[u.toY][u.toX] = workingChessboardPointer[u.toY][u.toX] = 'g'; break;
-                case 3: comparativeChessboardPointer[u.toY][u.toX] = workingChessboardPointer[u.toY][u.toX] = 'w'; break;
-                case 4: comparativeChessboardPointer[u.toY][u.toX] = workingChessboardPointer[u.toY][u.toX] = 'h'; break;
+                case 1: comparativeChessboardPointer[u.toY][u.toX] = workingChessboardPointer[u.toY][u.toX] = 'n'; break;
+                case 2: comparativeChessboardPointer[u.toY][u.toX] = workingChessboardPointer[u.toY][u.toX] = 'b'; break;
+                case 3: comparativeChessboardPointer[u.toY][u.toX] = workingChessboardPointer[u.toY][u.toX] = 'r'; break;
+                case 4: comparativeChessboardPointer[u.toY][u.toX] = workingChessboardPointer[u.toY][u.toX] = 'q'; break;
                 default: break;
             }
 
@@ -401,22 +401,22 @@ int Engine::makeMove                             (int userMoveCode){//3
             if(u.fromX == 3 && u.toX == 1) // O-O of wfite
             {
                 comparativeChessboardPointer[0][0] = workingChessboardPointer[0][0] = ' ';
-                comparativeChessboardPointer[0][2] = workingChessboardPointer[0][2] = 'w';
+                comparativeChessboardPointer[0][2] = workingChessboardPointer[0][2] = 'r';
             }
             if(u.fromX == 3 && u.toX == 5) // O-O-O of wfite
             {
                 comparativeChessboardPointer[0][7] = workingChessboardPointer[0][7] = ' ';
-                comparativeChessboardPointer[0][4] = workingChessboardPointer[0][4] = 'w';
+                comparativeChessboardPointer[0][4] = workingChessboardPointer[0][4] = 'r';
             }
             if(u.fromX == 4 && u.toX == 2) // O-O-O of black
             {
                 comparativeChessboardPointer[0][0] = workingChessboardPointer[0][0] = ' ';
-                comparativeChessboardPointer[0][3] = workingChessboardPointer[0][3] = 'w';
+                comparativeChessboardPointer[0][3] = workingChessboardPointer[0][3] = 'r';
             }
             if(u.fromX == 4 && u.toX == 6) // O-O of black
             {
                 comparativeChessboardPointer[0][7] = workingChessboardPointer[0][7] = ' ';
-                comparativeChessboardPointer[0][5] = workingChessboardPointer[0][5] = 'w';
+                comparativeChessboardPointer[0][5] = workingChessboardPointer[0][5] = 'r';
             }
         }
     }
@@ -427,13 +427,13 @@ int Engine::makeMove                             (int userMoveCode){//3
         throw x;
     }
 }
-    void Engine::arrangementServiceAfterUserMove (int userMoveCode){//2
+    void Engine::arrangeServiceAfterUserMove     (int userMoveCode){//2
 //==============================================================================================================
     try{
         if(userMoveCode == 10000)
             return;
         setArrangements(workingChessboardPointer);
-        if(checkIfArrangementRepeatedThirdTime())
+        if(isArrangementRepeatedThirdTime())
         {
             movement.gameOver = true;
             movement.gameOverStalemateByUser = true;
@@ -475,7 +475,7 @@ int Engine::makeMove                             (int userMoveCode){//3
         throw x;
     }
 }
-        bool Engine::checkIfArrangementRepeatedThirdTime(){//1
+        bool Engine::isArrangementRepeatedThirdTime(){//1
 //==============================================================================================================
     try{
         if(arrangements.size() == 0 || controlNumbersOfArrangements.size() == 0)
@@ -505,7 +505,7 @@ int Engine::makeMove                             (int userMoveCode){//3
         throw;
     }
 }
-            bool Engine::checkIfControlNumberRepeatedThirdTime(){//0+
+            bool Engine::isControlNumberRepeatedThirdTime(){//0+
 //==============================================================================================================
     try{
         if(controlNumbersOfArrangements.size() == 0)
@@ -548,11 +548,11 @@ int Engine::makeMove                             (int userMoveCode){//3
         throw x;
     }
 }
-    void Engine::arrangementServiceAfterEngineMove(){//2
+    void Engine::arrangeServiceAfterEngineMove(){//2
 //==============================================================================================================
     try{
         setArrangements(workingChessboardPointer);
-        if(checkIfArrangementRepeatedThirdTime())
+        if(isArrangementRepeatedThirdTime())
         {
             movement.gameOver = true;
             movement.gameOverStalemateByEngine = true;
@@ -579,7 +579,7 @@ int Engine::makeMove                             (int userMoveCode){//3
     switch(movementNumber)
     {
         case 1:
-            if(((u.toX==2 || u.toX==4) && u.toY==3) || (userPiecesMovedInOpening[0]=='s' && u.toX==2)){
+            if(((u.toX==2 || u.toX==4) && u.toY==3) || (userPiecesMovedInOpening[0]=='n' && u.toX==2)){
                 if(randomChance(3)){
                     workingChessboardPointer[6][4]=' ';
                     workingChessboardPointer[4][4]='P';
@@ -595,7 +595,7 @@ int Engine::makeMove                             (int userMoveCode){//3
             }
             break;
         case 2:
-            if(userPiecesMovedInOpening[1]=='h' || 4<=u.toY){
+            if(userPiecesMovedInOpening[1]=='q' || 4<=u.toY){
                 globalType::gameStage = globalType::middlegame;
                 makeMiddlegameMove();
                 break;
@@ -603,7 +603,7 @@ int Engine::makeMove                             (int userMoveCode){//3
             else if(e.toX==4){
                 if(randomChance(3)){
                     workingChessboardPointer[7][1]=' ';
-                    workingChessboardPointer[5][2]='S';
+                    workingChessboardPointer[5][2]='N';
                 }
                 else{
                     workingChessboardPointer[6][3]=' ';
@@ -613,7 +613,7 @@ int Engine::makeMove                             (int userMoveCode){//3
             else if(e.toX==2){
                 if(randomChance(3)){
                     workingChessboardPointer[7][6]=' ';
-                    workingChessboardPointer[5][5]='S';
+                    workingChessboardPointer[5][5]='N';
                 }
                 else if(randomChance(2)){
                     workingChessboardPointer[6][3]=' ';
@@ -626,22 +626,22 @@ int Engine::makeMove                             (int userMoveCode){//3
             }
             else{
                 workingChessboardPointer[7][6]=' ';
-                workingChessboardPointer[5][5]='S';
+                workingChessboardPointer[5][5]='N';
             }
             break;
         case 3:
-            if(userPiecesMovedInOpening[1]=='h' || 4<=u.toY){
+            if(userPiecesMovedInOpening[1]=='q' || 4<=u.toY){
                 globalType::gameStage = globalType::middlegame;
                 makeMiddlegameMove();
                 break;
             }
-            else if(workingChessboardPointer[7][6]=='S'){
+            else if(workingChessboardPointer[7][6]=='N'){
                 workingChessboardPointer[7][6]=' ';
-                workingChessboardPointer[5][5]='S';
+                workingChessboardPointer[5][5]='N';
             }
             else{
                 workingChessboardPointer[7][1]=' ';
-                workingChessboardPointer[5][2]='S';
+                workingChessboardPointer[5][2]='N';
             }
             break;
     }
@@ -663,11 +663,11 @@ int Engine::makeMove                             (int userMoveCode){//3
             }
             else if(randomChance(2)){
                     workingChessboardPointer[7][6]=' ';
-                    workingChessboardPointer[5][5]='S';
+                    workingChessboardPointer[5][5]='N';
             }
             else{
                     workingChessboardPointer[7][1]=' ';
-                    workingChessboardPointer[5][2]='S';
+                    workingChessboardPointer[5][2]='N';
             }
             break;
         case 2:
@@ -675,36 +675,36 @@ int Engine::makeMove                             (int userMoveCode){//3
                 if(randomChance(3))
                 {
                     workingChessboardPointer[7][1]=' ';
-                    workingChessboardPointer[5][2]='S';
+                    workingChessboardPointer[5][2]='N';
                 }
                 else
                 {
                     workingChessboardPointer[7][6]=' ';
-                    workingChessboardPointer[5][5]='S';
+                    workingChessboardPointer[5][5]='N';
                 }
             }
             else if(workingChessboardPointer[4][3]=='p')
             {
                 if(randomChance(3)){
                     workingChessboardPointer[7][6]=' ';
-                    workingChessboardPointer[5][5]='S';
+                    workingChessboardPointer[5][5]='N';
                 }
                 else{
                     workingChessboardPointer[7][1]=' ';
-                    workingChessboardPointer[5][2]='S';
+                    workingChessboardPointer[5][2]='N';
                 }
             }
-            else if(workingChessboardPointer[5][2]=='S'){
+            else if(workingChessboardPointer[5][2]=='N'){
                     workingChessboardPointer[7][6]=' ';
-                    workingChessboardPointer[5][5]='S';
+                    workingChessboardPointer[5][5]='N';
             }
             else{
                     workingChessboardPointer[7][1]=' ';
-                    workingChessboardPointer[5][2]='S';
+                    workingChessboardPointer[5][2]='N';
             }
             break;
         case 3:
-            if(userPiecesMovedInOpening[1]=='h' || 4<=u.toY){
+            if(userPiecesMovedInOpening[1]=='q' || 4<=u.toY){
                 globalType::gameStage = globalType::middlegame;
                 makeMiddlegameMove();
                 break;
@@ -752,10 +752,10 @@ int Engine::makeMove                             (int userMoveCode){//3
             switch(workingChessboardPointer[i][j])
             {
                 case 'p': nrOfUserPawns++;     break;
-                case 's': nrOfUserKnights++;   break;
-                case 'g': nrOfUserBishops++;   break;
-                case 'w': nrOfUserRooks++;     break;
-                case 'h': nrOfUserQueens++;    break;
+                case 'n': nrOfUserKnights++;   break;
+                case 'b': nrOfUserBishops++;   break;
+                case 'r': nrOfUserRooks++;     break;
+                case 'q': nrOfUserQueens++;    break;
             }
     if(( nrOfUserRooks + nrOfUserQueens <= 1 )
      &&( nrOfUserKnights + nrOfUserBishops + nrOfUserRooks + nrOfUserQueens <= 3 )
@@ -844,10 +844,10 @@ int Engine::makeMove                             (int userMoveCode){//3
             switch(workingChessboardPointer[i][j])
             {
                 //case 'P': nrOfEnginePawns++;   break;
-                //case 'S': nrOfEngineKnights++; break;
-                //case 'G': nrOfEngineBishops++; break;
-                case 'W': nrOfEngineRooks++;   break;
-                case 'H': nrOfEngineQueens++;  break;
+                //case 'N': nrOfEngineKnights++; break;
+                //case 'B': nrOfEngineBishops++; break;
+                case 'R': nrOfEngineRooks++;   break;
+                case 'Q': nrOfEngineQueens++;  break;
             }
 
     if      ( 2 <= nrOfEngineRooks + nrOfEngineQueens ) {globalType::choosenEndgame = globalType::rooksAndQueensMate; return;}
@@ -993,10 +993,10 @@ int Engine::makeMove                             (int userMoveCode){//3
     if(workingChessboardPointer[e.toY][e.toX] != comparativeChessboardPointer[e.fromY][e.fromX])// a pawn was promoted
         switch(workingChessboardPointer[e.toY][e.toX])
         {
-            case 'S': promotionCode = 10000; break;
-            case 'G': promotionCode = 20000; break;
-            case 'W': promotionCode = 30000; break;
-            case 'H': promotionCode = 40000; break;
+            case 'N': promotionCode = 10000; break;
+            case 'B': promotionCode = 20000; break;
+            case 'R': promotionCode = 30000; break;
+            case 'Q': promotionCode = 40000; break;
             default: break;
         }
     return e.fromX*1000+e.fromY*100+e.toX*10+e.toY*1 + promotionCode;
@@ -1016,22 +1016,22 @@ int Engine::makeMove                             (int userMoveCode){//3
         if(e.fromX == 3 && e.toX == 1) // O-O by black
         {
             comparativeChessboardPointer[7][0] == ' ';
-            comparativeChessboardPointer[7][2] == 'W';
+            comparativeChessboardPointer[7][2] == 'R';
         }
         if(e.fromX == 3 && e.toX == 5) // O-O-O by black
         {
             comparativeChessboardPointer[7][7] == ' ';
-            comparativeChessboardPointer[7][4] == 'W';
+            comparativeChessboardPointer[7][4] == 'R';
         }
         if(e.fromX == 4 && e.toX == 2) // O-O-O by white
         {
             comparativeChessboardPointer[7][0] == ' ';
-            comparativeChessboardPointer[7][3] == 'W';
+            comparativeChessboardPointer[7][3] == 'R';
         }
         if(e.fromX == 4 && e.toX == 6) // O-O by white
         {
             comparativeChessboardPointer[7][7] == ' ';
-            comparativeChessboardPointer[7][5] == 'W';
+            comparativeChessboardPointer[7][5] == 'R';
         }
     }
 }

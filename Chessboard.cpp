@@ -145,14 +145,14 @@ Chessboard::Chessboard(bool k): color{k}{//3
                 {
                     case 'p': loadSinglePiece(7-j,7-i , pawn,    color); break;
                     case 'P': loadSinglePiece(7-j,7-i , pawn,   !color); break;
-                    case 's': loadSinglePiece(7-j,7-i , knight,  color); break;
-                    case 'S': loadSinglePiece(7-j,7-i , knight, !color); break;
-                    case 'g': loadSinglePiece(7-j,7-i , bishop,  color); break;
-                    case 'G': loadSinglePiece(7-j,7-i , bishop, !color); break;
-                    case 'w': loadSinglePiece(7-j,7-i , rook,    color); break;
-                    case 'W': loadSinglePiece(7-j,7-i , rook,   !color); break;
-                    case 'h': loadSinglePiece(7-j,7-i , queen,   color); break;
-                    case 'H': loadSinglePiece(7-j,7-i , queen,  !color); break;
+                    case 'n': loadSinglePiece(7-j,7-i , knight,  color); break;
+                    case 'N': loadSinglePiece(7-j,7-i , knight, !color); break;
+                    case 'b': loadSinglePiece(7-j,7-i , bishop,  color); break;
+                    case 'B': loadSinglePiece(7-j,7-i , bishop, !color); break;
+                    case 'r': loadSinglePiece(7-j,7-i , rook,    color); break;
+                    case 'R': loadSinglePiece(7-j,7-i , rook,   !color); break;
+                    case 'q': loadSinglePiece(7-j,7-i , queen,   color); break;
+                    case 'Q': loadSinglePiece(7-j,7-i , queen,  !color); break;
                     case 'k': loadSinglePiece(7-j,7-i , king,    color); break;
                     case 'K': loadSinglePiece(7-j,7-i , king,   !color); break;
                     case ' ': loadSinglePiece(7-j,7-i , no,      color); break;
@@ -193,16 +193,16 @@ Chessboard::Chessboard(bool k): color{k}{//3
                     if(i==0)
                     {
                         if(j==3)
-                            chessboard[i][j] = color?'k':'h';
+                            chessboard[i][j] = color?'k':'q';
                         if(j==4)
-                            chessboard[i][j] = color?'h':'k';
+                            chessboard[i][j] = color?'q':'k';
                     }
                     if(i==7)
                     {
                         if(j==3)
-                            chessboard[i][j] = color?'K':'H';
+                            chessboard[i][j] = color?'K':'Q';
                         if(j==4)
-                            chessboard[i][j] = color?'H':'K';
+                            chessboard[i][j] = color?'Q':'K';
                     }
                 }
                 else
