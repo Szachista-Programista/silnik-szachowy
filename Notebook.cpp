@@ -35,16 +35,16 @@ Notebook::Notebook(bool k): color{k}{//1
                     if(i==0)
                     {
                         if(j==3)
-                            chessboard[i][j] = color?'k':'h';
+                            chessboard[i][j] = color?'k':'q';
                         if(j==4)
-                            chessboard[i][j] = color?'h':'k';
+                            chessboard[i][j] = color?'q':'k';
                     }
                     if(i==7)
                     {
                         if(j==3)
-                            chessboard[i][j] = color?'K':'H';
+                            chessboard[i][j] = color?'K':'Q';
                         if(j==4)
-                            chessboard[i][j] = color?'H':'K';
+                            chessboard[i][j] = color?'Q':'K';
                     }
                 }
                 else
@@ -204,25 +204,25 @@ void Notebook::generateAndWriteNotation  (int moveCode){//*5
         if(moveFromX == 3 && moveToX == 1) // O-O
         {
             currentChessboard[moveFromY][0] = ' ';
-            currentChessboard[moveFromY][2] = (engineMove?'W':'w');
+            currentChessboard[moveFromY][2] = (engineMove?'R':'r');
             lastMoveNotation = "O-O";
         }
         if(moveFromX == 3 && moveToX == 5) // O-O-O
         {
             currentChessboard[moveFromY][7] = ' ';
-            currentChessboard[moveFromY][4] = (engineMove?'W':'w');
+            currentChessboard[moveFromY][4] = (engineMove?'R':'r');
             lastMoveNotation = "O-O-O";
         }
         if(moveFromX == 4 && moveToX == 2) // O-O-O
         {
             currentChessboard[moveFromY][0] = ' ';
-            currentChessboard[moveFromY][3] = (engineMove?'W':'w');
+            currentChessboard[moveFromY][3] = (engineMove?'R':'r');
             lastMoveNotation = "O-O-O";
         }
         if(moveFromX == 4 && moveToX == 6) // O-O
         {
             currentChessboard[moveFromY][7] = ' ';
-            currentChessboard[moveFromY][5] = (engineMove?'W':'w');
+            currentChessboard[moveFromY][5] = (engineMove?'R':'r');
             lastMoveNotation = "O-O";
         }
     }
@@ -243,10 +243,10 @@ void Notebook::generateAndWriteNotation  (int moveCode){//*5
         lastMoveNotation += '=';
         switch(additionalParameter)
         {
-            case 1: lastMoveNotation += globalType::getCommuniqueCotent({38})[0]; currentChessboard[moveToY][moveToX] = (engineMove?'S':'s'); break;
-            case 2: lastMoveNotation += globalType::getCommuniqueCotent({39})[0]; currentChessboard[moveToY][moveToX] = (engineMove?'G':'g'); break;
-            case 3: lastMoveNotation += globalType::getCommuniqueCotent({40})[0]; currentChessboard[moveToY][moveToX] = (engineMove?'W':'w'); break;
-            case 4: lastMoveNotation += globalType::getCommuniqueCotent({41})[0]; currentChessboard[moveToY][moveToX] = (engineMove?'H':'h'); break;
+            case 1: lastMoveNotation += globalType::getCommuniqueCotent({38})[0]; currentChessboard[moveToY][moveToX] = (engineMove?'N':'n'); break;
+            case 2: lastMoveNotation += globalType::getCommuniqueCotent({39})[0]; currentChessboard[moveToY][moveToX] = (engineMove?'B':'b'); break;
+            case 3: lastMoveNotation += globalType::getCommuniqueCotent({40})[0]; currentChessboard[moveToY][moveToX] = (engineMove?'R':'r'); break;
+            case 4: lastMoveNotation += globalType::getCommuniqueCotent({41})[0]; currentChessboard[moveToY][moveToX] = (engineMove?'Q':'q'); break;
             default: break;
         }
     }
@@ -282,7 +282,7 @@ void Notebook::generateAndWriteNotation  (int moveCode){//*5
                         lastMoveNotation.pop_back();
                     }
                     break;
-                case 'S': case 's':
+                case 'N': case 'n':
                 {
                     lastMoveNotation += globalType::getCommuniqueCotent({38})[0];
 
@@ -320,10 +320,10 @@ void Notebook::generateAndWriteNotation  (int moveCode){//*5
                     }
                     break;
                 }
-                case 'G': case 'g':
+                case 'B': case 'b':
                     lastMoveNotation += globalType::getCommuniqueCotent({39})[0];
                     break;
-                case 'W': case 'w':
+                case 'R': case 'r':
                     lastMoveNotation += globalType::getCommuniqueCotent({40})[0];
                     if(moveFromY == moveToY)  //horizontal movement
                         for(int i=moveToX+((moveFromX<moveToX)? +1: -1); 0<=i && i<=7; (moveFromX<moveToX)? i++: i--)
@@ -352,7 +352,7 @@ void Notebook::generateAndWriteNotation  (int moveCode){//*5
                                 break;
                         }
                     break;
-                case 'H': case 'h':
+                case 'Q': case 'q':
                     lastMoveNotation += globalType::getCommuniqueCotent({41})[0];
                     break;
                 case 'K': case 'k':
@@ -411,60 +411,60 @@ void Notebook::generateAndWriteNotation  (int moveCode){//*5
     for(int i=1; 0<=y-i; i++)                                       //if check from 12:00 direction Rook/Queen
     {
         if(currentChessboard[y-i][x]==' ') continue;
-        if(currentChessboard[y-i][x]==(engineMove? 'H': 'h') || currentChessboard[y-i][x]==(engineMove? 'W': 'w')) return true;
+        if(currentChessboard[y-i][x]==(engineMove? 'Q': 'q') || currentChessboard[y-i][x]==(engineMove? 'R': 'r')) return true;
         else break;
     }
     for(int i=1; 0<=y-i && x+i<=7; i++)                             //if check from 01:30 direction Bishop/Queen
     {
         if(currentChessboard[y-i][x+i]==' ') continue;
-        if(currentChessboard[y-i][x+i]==(engineMove? 'H': 'h') || currentChessboard[y-i][x+i]==(engineMove? 'G': 'g')) return true;
+        if(currentChessboard[y-i][x+i]==(engineMove? 'Q': 'q') || currentChessboard[y-i][x+i]==(engineMove? 'B': 'b')) return true;
         else break;
     }
     for(int i=1; x+i<=7; i++)                                       //if check from 03:00 direction Rook/Queen
     {
         if(currentChessboard[y][x+i]==' ') continue;
-        if(currentChessboard[y][x+i]==(engineMove? 'H': 'h') || currentChessboard[y][x+i]==(engineMove? 'W': 'w')) return true;
+        if(currentChessboard[y][x+i]==(engineMove? 'Q': 'q') || currentChessboard[y][x+i]==(engineMove? 'R': 'r')) return true;
         else break;
     }
     for(int i=1; y+i<=7 && x+i<=7; i++)                             //if check from 04:30 direction Bishop/Queen
     {
         if(currentChessboard[y+i][x+i]==' ') continue;
-        if(currentChessboard[y+i][x+i]==(engineMove? 'H': 'h') || currentChessboard[y+i][x+i]==(engineMove? 'G': 'g')) return true;
+        if(currentChessboard[y+i][x+i]==(engineMove? 'Q': 'q') || currentChessboard[y+i][x+i]==(engineMove? 'B': 'b')) return true;
         else break;
     }
     for(int i=1; y+i<=7; i++)                                       //if check from 06:00 direction Rook/Queen
     {
         if(currentChessboard[y+i][x]==' ') continue;
-        if(currentChessboard[y+i][x]==(engineMove? 'H': 'h') || currentChessboard[y+i][x]==(engineMove? 'W': 'w')) return true;
+        if(currentChessboard[y+i][x]==(engineMove? 'Q': 'q') || currentChessboard[y+i][x]==(engineMove? 'R': 'r')) return true;
         else break;
     }
     for(int i=1; y+i<=7 && 0<=x-i; i++)                             //if check from 07:30 direction Bishop/Queen
     {
         if(currentChessboard[y+i][x-i]==' ') continue;
-        if(currentChessboard[y+i][x-i]==(engineMove? 'H': 'h') || currentChessboard[y+i][x-i]==(engineMove? 'G': 'g')) return true;
+        if(currentChessboard[y+i][x-i]==(engineMove? 'Q': 'q') || currentChessboard[y+i][x-i]==(engineMove? 'B': 'b')) return true;
         else break;
     }
     for(int i=1; 0<=x-i; i++)                                       //if check from 09:00 direction Rook/Queen
     {
         if(currentChessboard[y][x-i]==' ') continue;
-        if(currentChessboard[y][x-i]==(engineMove? 'H': 'h') || currentChessboard[y][x-i]==(engineMove? 'W': 'w')) return true;
+        if(currentChessboard[y][x-i]==(engineMove? 'Q': 'q') || currentChessboard[y][x-i]==(engineMove? 'R': 'r')) return true;
         else break;
     }
     for(int i=1; 0<=y-i && 0<=x-i; i++)                             //if check from 10:30 direction Bishop/Queen
     {
         if(currentChessboard[y-i][x-i]==' ') continue;
-        if(currentChessboard[y-i][x-i]==(engineMove? 'H': 'h') || currentChessboard[y-i][x-i]==(engineMove? 'G': 'g')) return true;
+        if(currentChessboard[y-i][x-i]==(engineMove? 'Q': 'q') || currentChessboard[y-i][x-i]==(engineMove? 'B': 'b')) return true;
         else break;
     }
 
-    if(0<=y-2 && x+1<=7 && currentChessboard[y-2][x+1]==(engineMove? 'S': 's')) return true; //check from Knight
-    if(0<=y-1 && x+2<=7 && currentChessboard[y-1][x+2]==(engineMove? 'S': 's')) return true;
-    if(y+1<=7 && x+2<=7 && currentChessboard[y+1][x+2]==(engineMove? 'S': 's')) return true;
-    if(y+2<=7 && x+1<=7 && currentChessboard[y+2][x+1]==(engineMove? 'S': 's')) return true;
-    if(y+2<=7 && 0<=x-1 && currentChessboard[y+2][x-1]==(engineMove? 'S': 's')) return true;
-    if(y+1<=7 && 0<=x-2 && currentChessboard[y+1][x-2]==(engineMove? 'S': 's')) return true;
-    if(0<=y-1 && 0<=x-2 && currentChessboard[y-1][x-2]==(engineMove? 'S': 's')) return true;
-    if(0<=y-2 && 0<=x-1 && currentChessboard[y-2][x-1]==(engineMove? 'S': 's')) return true;
+    if(0<=y-2 && x+1<=7 && currentChessboard[y-2][x+1]==(engineMove? 'N': 'n')) return true; //check from Knight
+    if(0<=y-1 && x+2<=7 && currentChessboard[y-1][x+2]==(engineMove? 'N': 'n')) return true;
+    if(y+1<=7 && x+2<=7 && currentChessboard[y+1][x+2]==(engineMove? 'N': 'n')) return true;
+    if(y+2<=7 && x+1<=7 && currentChessboard[y+2][x+1]==(engineMove? 'N': 'n')) return true;
+    if(y+2<=7 && 0<=x-1 && currentChessboard[y+2][x-1]==(engineMove? 'N': 'n')) return true;
+    if(y+1<=7 && 0<=x-2 && currentChessboard[y+1][x-2]==(engineMove? 'N': 'n')) return true;
+    if(0<=y-1 && 0<=x-2 && currentChessboard[y-1][x-2]==(engineMove? 'N': 'n')) return true;
+    if(0<=y-2 && 0<=x-1 && currentChessboard[y-2][x-1]==(engineMove? 'N': 'n')) return true;
 
     if(engineMove && y<=5)//check from Pawn
     {

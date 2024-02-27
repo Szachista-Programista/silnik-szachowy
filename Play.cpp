@@ -271,10 +271,10 @@ void Play::playWithUser(){//*5
         {
             case ' ':           return 0;
             case 'P': case 'p': return 1;
-            case 'S': case 's': return 2;
-            case 'G': case 'g': return 3;
-            case 'W': case 'w': return 4;
-            case 'H': case 'h': return 5;
+            case 'N': case 'n': return 2;
+            case 'B': case 'b': return 3;
+            case 'R': case 'r': return 4;
+            case 'Q': case 'q': return 5;
             case 'K': case 'k': return 6;
             default: throw std::runtime_error("Wrong char.");
         }
