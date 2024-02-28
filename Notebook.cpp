@@ -1,24 +1,28 @@
 #include "Notebook.h"
 
-Notebook::Notebook(bool k): color{k}{//1
-//==============================================================================================================
-    try{
-        currentChessboard  = loadPiecesArrangement();
-        previousChessboard = loadPiecesArrangement();
-        loadChars();
-    }
-//#########################################################################
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
-    }
+Notebook::Notebook(bool k): color{k}
+{
+    currentChessboard  = loadPiecesArrangement();
+    previousChessboard = loadPiecesArrangement();
+    loadChars();
 }
-    globalType::chessboardPointer Notebook::loadPiecesArrangement(){//0+
-//==============================================================================================================
-    try{
-        std::ifstream reading;
-        std::string line;
-        globalType::chessboardPointer chessboard = new char[8][8];
+    globalType::chessboardPointer Notebook::loadPiecesArrangement()
+{
+    std::ifstream reading;
+    std::string line;
+    globalType::chessboardPointer chessboard;
+    try
+    {
+        chessboard = new char[8][8];
+    }
+    catch(const std::bad_alloc &e)
+    {
+        globalType::errorType x;
+        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+        throw x;
+    }
+    try
+    {
         reading.open("chessboard.txt");
         if (!reading.is_open())
             throw std::ifstream::failure("The file 'chessboard.txt' cannot be opened .");
@@ -50,26 +54,23 @@ Notebook::Notebook(bool k): color{k}{//1
                 else
                     chessboard[i][j] = line[j];
         }
-        reading.close();
-        return chessboard;
+
     }
-//#########################################################################
-    catch(const std::ifstream::failure &e){
+    catch(const std::ifstream::failure &e)
+    {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(const std::bad_alloc &e){
-        globalType::errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
-        throw x;
-    }
+    reading.close();
+    return chessboard;
 }
-    void Notebook::loadChars(){//0+
-//==============================================================================================================
-    try{
-        std::ifstream reading;
-        std::string charArray;
+    void Notebook::loadChars()
+{
+    std::ifstream reading;
+    std::string charArray;
+    try
+    {
         reading.open("chars.txt");
         if (!reading.is_open())
             throw std::ifstream::failure("The file 'chars.txt' cannot be opened .");
@@ -87,78 +88,65 @@ Notebook::Notebook(bool k): color{k}{//1
                     pixelArtCharacterArray[i][j] += charArray[k];
                 }
         }
-        reading.close();
     }
-//#########################################################################
-    catch(const std::ifstream::failure &e){
+    catch(const std::ifstream::failure &e)
+    {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
+    reading.close();
 }
-Notebook::~Notebook()noexcept{
-//==============================================================================================================
+Notebook::~Notebook()noexcept
+{
     delete[]currentChessboard;
     delete[]previousChessboard;
 }
-void Notebook::generateAndWriteNotation  (int moveCode){//*5
-//==============================================================================================================
-    try{
-        updateParameterValues(moveCode);
-        markMoveAndWriteNotation();
-        updateEntireNotation();
-        writeNotation();
-    }
-//#########################################################################
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
-    }
+void Notebook::generateAndWriteNotation  (int moveCode)
+{
+    updateParameterValues(moveCode);
+    markMoveAndWriteNotation();
+    updateEntireNotation();
+    writeNotation();
 }
-    void Notebook::updateParameterValues (int moveCode){//1
-//==============================================================================================================
-    try{
-        lastMoveNotation.clear();
-        Notebook::moveCode = moveCode;
-        semiMoveNumber++;
-        moveNumber = (semiMoveNumber+1)/2;
-        engineMove = color ^ semiMoveNumber%2;
-        moveMarked = false;
-        decipherMoveCode();
-        updateKingsLocation();
-    }
-//#########################################################################
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
-    }
+    void Notebook::updateParameterValues (int moveCode)
+{
+    lastMoveNotation.clear();
+    Notebook::moveCode = moveCode;
+    semiMoveNumber++;
+    moveNumber = (semiMoveNumber+1)/2;
+    engineMove = color ^ semiMoveNumber%2;
+    moveMarked = false;
+    decipherMoveCode();
+    updateKingsLocation();
 }
-        void Notebook::decipherMoveCode(){//0+
-//==============================================================================================================
-    try{
-        moveToY = moveCode % 10;
-        moveCode /=10;
-        moveToX = moveCode % 10;
-        moveCode /=10;
-        moveFromY  = moveCode % 10;
-        moveCode /=10;
-        moveFromX  = moveCode % 10;
-        moveCode /=10;
-        additionalParameter = moveCode;
-        if(6 <= additionalParameter && additionalParameter <= 9)
-            gameOver = true;
+        void Notebook::decipherMoveCode()
+{    
+    moveToY = moveCode % 10;
+    moveCode /=10;
+    moveToX = moveCode % 10;
+    moveCode /=10;
+    moveFromY  = moveCode % 10;
+    moveCode /=10;
+    moveFromX  = moveCode % 10;
+    moveCode /=10;
+    additionalParameter = moveCode;
+    if(6 <= additionalParameter && additionalParameter <= 9)
+        gameOver = true;
+    try
+    {
         if (moveFromX < 0 || 7 < moveFromX || moveFromY < 0 || 7 < moveFromY || moveToX < 0 || 7 < moveToX || moveToY < 0 || 7 < moveToY)
             throw std::runtime_error("Movement coordinates out of range.");
     }
-//#########################################################################
-    catch(const std::runtime_error &e){
+    catch(const std::runtime_error &e)
+    {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
-        void Notebook::updateKingsLocation()noexcept{
-//==============================================================================================================
+        void Notebook::updateKingsLocation()noexcept
+{
     for(int i=0; i<8; i++)
         for(int j=0; j<8; j++)
         {
@@ -174,28 +162,21 @@ void Notebook::generateAndWriteNotation  (int moveCode){//*5
             }
         }
 }
-    void Notebook::markMoveAndWriteNotation(){//2
-//==============================================================================================================
-    try{
-        if(additionalParameter == 6 || additionalParameter == 7)//the user has finished the game
-            return;
-        markCastle();
-        markPawnPromotion();
-        markEnPassant();
-        markCommonMove();
-        if(additionalParameter == 8)//the engine caused checkmate
-             lastMoveNotation += '#';
-        else if(isThereCheck())
-            lastMoveNotation += '+';
-    }
-//#########################################################################
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
-    }
+    void Notebook::markMoveAndWriteNotation()
+{
+    if(additionalParameter == 6 || additionalParameter == 7)//the user has finished the game
+        return;
+    markCastle();
+    markPawnPromotion();
+    markEnPassant();
+    markCommonMove();
+    if(additionalParameter == 8)//the engine caused checkmate
+            lastMoveNotation += '#';
+    else if(isThereCheck())
+        lastMoveNotation += '+';
 }
-        void Notebook::markCastle()noexcept{
-//==============================================================================================================
+        void Notebook::markCastle()noexcept
+{
     if(currentChessboard[moveFromY][moveFromX] == (engineMove?'K':'k') && abs(moveFromX-moveToX)==2)//castle
     {
         moveMarked = true;
@@ -227,8 +208,8 @@ void Notebook::generateAndWriteNotation  (int moveCode){//*5
         }
     }
 }
-        void Notebook::markPawnPromotion()noexcept{
-//==============================================================================================================
+        void Notebook::markPawnPromotion()noexcept
+{
     if(1 <= additionalParameter && additionalParameter <= 4) //promotion
     {
         moveMarked = true;
@@ -251,8 +232,8 @@ void Notebook::generateAndWriteNotation  (int moveCode){//*5
         }
     }
 }
-        void Notebook::markEnPassant()noexcept{
-//==============================================================================================================
+        void Notebook::markEnPassant()noexcept
+{
     if(currentChessboard[moveFromY][moveFromX] == (engineMove?'P':'p') && currentChessboard[moveToY][moveToX] == ' ' && abs(moveFromX-moveToX) == 1)
     {
         moveMarked = true;
@@ -265,14 +246,14 @@ void Notebook::generateAndWriteNotation  (int moveCode){//*5
         currentChessboard[moveFromY][moveToX]  = ' ';
     }
 }
-        void Notebook::markCommonMove(){//1
-//==============================================================================================================
-    try{
-        if( ! moveMarked)
+        void Notebook::markCommonMove()//DDDDDDDDDDDDDDDDDDDDDDDDD
+{
+    if( ! moveMarked)
+    {
+        char movedPiece =  currentChessboard[moveFromY][moveFromX];
+        bool moveWithCapture  = (currentChessboard[moveToY][moveToX] == ' ')? false: true;
+        try
         {
-            char movedPiece =  currentChessboard[moveFromY][moveFromX];
-            bool moveWithCapture  = (currentChessboard[moveToY][moveToX] == ' ')? false: true;
-
             switch(movedPiece)
             {
                 case 'P': case 'p':
@@ -358,53 +339,50 @@ void Notebook::generateAndWriteNotation  (int moveCode){//*5
                 case 'K': case 'k':
                     lastMoveNotation += globalType::getCommuniqueCotent({42})[0];
                     break;
-                default: std::cout<<">"<<movedPiece<<"<"<<moveFromX<<moveFromY; throw std::runtime_error("Wrong piece.");///////////////////////////////////////////////////////////////
+                default: std::cout<<">"<<movedPiece<<"<"<<moveFromX<<moveFromY; throw std::runtime_error("Wrong piece.");
             }
-            if(moveWithCapture)
-                lastMoveNotation += 'x';
-            lastMoveNotation += getCoordinates(moveToX, moveToY);
-            currentChessboard[moveToY][moveToX] = movedPiece;
-            currentChessboard[moveFromY][moveFromX]   = ' ';
         }
-    }
-//#########################################################################
-    catch(const std::runtime_error &e){
-        globalType::errorType x;
-        x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
-        throw x;
-    }
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
+        catch(const std::runtime_error &e)
+        {
+            globalType::errorType x;
+            x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
+            throw x;
+        }        
+        if(moveWithCapture)
+            lastMoveNotation += 'x';
+        lastMoveNotation += getCoordinates(moveToX, moveToY);
+        currentChessboard[moveToY][moveToX] = movedPiece;
+        currentChessboard[moveFromY][moveFromX]   = ' ';
     }
 }
-            std::string Notebook::getCoordinates(int x, int y){//0+
-//==============================================================================================================
-    try{
+            std::string Notebook::getCoordinates(int x, int y)
+{
+    try
+    {
         if(x<0 || 7<x || y<0 || 7<y)
             throw std::invalid_argument("wrong coordinates.");
-        std::string coordinates;
-        if(color)
-        {
-            coordinates += 'a'+abs(x-7);
-            coordinates += std::to_string(y+1);
-        }
-        if(!color)
-        {
-            coordinates += 'a'+x;
-            coordinates += std::to_string(abs(y-8));
-        }
-        return coordinates;
     }
-//#########################################################################
-    catch(const std::invalid_argument &e){
+    catch(const std::invalid_argument &e)
+    {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
+    std::string coordinates;
+    if(color)
+    {
+        coordinates += 'a'+abs(x-7);
+        coordinates += std::to_string(y+1);
+    }
+    if(!color)
+    {
+        coordinates += 'a'+x;
+        coordinates += std::to_string(abs(y-8));
+    }
+    return coordinates;
 }
-        bool Notebook::isThereCheck()noexcept{
-//==============================================================================================================
+        bool Notebook::isThereCheck()noexcept//DDDDDDDDDDDDDDDDDDDD
+{
     int x = ((!engineMove)? machineKingLocationX: userKingLocationX);
     int y = ((!engineMove)? machineKingLocationY: userKingLocationY);
 
@@ -478,40 +456,34 @@ void Notebook::generateAndWriteNotation  (int moveCode){//*5
     }
     return false;
 }
-    void Notebook::updateEntireNotation(){//2
-//==============================================================================================================
-    try{
-        std::ostringstream note;
-        if(gameOver)
-            endgameService();
-        if(semiMoveNumber % 2)
+    void Notebook::updateEntireNotation()
+{
+    std::ostringstream note;
+    if(gameOver)
+        endgameService();
+    if(semiMoveNumber % 2)
+    {
+        note<<std::right<<std::setw(3)<<moveNumber<<". "<<std::left<<std::setw(8)<<lastMoveNotation;
+        if(additionalParameter == 8 || additionalParameter == 9)
+            note<<std::left<<std::setw(7)<<gameResult;
+        entireNotation.push_back(note.str());
+    }
+    else
+    {
+        note<<std::left<<std::setw(7)<<lastMoveNotation;
+        entireNotation[moveNumber-1] += note.str();
+        if(additionalParameter == 8 || additionalParameter == 9)
         {
-            note<<std::right<<std::setw(3)<<moveNumber<<". "<<std::left<<std::setw(8)<<lastMoveNotation;
-            if(additionalParameter == 8 || additionalParameter == 9)
-                note<<std::left<<std::setw(7)<<gameResult;
+            note.str("");
+            note<<std::right<<std::setw(3)<<moveNumber + 1<<". "<<std::left<<std::setw(8)<<gameResult;
             entireNotation.push_back(note.str());
         }
-        else
-        {
-            note<<std::left<<std::setw(7)<<lastMoveNotation;
-            entireNotation[moveNumber-1] += note.str();
-            if(additionalParameter == 8 || additionalParameter == 9)
-            {
-                note.str("");
-                note<<std::right<<std::setw(3)<<moveNumber + 1<<". "<<std::left<<std::setw(8)<<gameResult;
-                entireNotation.push_back(note.str());
-            }
-        }
-    }
-//#########################################################################
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
     }
 }
-        void Notebook::endgameService(){//1
-//==============================================================================================================
-    try{
+        void Notebook::endgameService()
+{
+    try
+    {
         switch(additionalParameter)
         {
             case 6:// user win
@@ -530,230 +502,198 @@ void Notebook::generateAndWriteNotation  (int moveCode){//*5
             default: throw std::runtime_error("Wrong additional parameter.");
         }
     }
-//#########################################################################
-    catch(const std::runtime_error &e){
+    catch(const std::runtime_error &e)
+    {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
-    }
 }
-            void Notebook::replacePlusWithHashtag(){//0+
-//==============================================================================================================
-    try{
-        int index_edytowanego_stringa = moveNumber - ((semiMoveNumber % 2)? 2: 1);
-        int index_plusa = entireNotation[index_edytowanego_stringa].rfind('+');
+            void Notebook::replacePlusWithHashtag()
+{
+    int index_edytowanego_stringa = moveNumber - ((semiMoveNumber % 2)? 2: 1);
+    int index_plusa = entireNotation[index_edytowanego_stringa].rfind('+');
+    try
+    {
         if (index_plusa == std::string::npos)
             throw std::runtime_error("The '+' sign was not found in the edited text fragment.");
-        entireNotation[index_edytowanego_stringa][index_plusa] = '#';
     }
-//#########################################################################
-    catch(const std::runtime_error &e){
+    catch(const std::runtime_error &e)
+    {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
+    entireNotation[index_edytowanego_stringa][index_plusa] = '#';
 }
-    void Notebook::writeNotation(){//*4
-//==============================================================================================================
-    try{
-        clearNotationArray();
-        if(semiMoveNumber%2)
-            writePreviousNotation(previousNotationLine, previousNotationColumn);
-        addNotationArrayContent(entireNotation[moveNumber-1]);
-        writeNotationArray(currentNotationLine, currentNotationColumn, true);
-        if(!(semiMoveNumber%2))
+    void Notebook::writeNotation()
+{
+    clearNotationArray();
+    if(semiMoveNumber%2)
+        writePreviousNotation(previousNotationLine, previousNotationColumn);
+    addNotationArrayContent(entireNotation[moveNumber-1]);
+    writeNotationArray(currentNotationLine, currentNotationColumn, true);
+    if(!(semiMoveNumber%2))
+    {
+        rewriteNotationToColumn();
+        previousNotationColumn = currentNotationColumn;
+        previousNotationLine  = currentNotationLine;
+        if(currentNotationLine < 15)
+            currentNotationLine++;
+        else
         {
-            rewriteNotationToColumn();
-            previousNotationColumn = currentNotationColumn;
-            previousNotationLine  = currentNotationLine;
-            if(currentNotationLine < 15)
-                currentNotationLine++;
-            else
-            {
-                currentNotationLine = 0;
-                currentNotationColumn++;
-                if(currentNotationColumn == 3)
-                    undoNotationColumns();
-            }
-            if(additionalParameter == 8 || additionalParameter == 9)
-            {
-                additionalParameter = 0;
-                semiMoveNumber++;
-                moveNumber = (semiMoveNumber+1)/2;
-                writeNotation();
-            }
+            currentNotationLine = 0;
+            currentNotationColumn++;
+            if(currentNotationColumn == 3)
+                undoNotationColumns();
+        }
+        if(additionalParameter == 8 || additionalParameter == 9)
+        {
+            additionalParameter = 0;
+            semiMoveNumber++;
+            moveNumber = (semiMoveNumber+1)/2;
+            writeNotation();
         }
     }
-//#########################################################################
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
-    }
 }
-        void Notebook::clearNotationArray()noexcept{
-//==============================================================================================================
+        void Notebook::clearNotationArray()noexcept
+{
     for(int i=0; i<globalType::letterHeight; i++)
         notationArray[i].clear();
 }
-        void Notebook::writePreviousNotation(int line, int column){//*3
-//==============================================================================================================
-    try{
+        void Notebook::writePreviousNotation(int line, int column)
+{
+    try
+    {
         if(column<0 || 2<column)
             throw std::invalid_argument("Wrong column.");
         if(line<0 || 16<line)
             throw std::invalid_argument("Wrong line.");
-
-        if(additionalParameter == 6)
-        {
-            addNotationArrayContent(entireNotation[moveNumber-2]);
-            writeNotationArray(line, column, false);
-            clearNotationArray();
-            return;
-        }
-        int x = globalType::chessboardwidth + column*globalType::columnWidth;
-        int y = line * globalType::notationLineHeight;
-        for(int i=0; i<globalType::letterHeight; i++)
-        {
-            systemInfo::setCursorPosition(x, y+i);
-            std::cout<<notationColumnArray[previousNotationColumn][y+i];
-        }
     }
-//#########################################################################
-    catch(const std::invalid_argument &e){
+    catch(const std::invalid_argument &e)
+    {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
+    if(additionalParameter == 6)
+    {
+        addNotationArrayContent(entireNotation[moveNumber-2]);
+        writeNotationArray(line, column, false);
+        clearNotationArray();
+        return;
+    }
+    int x = globalType::chessboardwidth + column*globalType::columnWidth;
+    int y = line * globalType::notationLineHeight;
+    for(int i=0; i<globalType::letterHeight; i++)
+    {
+        systemInfo::setCursorPosition(x, y+i);
+        std::cout<<notationColumnArray[previousNotationColumn][y+i];
     }
 }
-        void Notebook::undoNotationColumns(){//*1
-//==============================================================================================================
-    try{
-        copyNotationColumnArray(0, 1);
-        copyNotationColumnArray(1, 2);
-        emptyNotationColumnArray(2);
-        writeNotationColumn(0);
-        writeNotationColumn(1);
-        clearNotationColumn(2);
-        previousNotationColumn--;
-        currentNotationColumn--;
-    }
-//#########################################################################
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
-    }
+        void Notebook::undoNotationColumns()
+{
+    copyNotationColumnArray(0, 1);
+    copyNotationColumnArray(1, 2);
+    emptyNotationColumnArray(2);
+    writeNotationColumn(0);
+    writeNotationColumn(1);
+    clearNotationColumn(2);
+    previousNotationColumn--;
+    currentNotationColumn--;
 }
-            void Notebook::copyNotationColumnArray(int copyIndex, int patternIndex){//0+
-//==============================================================================================================
-    try{
+            void Notebook::copyNotationColumnArray(int copyIndex, int patternIndex)
+{
+    try
+    {
         if(copyIndex<0 || 1<copyIndex)
             throw std::invalid_argument("Wrong copyIndex.");
         if(patternIndex<1 || 2<patternIndex)
             throw std::invalid_argument("Wrong patternIndex.");
-        for(int i=0; i<globalType::columnHeight; i++)
-            notationColumnArray[copyIndex][i] = notationColumnArray[patternIndex][i];
     }
-//#########################################################################
-    catch(const std::invalid_argument &e){
+    catch(const std::invalid_argument &e)
+    {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
+    for(int i=0; i<globalType::columnHeight; i++)
+        notationColumnArray[copyIndex][i] = notationColumnArray[patternIndex][i];
 }
-            void Notebook::emptyNotationColumnArray(int columnNumber){//0+
-//==============================================================================================================
-    try{
+            void Notebook::emptyNotationColumnArray(int columnNumber)
+{
+    try
+    {
         if(columnNumber<0 || 2<columnNumber)
             throw std::invalid_argument("Wrong column.");
-        for(int i=0; i<globalType::columnHeight; i++)
-            notationColumnArray[columnNumber][i].clear();
     }
-//#########################################################################
-    catch(const std::invalid_argument &e){
+    catch(const std::invalid_argument &e)
+    {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
+    for(int i=0; i<globalType::columnHeight; i++)
+        notationColumnArray[columnNumber][i].clear();
 }
-            void Notebook::writeNotationColumn(int columnNumber){//*0
-//==============================================================================================================
-    try{
+            void Notebook::writeNotationColumn(int columnNumber)
+{
+    try
+    {
         if(columnNumber<0 || 2<columnNumber)
             throw std::invalid_argument("Wrong column.");
-        int x = globalType::chessboardwidth + columnNumber*globalType::columnWidth;
-        for(int i=0; i<globalType::columnHeight; i++)
-        {
-            if(columnNumber == 1 && 164 < i)
-                systemInfo::setConsoleColor(globalType::notation);
-            systemInfo::setCursorPosition(x, i);
-            std::cout<<notationColumnArray[columnNumber][i];
-        }
-        systemInfo::setConsoleColor(globalType::white);
     }
-//#########################################################################
-    catch(const std::invalid_argument &e){
+    catch(const std::invalid_argument &e)
+    {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
+    int x = globalType::chessboardwidth + columnNumber*globalType::columnWidth;
+    for(int i=0; i<globalType::columnHeight; i++)
+    {
+        if(columnNumber == 1 && 164 < i)
+            systemInfo::setConsoleColor(globalType::notation);
+        systemInfo::setCursorPosition(x, i);
+        std::cout<<notationColumnArray[columnNumber][i];
     }
+    systemInfo::setConsoleColor(globalType::white);
 }
-            void Notebook::clearNotationColumn(int columnNumber){//*0
-//==============================================================================================================
-    try{
+            void Notebook::clearNotationColumn(int columnNumber)
+{
+    try
+    {
         if(columnNumber<0 || 2<columnNumber)
             throw std::invalid_argument("Wrong column.");
-        int x = globalType::chessboardwidth + columnNumber*globalType::columnWidth;
-        for(int i=0; i<globalType::columnHeight; i++)
-        {
-            systemInfo::setCursorPosition(x, i);
-            std::cout<<std::string(globalType::columnWidth, ' ');
-        }
     }
-//#########################################################################
-    catch(const std::invalid_argument &e){
+    catch(const std::invalid_argument &e)
+    {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
+    int x = globalType::chessboardwidth + columnNumber*globalType::columnWidth;
+    for(int i=0; i<globalType::columnHeight; i++)
+    {
+        systemInfo::setCursorPosition(x, i);
+        std::cout<<std::string(globalType::columnWidth, ' ');
     }
 }
-        void Notebook::addNotationArrayContent(std::string content){//2
-//==============================================================================================================
-    try{
-        for(auto& cHar: content)
-        {
-            addCharToNotationArray(cHar);
-            for(int i=0; i<globalType::letterHeight; i++)
-                notationArray[i] += ' ';
-        }
-    }
-//#########################################################################
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
+        void Notebook::addNotationArrayContent(std::string content)
+{
+    for(auto& cHar: content)
+    {
+        addCharToNotationArray(cHar);
+        for(int i=0; i<globalType::letterHeight; i++)
+            notationArray[i] += ' ';
     }
 }
-            void Notebook::addCharToNotationArray(char cHar){//1
-//==============================================================================================================
-    try{
-        int charIndex = getCharIndex(cHar);
-        int charWidth = pixelArtCharacterArray[charIndex][0].size();
-
+            void Notebook::addCharToNotationArray(char cHar)
+{
+    int charIndex = getCharIndex(cHar);
+    int charWidth = pixelArtCharacterArray[charIndex][0].size();
+    try
+    {
         for(int i=0; i<globalType::letterHeight; i++)
             for(int j=0; j<charWidth; j++)
                 switch(pixelArtCharacterArray[charIndex][i][j])
@@ -765,27 +705,23 @@ void Notebook::generateAndWriteNotation  (int moveCode){//*5
                     default : throw std::runtime_error("Error in 'chars.txt' file content.");
                 }
     }
-//#########################################################################
-    catch(const std::runtime_error &e){
+    catch(const std::runtime_error &e)
+    {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
-    }
 }
-                int Notebook::getCharIndex(char cHar){//0+
-//==============================================================================================================
-    try{
-
-        if('A'<=cHar && cHar<='Z')
-            return cHar-65;
-        if('a'<=cHar && cHar<='z')
-            return cHar-71;
-        if('0'<=cHar && cHar<='9')
-            return cHar+4;
+                int Notebook::getCharIndex(char cHar)
+{
+    if('A'<=cHar && cHar<='Z')
+        return cHar-65;
+    if('a'<=cHar && cHar<='z')
+        return cHar-71;
+    if('0'<=cHar && cHar<='9')
+        return cHar+4;
+    try
+    {            
         switch(cHar)
         {
             case '.': return 62;
@@ -803,56 +739,53 @@ void Notebook::generateAndWriteNotation  (int moveCode){//*5
             default: throw std::runtime_error("Wrong char.");
         }
     }
-//#########################################################################
-    catch(const std::runtime_error &e){
+    catch(const std::runtime_error &e)
+    {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
-        void Notebook::writeNotationArray(int line, int column, bool backlight){//*0
-//==============================================================================================================
-    try{
+        void Notebook::writeNotationArray(int line, int column, bool backlight)
+{
+    try
+    {
         if(column<0 || 2<column)
             throw std::invalid_argument("Wrong column.");
         if(line<0 || 16<line)
             throw std::invalid_argument("Wrong line.");
-        int x = globalType::chessboardwidth + column*globalType::columnWidth;
-        int y = line * globalType::notationLineHeight;
-        if(backlight)
-            systemInfo::setConsoleColor(globalType::notation);
-        for(int i=0; i<globalType::letterHeight; i++)
-        {
-            systemInfo::setCursorPosition(x, y+i);
-            std::cout<<notationArray[i];
-        }
-        if(backlight)
-            systemInfo::setConsoleColor(globalType::white);
     }
-//#########################################################################
-    catch(const std::invalid_argument &e){
+    catch(const std::invalid_argument &e)
+    {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
+    int x = globalType::chessboardwidth + column*globalType::columnWidth;
+    int y = line * globalType::notationLineHeight;
+    if(backlight)
+        systemInfo::setConsoleColor(globalType::notation);
+    for(int i=0; i<globalType::letterHeight; i++)
+    {
+        systemInfo::setCursorPosition(x, y+i);
+        std::cout<<notationArray[i];
     }
+    if(backlight)
+        systemInfo::setConsoleColor(globalType::white);
 }
-        void Notebook::rewriteNotationToColumn ()noexcept{
-//==============================================================================================================
+        void Notebook::rewriteNotationToColumn ()noexcept
+{
     for(int i=0; i<globalType::letterHeight; i++)
         notationColumnArray[currentNotationColumn][currentNotationLine * globalType::notationLineHeight + i] = notationArray[i];
 }
-std::string Notebook::getChessboardUpdateCode  ()noexcept{
-//==============================================================================================================
+std::string Notebook::getChessboardUpdateCode  ()noexcept
+{
     chessboardUpdateCode.clear();
     generateChessboardUpdateCode();
     return chessboardUpdateCode;
 }
-    void Notebook::generateChessboardUpdateCode()noexcept{
-//==============================================================================================================
+    void Notebook::generateChessboardUpdateCode()noexcept
+{
     for(int i=0; i<8; i++)
         for(int j=0; j<8; j++)
             if(currentChessboard[i][j] != previousChessboard[i][j])
@@ -861,49 +794,29 @@ std::string Notebook::getChessboardUpdateCode  ()noexcept{
                 previousChessboard[i][j] = currentChessboard[i][j];
             }
 }
-std::string Notebook::saveGameInNotebook(){//0+
-//==============================================================================================================
-    try{
-        auto now = std::chrono::system_clock::now();
-        time_t moment_t = std::chrono::system_clock::to_time_t(now);
-        std::ostringstream streamOut;
-        streamOut << std::put_time(localtime(&moment_t), " %Y-%m-%d %H;%M;%S");
-        std::string fileName = globalType::getCommuniqueCotent({44})[0] + streamOut.str();
-        std::ofstream file("saved notations/" + fileName + ".txt");
+std::string Notebook::saveGameInNotebook()
+{
+    auto now = std::chrono::system_clock::now();
+    time_t moment_t = std::chrono::system_clock::to_time_t(now);
+    std::ostringstream streamOut;
+    streamOut << std::put_time(localtime(&moment_t), " %Y-%m-%d %H;%M;%S");
+    std::string fileName = globalType::getCommuniqueCotent({44})[0] + streamOut.str();
+    std::ofstream file("saved notations/" + fileName + ".txt");
+    try
+    {
         if (!file.is_open())
             throw std::ofstream::failure("The file could not be opened for writing.");
-        file<<std::put_time(localtime(&moment_t), ">>> %Y-%m-%d %H:%M:%S <<<")<<std::endl;
-        file<<"==========================="<<std::endl;
-        for(auto& line: entireNotation)
-        file<<line<<std::endl;
-        file.close();
-        return "\"" + fileName + "\"";
     }
-//#########################################################################
-    catch(const std::ofstream::failure &e){
+    catch(const std::ofstream::failure &e)
+    {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
+    file<<std::put_time(localtime(&moment_t), ">>> %Y-%m-%d %H:%M:%S <<<")<<std::endl;
+    file<<"==========================="<<std::endl;
+    for(auto& line: entireNotation)
+    file<<line<<std::endl;
+    file.close();
+    return "\"" + fileName + "\"";
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
