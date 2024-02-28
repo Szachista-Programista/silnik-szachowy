@@ -716,7 +716,6 @@ void Move::makeEngineMoves                                                      
                 {
                     case ' ': break;
                     case 'Q':                                                       //queen issue
-                    {
                         for(int y=i-1;        0<=y &&         engineLinearMovesService(j,i,j,y,'Q',ptr_X); y--     ); //movement towards 12:00
                         for(int y=i-1, x=j+1; 0<=y && x<=7 && engineLinearMovesService(j,i,x,y,'Q',ptr_X); y--, x++); //movement towards 01:30
                         for(int        x=j+1; x<=7 &&         engineLinearMovesService(j,i,x,i,'Q',ptr_X);      x++); //movement towards 03:00
@@ -726,9 +725,7 @@ void Move::makeEngineMoves                                                      
                         for(int        x=j-1; 0<=x &&         engineLinearMovesService(j,i,x,i,'Q',ptr_X);      x--); //movement towards 09:00
                         for(int y=i-1, x=j-1; 0<=y && 0<=x && engineLinearMovesService(j,i,x,y,'Q',ptr_X); y--, x--); //movement towards 10:30
                         break;
-                    }
                     case 'N':                                                       //knight issue
-                    {
                         if(0<=i-2 && j+1<=7 && (ptr_X[i-2][j+1]<'B' || 'R'<ptr_X[i-2][j+1])) engineMovesService(j,i,j+1,i-2,'N',ptr_X);
                         if(0<=i-1 && j+2<=7 && (ptr_X[i-1][j+2]<'B' || 'R'<ptr_X[i-1][j+2])) engineMovesService(j,i,j+2,i-1,'N',ptr_X);
                         if(i+1<=7 && j+2<=7 && (ptr_X[i+1][j+2]<'B' || 'R'<ptr_X[i+1][j+2])) engineMovesService(j,i,j+2,i+1,'N',ptr_X);
@@ -738,25 +735,19 @@ void Move::makeEngineMoves                                                      
                         if(0<=i-1 && 0<=j-2 && (ptr_X[i-1][j-2]<'B' || 'R'<ptr_X[i-1][j-2])) engineMovesService(j,i,j-2,i-1,'N',ptr_X);
                         if(0<=i-2 && 0<=j-1 && (ptr_X[i-2][j-1]<'B' || 'R'<ptr_X[i-2][j-1])) engineMovesService(j,i,j-1,i-2,'N',ptr_X);
                         break;
-                    }
                     case 'B':                                                       //bishop issue
-                    {
                         for(int y=i-1, x=j+1; 0<=y && x<=7 && engineLinearMovesService(j,i,x,y,'B',ptr_X); y--, x++); //movement towards 1:30
                         for(int y=i+1, x=j+1; y<=7 && x<=7 && engineLinearMovesService(j,i,x,y,'B',ptr_X); y++, x++); //movement towards 4:30
                         for(int y=i+1, x=j-1; y<=7 && 0<=x && engineLinearMovesService(j,i,x,y,'B',ptr_X); y++, x--); //movement towards 7:30
                         for(int y=i-1, x=j-1; 0<=y && 0<=x && engineLinearMovesService(j,i,x,y,'B',ptr_X); y--, x--); //movement towards 10:30
                         break;
-                    }
                     case 'R':                                                       //rook issue
-                    {
                         for(int y=i-1; 0<=y && engineLinearMovesService(j,i,j,y,'R',ptr_X); y--); //movement towards 12:00
                         for(int x=j+1; x<=7 && engineLinearMovesService(j,i,x,i,'R',ptr_X); x++); //movement towards 03:00
                         for(int y=i+1; y<=7 && engineLinearMovesService(j,i,j,y,'R',ptr_X); y++); //movement towards 06:00
                         for(int x=j-1; 0<=x && engineLinearMovesService(j,i,x,i,'R',ptr_X); x--); //movement towards 09:00
                         break;
-                    }
                     case 'P':                                                       // pawn issue
-                    {
                         if(1<i && i<7)                                                  // pawn with no chance at promotion
                         {
                             if(ptr_X[i-1][j]==' ')                                   engineMovesService(j,i,j,i-1,'P',ptr_X);    // move forward by 1
@@ -789,7 +780,6 @@ void Move::makeEngineMoves                                                      
                             }
                         }
                         break;
-                    }
                     case 'K':                                                       //king issue
                     {
                         engineUsualKingMovesService(j,i, 0,-1,ptr_X); //movement towards 12:00

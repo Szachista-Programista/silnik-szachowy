@@ -652,7 +652,7 @@ int Engine::makeMove                             (int userMoveCode){//3
         userPiecesMovedInOpening += workingChessboardPointer[u.toY][u.toX];
     switch(movementNumber)
     {
-        case 1:
+        case 1:workingChessboardPointer[7][6]=' ';workingChessboardPointer[5][5]='N';//####
             if(randomChance(3)){
                     workingChessboardPointer[6][4]=' ';
                     workingChessboardPointer[4][4]='P';
