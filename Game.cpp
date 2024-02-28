@@ -1,33 +1,20 @@
 #include "Game.h"
 
-Game::Game(){
-    try{
-        globalType::readConfigFile();
-        globalType::readCommuniqueFile();
-    }
-//#########################################################################
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
-    }
+Game::Game()
+{
+    globalType::readConfigFile();
+    globalType::readCommuniqueFile();
 }
-void Game::start(){//*3
-//==============================================================================================================
-    try{
-        notice.setConsoleSize();
-        while(true)
-            gameMenu();
-    }
-//#########################################################################
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
-    }
+void Game::start()
+{
+    notice.setConsoleSize();
+    while(true)
+        gameMenu();
 }
-    void Game::gameMenu(){//*2
-//==============================================================================================================
-    try{
-        //std::vector<std::string> gameMenu = globalType::getCommuniqueCotent({0,1,2,3});
+    void Game::gameMenu()
+{
+    try
+    {
         switch(notice.checkbox(globalType::getCommuniqueCotent({0,1,2,3})))
         {
             case 1:  userPiecesColorMenu();         break;
@@ -37,21 +24,17 @@ void Game::start(){//*3
             default: throw std::runtime_error("Option selection error.");
         }
     }
-//#########################################################################
-    catch(const std::runtime_error &e){
+    catch(const std::runtime_error &e)
+    {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
-    }
 }
-        void Game::userPiecesColorMenu(){//*0+
-//==============================================================================================================
-    try{
-        //std::vector<std::string> userPiecesColorMenu = globalType::getCommuniqueCotent({9,10,11,34});
+        void Game::userPiecesColorMenu()
+{
+    try
+    {
         switch(notice.checkbox(globalType::getCommuniqueCotent({9,10,11,34})))
        {
            case 1:  pastFirstPlay = true;  Play(1).playWithUser();              break;
@@ -61,22 +44,22 @@ void Game::start(){//*3
            default: throw std::runtime_error("Option selection error.");
        }
     }
-//#########################################################################
-    catch(const std::runtime_error &e){
+    catch(const std::runtime_error &e)
+    {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
 }
-            int Game::randomColor()noexcept{
-//==============================================================================================================
+            int Game::randomColor()noexcept
+{
     srand(static_cast<unsigned int>(time(nullptr)));
     return rand() % 2;
 }
-        void Game::colorfullElementSettingMenu(){//*1
-//==============================================================================================================
-    try{
-        //std::vector<std::string> colorfullElementMenu = globalType::getCommuniqueCotent({4,5,6,7,8});
+        void Game::colorfullElementSettingMenu()
+{
+    try
+    {
         switch(notice.checkbox(globalType::getCommuniqueCotent({4,5,6,7,8})))
         {
             case 1:  colorSettingMenu(globalType::underlightedSquare);  break;
@@ -86,24 +69,20 @@ void Game::start(){//*3
             case 5:  break;
             default: throw std::runtime_error("Option selection error.");
         }
-        chessboard.deleteCheckbox(293, 63, pastFirstPlay);
     }
-//#########################################################################
-    catch(const std::runtime_error &e){
+    catch(const std::runtime_error &e)
+    {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
-    }
+    chessboard.deleteCheckbox(293, 63, pastFirstPlay);
 }
-            void Game::colorSettingMenu(globalType::Color &color){//*0
-//==============================================================================================================
-    try{
-        //std::vector<std::string> colorsMenu = globalType::getCommuniqueCotent({12,13,14,15,8});############
-        chessboard.deleteCheckbox(293, 63, pastFirstPlay);
+            void Game::colorSettingMenu(globalType::Color &color)
+{
+    chessboard.deleteCheckbox(293, 63, pastFirstPlay);
+    try
+    {
         switch(notice.checkbox(globalType::getCommuniqueCotent({12,13,14,15,8})))
         {
             case 1:  color = static_cast<globalType::Color>(1); break;
@@ -113,24 +92,20 @@ void Game::start(){//*3
             case 5:  break;
             default: throw std::runtime_error("Option selection error.");
         }
-        globalType::writeConfigFile();
     }
-//#########################################################################
-    catch(const std::runtime_error &e){
+    catch(const std::runtime_error &e)
+    {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
-    }
+    globalType::writeConfigFile();
 }
-        void Game::languageSettingMenu(){//*0
-//==============================================================================================================
-    try{
-        chessboard.deleteCheckbox(220, 53, pastFirstPlay);
-        //std::vector<std::string> languagMenu = globalType::getCommuniqueCotent({16,17,35});##############
+        void Game::languageSettingMenu()
+{
+    chessboard.deleteCheckbox(220, 53, pastFirstPlay);
+    try
+    {
         switch(notice.checkbox(globalType::getCommuniqueCotent({16,17,35})))
        {
            case 1:  globalType::setLanguage = globalType::polish;  break;
@@ -138,52 +113,19 @@ void Game::start(){//*3
            case 3:  break;
            default: throw std::runtime_error("Option selection error.");
        }
-       globalType::writeConfigFile();
     }
-//#########################################################################
-    catch(const std::runtime_error &e){
+    catch(const std::runtime_error &e)
+    {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
-    }
+    globalType::writeConfigFile();
 }
-        void Game::exitService(){//*0
-//==============================================================================================================
-    try{
-        chessboard.deleteCheckbox(220, 53, pastFirstPlay);
-        notice.communique(globalType::getCommuniqueCotent({18})[0],1);
-        systemInfo::delay(500);
-        systemInfo::setCursorPosition(0, globalType::chessboardHeight);
-    }
-//#########################################################################
-    catch(globalType::errorType &e){
-        e.errorMessage = __PRETTY_FUNCTION__ + std::string(" >>\n") + e.errorMessage;
-        throw;
-    }
+        void Game::exitService()
+{
+    chessboard.deleteCheckbox(220, 53, pastFirstPlay);
+    notice.communique(globalType::getCommuniqueCotent({18})[0],1);
+    systemInfo::delay(500);
+    systemInfo::setCursorPosition(0, globalType::chessboardHeight);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
