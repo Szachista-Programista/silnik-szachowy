@@ -702,7 +702,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
 //==============================================================================================================
     return 0.0;
 }
-void Move::makeEngineMoves                                                            (globalType::chessboardPointer ptr_X){//6
+void Move::makeEngineMoves                                                                      (globalType::chessboardPointer ptr_X){//6
 //==============================================================================================================
     try{
         if (ptr_X == nullptr)
@@ -717,54 +717,14 @@ void Move::makeEngineMoves                                                      
                     case ' ': break;
                     case 'Q':                                                       //queen issue
                     {
-                        for(int y=i-1; 0<=y; y--)                                       //movement towards 12:00
-                        {
-                            if('B'<=ptr_X[y][j] && ptr_X[y][j]<='R')                                         break;
-                            if('b'<=ptr_X[y][j] && ptr_X[y][j]<='r'){engineMovesService(j,i,j,y,'Q',ptr_X);  break;}
-                            if(ptr_X[y][j]==' ')                     engineMovesService(j,i,j,y,'Q',ptr_X);
-                        }
-                        for(int y=i-1, x=j+1; 0<=y && x<=7; y--, x++)                   //movement towards 01:30
-                        {
-                            if('B'<=ptr_X[y][x] && ptr_X[y][x]<='R')                                         break;
-                            if('b'<=ptr_X[y][x] && ptr_X[y][x]<='r'){engineMovesService(j,i,x,y,'Q',ptr_X);  break;}
-                            if(ptr_X[y][x]==' ')                     engineMovesService(j,i,x,y,'Q',ptr_X);
-                        }
-                        for(int x=j+1; x<=7; x++)                                       //movement towards 03:00
-                        {
-                            if('B'<=ptr_X[i][x] && ptr_X[i][x]<='R')                                         break;
-                            if('b'<=ptr_X[i][x] && ptr_X[i][x]<='r'){engineMovesService(j,i,x,i,'Q',ptr_X);  break;}
-                            if(ptr_X[i][x]==' ')                     engineMovesService(j,i,x,i,'Q',ptr_X);
-                        }
-                        for(int y=i+1, x=j+1; y<=7 && x<=7; y++, x++)                   //movement towards 04:30
-                        {
-                            if('B'<=ptr_X[y][x] && ptr_X[y][x]<='R')                                         break;
-                            if('b'<=ptr_X[y][x] && ptr_X[y][x]<='r'){engineMovesService(j,i,x,y,'Q',ptr_X);  break;}
-                            if(ptr_X[y][x]==' ')                     engineMovesService(j,i,x,y,'Q',ptr_X);
-                        }
-                        for(int y=i+1; y<=7; y++)                                       //movement towards 06:00
-                        {
-                            if('B'<=ptr_X[y][j] && ptr_X[y][j]<='R')                                         break;
-                            if('b'<=ptr_X[y][j] && ptr_X[y][j]<='r'){engineMovesService(j,i,j,y,'Q',ptr_X);  break;}
-                            if(ptr_X[y][j]==' ')                     engineMovesService(j,i,j,y,'Q',ptr_X);
-                        }
-                        for(int y=i+1, x=j-1; y<=7 && 0<=x; y++, x--)                   //movement towards 07:30
-                        {
-                            if('B'<=ptr_X[y][x] && ptr_X[y][x]<='R')                                         break;
-                            if('b'<=ptr_X[y][x] && ptr_X[y][x]<='r'){engineMovesService(j,i,x,y,'Q',ptr_X);  break;}
-                            if(ptr_X[y][x]==' ')                     engineMovesService(j,i,x,y,'Q',ptr_X);
-                        }
-                        for(int x=j-1; 0<=x; x--)                                       //movement towards 09:00
-                        {
-                            if('B'<=ptr_X[i][x] && ptr_X[i][x]<='R')                                         break;
-                            if('b'<=ptr_X[i][x] && ptr_X[i][x]<='r'){engineMovesService(j,i,x,i,'Q',ptr_X);  break;}
-                            if(ptr_X[i][x]==' ')                     engineMovesService(j,i,x,i,'Q',ptr_X);
-                        }
-                        for(int y=i-1, x=j-1; 0<=y && 0<=x; y--, x--)                   //movement towards 10:30
-                        {
-                            if('B'<=ptr_X[y][x] && ptr_X[y][x]<='R')                                         break;
-                            if('b'<=ptr_X[y][x] && ptr_X[y][x]<='r'){engineMovesService(j,i,x,y,'Q',ptr_X);  break;}
-                            if(ptr_X[y][x]==' ')                     engineMovesService(j,i,x,y,'Q',ptr_X);
-                        }
+                        for(int y=i-1;        0<=y &&         engineLinearMovesService(j,i,j,y,'Q',ptr_X); y--     ); //movement towards 12:00
+                        for(int y=i-1, x=j+1; 0<=y && x<=7 && engineLinearMovesService(j,i,x,y,'Q',ptr_X); y--, x++); //movement towards 01:30
+                        for(int        x=j+1; x<=7 &&         engineLinearMovesService(j,i,x,i,'Q',ptr_X);      x++); //movement towards 03:00
+                        for(int y=i+1, x=j+1; y<=7 && x<=7 && engineLinearMovesService(j,i,x,y,'Q',ptr_X); y++, x++); //movement towards 04:30
+                        for(int y=i+1;        y<=7 &&         engineLinearMovesService(j,i,j,y,'Q',ptr_X); y++     ); //movement towards 06:00
+                        for(int y=i+1, x=j-1; y<=7 && 0<=x && engineLinearMovesService(j,i,x,y,'Q',ptr_X); y++, x--); //movement towards 07:30
+                        for(int        x=j-1; 0<=x &&         engineLinearMovesService(j,i,x,i,'Q',ptr_X);      x--); //movement towards 09:00
+                        for(int y=i-1, x=j-1; 0<=y && 0<=x && engineLinearMovesService(j,i,x,y,'Q',ptr_X); y--, x--); //movement towards 10:30
                         break;
                     }
                     case 'N':                                                       //knight issue
@@ -781,58 +741,18 @@ void Move::makeEngineMoves                                                      
                     }
                     case 'B':                                                       //bishop issue
                     {
-                        for(int y=i-1, x=j+1; 0<=y && x<=7; y--, x++)                   //movement towards 1:30
-                        {
-                            if('B'<=ptr_X[y][x] && ptr_X[y][x]<='R')                                          break;
-                            if('b'<=ptr_X[y][x] && ptr_X[y][x]<='r') {engineMovesService(j,i,x,y,'B',ptr_X);  break;}
-                            if(ptr_X[y][x]==' ')                      engineMovesService(j,i,x,y,'B',ptr_X);
-                        }
-                        for(int y=i+1, x=j+1; y<=7 && x<=7; y++, x++)                   //movement towards 4:30
-                        {
-                            if('B'<=ptr_X[y][x] && ptr_X[y][x]<='R')                                          break;
-                            if('b'<=ptr_X[y][x] && ptr_X[y][x]<='r') {engineMovesService(j,i,x,y,'B',ptr_X);  break;}
-                            if(ptr_X[y][x]==' ')                      engineMovesService(j,i,x,y,'B',ptr_X);
-                        }
-                        for(int y=i+1, x=j-1; y<=7 && 0<=x; y++, x--)                   //movement towards 7:30
-                        {
-                            if('B'<=ptr_X[y][x] && ptr_X[y][x]<='R')                                          break;
-                            if('b'<=ptr_X[y][x] && ptr_X[y][x]<='r') {engineMovesService(j,i,x,y,'B',ptr_X);  break;}
-                            if(ptr_X[y][x]==' ')                      engineMovesService(j,i,x,y,'B',ptr_X);
-                        }
-                        for(int y=i-1, x=j-1; 0<=y && 0<=x; y--, x--)                   //movement towards 10:30
-                        {
-                            if('B'<=ptr_X[y][x] && ptr_X[y][x]<='R')                                          break;
-                            if('b'<=ptr_X[y][x] && ptr_X[y][x]<='r') {engineMovesService(j,i,x,y,'B',ptr_X);  break;}
-                            if(ptr_X[y][x]==' ')                      engineMovesService(j,i,x,y,'B',ptr_X);
-                        }
+                        for(int y=i-1, x=j+1; 0<=y && x<=7 && engineLinearMovesService(j,i,x,y,'B',ptr_X); y--, x++); //movement towards 1:30
+                        for(int y=i+1, x=j+1; y<=7 && x<=7 && engineLinearMovesService(j,i,x,y,'B',ptr_X); y++, x++); //movement towards 4:30
+                        for(int y=i+1, x=j-1; y<=7 && 0<=x && engineLinearMovesService(j,i,x,y,'B',ptr_X); y++, x--); //movement towards 7:30
+                        for(int y=i-1, x=j-1; 0<=y && 0<=x && engineLinearMovesService(j,i,x,y,'B',ptr_X); y--, x--); //movement towards 10:30
                         break;
                     }
                     case 'R':                                                       //rook issue
                     {
-                        for(int y=i-1; 0<=y; y--)                                       //movement towards 12:00
-                        {
-                            if('B'<=ptr_X[y][j] && ptr_X[y][j]<='R')                                          break;
-                            if('b'<=ptr_X[y][j] && ptr_X[y][j]<='r') {engineMovesService(j,i,j,y,'R',ptr_X);  break;}
-                            if(ptr_X[y][j]==' ')                      engineMovesService(j,i,j,y,'R',ptr_X);
-                        }
-                        for(int x=j+1; x<=7; x++)                                       //movement towards 03:00
-                        {
-                            if('B'<=ptr_X[i][x] && ptr_X[i][x]<='R')                                          break;
-                            if('b'<=ptr_X[i][x] && ptr_X[i][x]<='r') {engineMovesService(j,i,x,i,'R',ptr_X);  break;}
-                            if(ptr_X[i][x]==' ')                      engineMovesService(j,i,x,i,'R',ptr_X);
-                        }
-                        for(int y=i+1; y<=7; y++)                                       //movement towards 06:00
-                        {
-                            if('B'<=ptr_X[y][j] && ptr_X[y][j]<='R')                                          break;
-                            if('b'<=ptr_X[y][j] && ptr_X[y][j]<='r') {engineMovesService(j,i,j,y,'R',ptr_X);  break;}
-                            if(ptr_X[y][j]==' ')                      engineMovesService(j,i,j,y,'R',ptr_X);
-                        }
-                        for(int x=j-1; 0<=x; x--)                                       //movement towards 09:00
-                        {
-                            if('B'<=ptr_X[i][x] && ptr_X[i][x]<='R')                                          break;
-                            if('b'<=ptr_X[i][x] && ptr_X[i][x]<='r') {engineMovesService(j,i,x,i,'R',ptr_X);  break;}
-                            if(ptr_X[i][x]==' ')                      engineMovesService(j,i,x,i,'R',ptr_X);
-                        }
+                        for(int y=i-1; 0<=y && engineLinearMovesService(j,i,j,y,'R',ptr_X); y--); //movement towards 12:00
+                        for(int x=j+1; x<=7 && engineLinearMovesService(j,i,x,i,'R',ptr_X); x++); //movement towards 03:00
+                        for(int y=i+1; y<=7 && engineLinearMovesService(j,i,j,y,'R',ptr_X); y++); //movement towards 06:00
+                        for(int x=j-1; 0<=x && engineLinearMovesService(j,i,x,i,'R',ptr_X); x--); //movement towards 09:00
                         break;
                     }
                     case 'P':                                                       // pawn issue
@@ -872,135 +792,24 @@ void Move::makeEngineMoves                                                      
                     }
                     case 'K':                                                       //king issue
                     {
-                        if(0<=i-1 && (ptr_X[i-1][j]<'B' || 'R'<ptr_X[i-1][j]))                    //movement towards 12:00
-                        if(2<=abs(engineKingLocationX-userKingLocationX) || 2<=abs(engineKingLocationY-1-userKingLocationY))
+                        engineUsualKingMovesService(j,i, 0,-1,ptr_X); //movement towards 12:00
+                        engineUsualKingMovesService(j,i, 1,-1,ptr_X); //movement towards 01:30
+                        engineUsualKingMovesService(j,i, 1, 0,ptr_X); //movement towards 03:00
+                        engineUsualKingMovesService(j,i, 1, 1,ptr_X); //movement towards 04:30
+                        engineUsualKingMovesService(j,i, 0, 1,ptr_X); //movement towards 06:00
+                        engineUsualKingMovesService(j,i,-1, 1,ptr_X); //movement towards 07:30
+                        engineUsualKingMovesService(j,i,-1, 0,ptr_X); //movement towards 09:00
+                        engineUsualKingMovesService(j,i,-1,-1,ptr_X); //movement towards 10:30
+
+                        if(!color) //castling when the user play black
                         {
-                            engineKingLocationY--;
-                            engineMovesService(j,i,j,i-1,'K',ptr_X);
-                            engineKingLocationY++;
+                            engineCastleService(2, ptr_X);
+                            engineCastleService(6, ptr_X);
                         }
-                        if(0<=i-1 && j+1<=7 && (ptr_X[i-1][j+1]<'B' || 'R'<ptr_X[i-1][j+1]))      //movement towards 1:30
-                        if(2<=abs(engineKingLocationX+1-userKingLocationX) || 2<=abs(engineKingLocationY-1-userKingLocationY))
+                        if(color) //castling when the user play white
                         {
-                            engineKingLocationX++;
-                            engineKingLocationY--;
-                            engineMovesService(j,i,j+1,i-1,'K',ptr_X);
-                            engineKingLocationX--;
-                            engineKingLocationY++;
-                        }
-                        if(j+1<=7 && (ptr_X[i][j+1]<'B' || 'R'<ptr_X[i][j+1]))                    //movement towards 3:00
-                        if(2<=abs(engineKingLocationX+1-userKingLocationX) || 2<=abs(engineKingLocationY-userKingLocationY))
-                        {
-                            engineKingLocationX++;
-                            engineMovesService(j,i,j+1,i,'K',ptr_X);
-                            engineKingLocationX--;
-                        }
-                        if(i+1<=7 && j+1<=7 && (ptr_X[i+1][j+1]<'B' || 'R'<ptr_X[i+1][j+1]))      //movement towards 4:30
-                        if(2<=abs(engineKingLocationX+1-userKingLocationX) || 2<=abs(engineKingLocationY+1-userKingLocationY))
-                        {
-                            engineKingLocationX++;
-                            engineKingLocationY++;
-                            engineMovesService(j,i,j+1,i+1,'K',ptr_X);
-                            engineKingLocationX--;
-                            engineKingLocationY--;
-                        }
-                        if(i+1<=7 && (ptr_X[i+1][j]<'B' || 'R'<ptr_X[i+1][j]))                    //movement towards 6:00
-                        if(2<=abs(engineKingLocationX-userKingLocationX) || 2<=abs(engineKingLocationY+1-userKingLocationY))
-                        {
-                            engineKingLocationY++;
-                            engineMovesService(j,i,j,i+1,'K',ptr_X);
-                            engineKingLocationY--;
-                        }
-                        if(i+1<=7 && 0<=j-1 && (ptr_X[i+1][j-1]<'B' || 'R'<ptr_X[i+1][j-1]))      //movement towards 7:30
-                        if(2<=abs(engineKingLocationX-1-userKingLocationX) || 2<=abs(engineKingLocationY+1-userKingLocationY))
-                        {
-                            engineKingLocationX--;
-                            engineKingLocationY++;
-                            engineMovesService(j,i,j-1,i+1,'K',ptr_X);
-                            engineKingLocationX++;
-                            engineKingLocationY--;
-                        }
-                        if(0<=j-1 && (ptr_X[i][j-1]<'B' || 'R'<ptr_X[i][j-1]))                    //movement towards 9:00
-                        if(2<=abs(engineKingLocationX-1-userKingLocationX) || 2<=abs(engineKingLocationY-userKingLocationY))
-                        {
-                            engineKingLocationX--;
-                            engineMovesService(j,i,j-1,i,'K',ptr_X);
-                            engineKingLocationX++;
-                        }
-                        if(0<=i-1 && 0<=j-1 && (ptr_X[i-1][j-1]<'B' || 'R'<ptr_X[i-1][j-1]))      //movement towards 10:30
-                        if(2<=abs(engineKingLocationX-1-userKingLocationX) || 2<=abs(engineKingLocationY-1-userKingLocationY))
-                        {
-                            engineKingLocationX--;
-                            engineKingLocationY--;
-                            engineMovesService(j,i,j-1,i-1,'K',ptr_X);
-                            engineKingLocationX++;
-                            engineKingLocationY++;
-                        }
-                        if(!color)                                                                      //castling when the user play black
-                        {
-                            if(engineKingMoved==false && engineLeftRookMoved==false && ptr_X[7][1]==' ' && ptr_X[7][2]==' ' && ptr_X[7][3]==' ')       //long castle
-                            {
-                                globalType::chessboardPointer cOpy = copyChessboard(ptr_X);
-                                if(isEngineSquareCaptured(2, 7, cOpy)==false && isEngineSquareCaptured(3, 7, cOpy)==false && isEngineSquareCaptured(4, 7, cOpy)==false)
-                                {
-                                    cOpy[7][0]=' ';
-                                    cOpy[7][4]=' ';
-                                    cOpy[7][2]='K';
-                                    cOpy[7][3]='R';
-                                    engineKingLocationX-=2;
-                                    makeEngineMovesIfAllowed(j, i, cOpy);
-                                    engineKingLocationX+=2;
-                                }
-                                else delete[]cOpy;
-                            }
-                            if(engineKingMoved==false && engineRightRookMoved==false && ptr_X[7][5]==' ' && ptr_X[7][6]==' ')                          //short caste
-                            {
-                                globalType::chessboardPointer cOpy = copyChessboard(ptr_X);
-                                if(isEngineSquareCaptured(4, 7, cOpy)==false && isEngineSquareCaptured(5, 7, cOpy)==false && isEngineSquareCaptured(6, 7, cOpy)==false)
-                                {
-                                    cOpy[7][7]=' ';
-                                    cOpy[7][4]=' ';
-                                    cOpy[7][6]='K';
-                                    cOpy[7][5]='R';
-                                    engineKingLocationX+=2;
-                                    makeEngineMovesIfAllowed(j, i, cOpy);
-                                    engineKingLocationX-=2;
-                                }
-                                else delete[]cOpy;
-                            }
-                        }
-                        if(color)                                                                       //castling when the user play white
-                        {
-                            if(engineKingMoved==false && engineRightRookMoved==false && ptr_X[7][4]==' ' && ptr_X[7][5]==' ' && ptr_X[7][6]==' ')       //long castle
-                            {
-                                globalType::chessboardPointer cOpy = copyChessboard(ptr_X);
-                                if(isEngineSquareCaptured(3, 7, cOpy)==false && isEngineSquareCaptured(4, 7, cOpy)==false && isEngineSquareCaptured(5, 7, cOpy)==false)
-                                {
-                                    cOpy[7][7]=' ';
-                                    cOpy[7][3]=' ';
-                                    cOpy[7][5]='K';
-                                    cOpy[7][4]='R';
-                                    engineKingLocationX+=2;
-                                    makeEngineMovesIfAllowed(j, i, cOpy);
-                                    engineKingLocationX-=2;
-                                }
-                                else delete[]cOpy;
-                            }
-                            if(engineKingMoved==false && engineLeftRookMoved==false && ptr_X[7][1]==' ' && ptr_X[7][2]==' ')                          //short caste
-                            {
-                                globalType::chessboardPointer cOpy = copyChessboard(ptr_X);
-                                if(isEngineSquareCaptured(1, 7, cOpy)==false && isEngineSquareCaptured(2, 7, cOpy)==false && isEngineSquareCaptured(3, 7, cOpy)==false)
-                                {
-                                    cOpy[7][0]=' ';
-                                    cOpy[7][3]=' ';
-                                    cOpy[7][1]='K';
-                                    cOpy[7][2]='R';
-                                    engineKingLocationX-=2;
-                                    makeEngineMovesIfAllowed(j, i, cOpy);
-                                    engineKingLocationX+=2;
-                                }
-                                else delete[]cOpy;
-                            }
+                            engineCastleService(1, ptr_X);
+                            engineCastleService(5, ptr_X);
                         }
                         break;
                     }
@@ -1019,7 +828,62 @@ void Move::makeEngineMoves                                                      
         throw;
     }
 }
-    void Move::engineMovesService (int fromX, int fromY, int toX, int toY, char piece, globalType::chessboardPointer ptr_X){//5
+    bool Move::engineLinearMovesService     (int fromX, int fromY, int toX, int toY, char piece, globalType::chessboardPointer ptr_X)
+{
+    if('B'<=ptr_X[toY][toX] && ptr_X[toY][toX]<='R')
+        return false;
+    if('b'<=ptr_X[toY][toX] && ptr_X[toY][toX]<='r')
+    {
+        engineMovesService(fromX,fromY,toX,toY,piece,ptr_X);
+        return false;
+    }
+    if(ptr_X[toY][toX]==' ')
+    {
+        engineMovesService(fromX,fromY,toX,toY,piece,ptr_X);
+        return true;
+    }
+}
+    void Move::engineUsualKingMovesService(int fromX, int fromY, int directionX, int directionY, globalType::chessboardPointer ptr_X)
+{
+    int toX = fromX + directionX;
+    int toY = fromY + directionY;
+
+    if (0 <= toX && toX <= 7 && 0 <= toY && toY <= 7)
+    if (ptr_X[toY][toX] < 'B' || 'R' < ptr_X[toY][toX]) // is anything other than the engine piece on the target square
+    if (2 <= abs(engineKingLocationX + directionX - userKingLocationX) || 2 <= abs(engineKingLocationY + directionY - userKingLocationY)) // are the kings too close to each other
+    {
+        engineKingLocationX = engineKingLocationX + directionX;
+        engineKingLocationY = engineKingLocationY + directionY;
+        engineMovesService(fromX,fromY,toX,toY,'K',ptr_X);
+        engineKingLocationX = engineKingLocationX - directionX;
+        engineKingLocationY = engineKingLocationY - directionY;
+    }
+}
+    void Move::engineCastleService(int kingToX, globalType::chessboardPointer ptr_X)
+{
+    int kingFromY = 7;
+    int kingFromX = (3 < kingToX)? (kingToX - 2): (kingToX + 2);
+    int rookFromX = (3 < kingToX)? 7: 0;
+    int rookToX   = (3 < kingToX)? (kingToX - 1): (kingToX + 1);
+
+    if((engineKingMoved == false) && ((rookFromX == 0)? (engineLeftRookMoved  == false): true) && ((rookFromX == 7)? (engineRightRookMoved == false): true))
+    if((ptr_X[7][kingToX]==' ') && (ptr_X[7][rookToX]==' ') && ((abs(rookFromX - kingToX) == 2)? (ptr_X[7][(rookFromX + kingToX)/2]==' '): true))
+    {
+        globalType::chessboardPointer cOpy = copyChessboard(ptr_X);
+        if((isEngineSquareCaptured(kingFromX, 7, cOpy) == false) && (isEngineSquareCaptured(kingToX,   7, cOpy) == false) && (isEngineSquareCaptured(rookToX,   7, cOpy) == false))
+        {
+            cOpy[7][rookFromX]=' ';
+            cOpy[7][kingFromX]=' ';
+            cOpy[7][kingToX]  ='K';
+            cOpy[7][rookToX]  ='R';
+            engineKingLocationX += (rookFromX == 0)? -2:  2;
+            makeEngineMovesIfAllowed(kingFromX, kingFromY, cOpy);
+            engineKingLocationX += (rookFromX == 0)?  2: -2;
+        }
+        else delete[]cOpy;
+    }
+}
+    void Move::engineMovesService           (int fromX, int fromY, int toX, int toY, char piece, globalType::chessboardPointer ptr_X){//5
 //==============================================================================================================
     try{
         if (ptr_X == nullptr)
@@ -1042,7 +906,7 @@ void Move::makeEngineMoves                                                      
         throw;
     }
 }
-        void Move::makeEngineMovesIfAllowed                           (int &x, int &y, globalType::chessboardPointer cOpy){//4
+        void Move::makeEngineMovesIfAllowed                                     (int &x, int &y, globalType::chessboardPointer  cOpy){//4
 //==============================================================================================================
     try{
         if (x < 0 || 7 < x || y < 0 || 7 < y)
@@ -1076,7 +940,7 @@ void Move::makeEngineMoves                                                      
         throw;
     }
 }
-            bool Move::isEngineSquareCaptured              (const int &x,const int &y, globalType::chessboardPointer cOpy){//0+
+            bool Move::isEngineSquareCaptured                        (const int &x,const int &y, globalType::chessboardPointer  cOpy){//0+
 //==============================================================================================================
     try{
         if (x < 0 || 7 < x || y < 0 || 7 < y)
@@ -1155,7 +1019,7 @@ void Move::makeEngineMoves                                                      
         throw x;
     }
 }
-void Move::makeUserMoves                                                              (globalType::chessboardPointer ptr_X){//3
+void Move::makeUserMoves                                                                        (globalType::chessboardPointer ptr_X){//3
 //==============================================================================================================
     try{
         if (ptr_X == nullptr)
@@ -1163,12 +1027,10 @@ void Move::makeUserMoves                                                        
         userKingChecked = isUserSquareCaptured(userKingLocationX, userKingLocationY, ptr_X);
         for(int i=0; i<8; i++)
             for(int j=0; j<8; j++)
-            {
                 switch(ptr_X[i][j])
                 {
                     case ' ': break;
                     case 'n':                                                       //knight issue
-                    {
                         if(0<=i-2 && j+1<=7 && (ptr_X[i-2][j+1]<'b' || 'r'<ptr_X[i-2][j+1]))  userMovesService(j,i,j+1,i-2,'n',ptr_X);
                         if(0<=i-1 && j+2<=7 && (ptr_X[i-1][j+2]<'b' || 'r'<ptr_X[i-1][j+2]))  userMovesService(j,i,j+2,i-1,'n',ptr_X);
                         if(i+1<=7 && j+2<=7 && (ptr_X[i+1][j+2]<'b' || 'r'<ptr_X[i+1][j+2]))  userMovesService(j,i,j+2,i+1,'n',ptr_X);
@@ -1178,117 +1040,29 @@ void Move::makeUserMoves                                                        
                         if(0<=i-1 && 0<=j-2 && (ptr_X[i-1][j-2]<'b' || 'r'<ptr_X[i-1][j-2]))  userMovesService(j,i,j-2,i-1,'n',ptr_X);
                         if(0<=i-2 && 0<=j-1 && (ptr_X[i-2][j-1]<'b' || 'r'<ptr_X[i-2][j-1]))  userMovesService(j,i,j-1,i-2,'n',ptr_X);
                         break;
-                    }
                     case 'b':                                                       //bishop issue
-                    {
-                        for(int y=i-1, x=j+1; 0<=y && x<=7; y--, x++)                   //movement towards 1:30
-                        {
-                            if('b'<=ptr_X[y][x] && ptr_X[y][x]<='r')                                        break;
-                            if('B'<=ptr_X[y][x] && ptr_X[y][x]<='R') {userMovesService(j,i,x,y,'b',ptr_X);  break;}
-                            if(ptr_X[y][x]==' ')                      userMovesService(j,i,x,y,'b',ptr_X);
-                        }
-                        for(int y=i+1, x=j+1; y<=7 && x<=7; y++, x++)                   //movement towards 4:30
-                        {
-                            if('b'<=ptr_X[y][x] && ptr_X[y][x]<='r')                                        break;
-                            if('B'<=ptr_X[y][x] && ptr_X[y][x]<='R') {userMovesService(j,i,x,y,'b',ptr_X);  break;}
-                            if(ptr_X[y][x]==' ')                      userMovesService(j,i,x,y,'b',ptr_X);
-                        }
-                        for(int y=i+1, x=j-1; y<=7 && 0<=x; y++, x--)                   //movement towards 7:30
-                        {
-                            if('b'<=ptr_X[y][x] && ptr_X[y][x]<='r')                                        break;
-                            if('B'<=ptr_X[y][x] && ptr_X[y][x]<='R') {userMovesService(j,i,x,y,'b',ptr_X);  break;}
-                            if(ptr_X[y][x]==' ')                      userMovesService(j,i,x,y,'b',ptr_X);
-                        }
-                        for(int y=i-1, x=j-1; 0<=y && 0<=x; y--, x--)                   //movement towards 10:30
-                        {
-                            if('b'<=ptr_X[y][x] && ptr_X[y][x]<='r')                                        break;
-                            if('B'<=ptr_X[y][x] && ptr_X[y][x]<='R') {userMovesService(j,i,x,y,'b',ptr_X);  break;}
-                            if(ptr_X[y][x]==' ')                      userMovesService(j,i,x,y,'b',ptr_X);
-                        }
+                        for(int y=i-1, x=j+1; 0<=y && x<=7 && userLinearMovesService(j,i,x,y,'b',ptr_X); y--, x++); //movement towards 1:30
+                        for(int y=i+1, x=j+1; y<=7 && x<=7 && userLinearMovesService(j,i,x,y,'b',ptr_X); y++, x++); //movement towards 4:30
+                        for(int y=i+1, x=j-1; y<=7 && 0<=x && userLinearMovesService(j,i,x,y,'b',ptr_X); y++, x--); //movement towards 7:30
+                        for(int y=i-1, x=j-1; 0<=y && 0<=x && userLinearMovesService(j,i,x,y,'b',ptr_X); y--, x--); //movement towards 10:30
                         break;
-                    }
                     case 'r':                                                       //rook issue
-                    {
-                        for(int y=i-1; 0<=y; y--)                                       //movement towards 12:00
-                        {
-                            if('b'<=ptr_X[y][j] && ptr_X[y][j]<='r')                                        break;
-                            if('B'<=ptr_X[y][j] && ptr_X[y][j]<='R') {userMovesService(j,i,j,y,'r',ptr_X);  break;}
-                            if(ptr_X[y][j]==' ')                      userMovesService(j,i,j,y,'r',ptr_X);
-                        }
-                        for(int x=j+1; x<=7; x++)                                       //movement towards 03:00
-                        {
-                            if('b'<=ptr_X[i][x] && ptr_X[i][x]<='r')                                        break;
-                            if('B'<=ptr_X[i][x] && ptr_X[i][x]<='R') {userMovesService(j,i,x,i,'r',ptr_X);  break;}
-                            if(ptr_X[i][x]==' ')                      userMovesService(j,i,x,i,'r',ptr_X);
-                        }
-                        for(int y=i+1; y<=7; y++)                                       //movement towards 06:00
-                        {
-                            if('b'<=ptr_X[y][j] && ptr_X[y][j]<='r')                                        break;
-                            if('B'<=ptr_X[y][j] && ptr_X[y][j]<='R') {userMovesService(j,i,j,y,'r',ptr_X);  break;}
-                            if(ptr_X[y][j]==' ')                      userMovesService(j,i,j,y,'r',ptr_X);
-                        }
-                        for(int x=j-1; 0<=x; x--)                                       //movement towards 09:00
-                        {
-                            if('b'<=ptr_X[i][x] && ptr_X[i][x]<='r')                                        break;
-                            if('B'<=ptr_X[i][x] && ptr_X[i][x]<='R') {userMovesService(j,i,x,i,'r',ptr_X);  break;}
-                            if(ptr_X[i][x]==' ')                      userMovesService(j,i,x,i,'r',ptr_X);
-                        }
+                        for(int y=i-1; 0<=y && userLinearMovesService(j,i,j,y,'r',ptr_X); y--); //movement towards 12:00
+                        for(int x=j+1; x<=7 && userLinearMovesService(j,i,x,i,'r',ptr_X); x++); //movement towards 03:00
+                        for(int y=i+1; y<=7 && userLinearMovesService(j,i,j,y,'r',ptr_X); y++); //movement towards 06:00
+                        for(int x=j-1; 0<=x && userLinearMovesService(j,i,x,i,'r',ptr_X); x--); //movement towards 09:00
                         break;
-                    }
                     case 'q':                                                       //queen issue
-                    {
-                        for(int y=i-1; 0<=y; y--)                                       //movement towards 12:00
-                        {
-                            if('b'<=ptr_X[y][j] && ptr_X[y][j]<='r')                                        break;
-                            if('B'<=ptr_X[y][j] && ptr_X[y][j]<='R') {userMovesService(j,i,j,y,'q',ptr_X);  break;}
-                            if(ptr_X[y][j]==' ')                      userMovesService(j,i,j,y,'q',ptr_X);
-                        }
-                        for(int y=i-1, x=j+1; 0<=y && x<=7; y--, x++)                   //movement towards 01:30
-                        {
-                            if('b'<=ptr_X[y][x] && ptr_X[y][x]<='r')                                        break;
-                            if('B'<=ptr_X[y][x] && ptr_X[y][x]<='R') {userMovesService(j,i,x,y,'q',ptr_X);  break;}
-                            if(ptr_X[y][x]==' ')                      userMovesService(j,i,x,y,'q',ptr_X);
-                        }
-                        for(int x=j+1; x<=7; x++)                                       //movement towards 03:00
-                        {
-                            if('b'<=ptr_X[i][x] && ptr_X[i][x]<='r')                                        break;
-                            if('B'<=ptr_X[i][x] && ptr_X[i][x]<='R') {userMovesService(j,i,x,i,'q',ptr_X);  break;}
-                            if(ptr_X[i][x]==' ')                      userMovesService(j,i,x,i,'q',ptr_X);
-                        }
-                        for(int y=i+1, x=j+1; y<=7 && x<=7; y++, x++)                   //movement towards 04:30
-                        {
-                            if('b'<=ptr_X[y][x] && ptr_X[y][x]<='r')                                        break;
-                            if('B'<=ptr_X[y][x] && ptr_X[y][x]<='R') {userMovesService(j,i,x,y,'q',ptr_X);  break;}
-                            if(ptr_X[y][x]==' ')                      userMovesService(j,i,x,y,'q',ptr_X);
-                        }
-                        for(int y=i+1; y<=7; y++)                                       //movement towards 06:00
-                        {
-                            if('b'<=ptr_X[y][j] && ptr_X[y][j]<='r')                                        break;
-                            if('B'<=ptr_X[y][j] && ptr_X[y][j]<='R') {userMovesService(j,i,j,y,'q',ptr_X);  break;}
-                            if(ptr_X[y][j]==' ')                      userMovesService(j,i,j,y,'q',ptr_X);
-                        }
-                        for(int y=i+1, x=j-1; y<=7 && 0<=x; y++, x--)                   //movement towards 07:30
-                        {
-                            if('b'<=ptr_X[y][x] && ptr_X[y][x]<='r')                                        break;
-                            if('B'<=ptr_X[y][x] && ptr_X[y][x]<='R') {userMovesService(j,i,x,y,'q',ptr_X);  break;}
-                            if(ptr_X[y][x]==' ')                      userMovesService(j,i,x,y,'q',ptr_X);
-                        }
-                        for(int x=j-1; 0<=x; x--)                                       //movement towards 09:00
-                        {
-                            if('b'<=ptr_X[i][x] && ptr_X[i][x]<='r')                                        break;
-                            if('B'<=ptr_X[i][x] && ptr_X[i][x]<='R') {userMovesService(j,i,x,i,'q',ptr_X);  break;}
-                            if(ptr_X[i][x]==' ')                      userMovesService(j,i,x,i,'q',ptr_X);
-                        }
-                        for(int y=i-1, x=j-1; 0<=y && 0<=x; y--, x--)                   //movement towards 10:30
-                        {
-                            if('b'<=ptr_X[y][x] && ptr_X[y][x]<='r')                                        break;
-                            if('B'<=ptr_X[y][x] && ptr_X[y][x]<='R') {userMovesService(j,i,x,y,'q',ptr_X);  break;}
-                            if(ptr_X[y][x]==' ')                      userMovesService(j,i,x,y,'q',ptr_X);
-                        }
+                        for(int y=i-1;        0<=y &&         userLinearMovesService(j,i,j,y,'q',ptr_X); y--     ); //movement towards 12:00
+                        for(int y=i-1, x=j+1; 0<=y && x<=7 && userLinearMovesService(j,i,x,y,'q',ptr_X); y--, x++); //movement towards 01:30
+                        for(int        x=j+1; x<=7 &&         userLinearMovesService(j,i,x,i,'q',ptr_X);      x++); //movement towards 03:00
+                        for(int y=i+1, x=j+1; y<=7 && x<=7 && userLinearMovesService(j,i,x,y,'q',ptr_X); y++, x++); //movement towards 04:30
+                        for(int y=i+1;        y<=7 &&         userLinearMovesService(j,i,j,y,'q',ptr_X); y++     ); //movement towards 06:00
+                        for(int y=i+1, x=j-1; y<=7 && 0<=x && userLinearMovesService(j,i,x,y,'q',ptr_X); y++, x--); //movement towards 07:30
+                        for(int        x=j-1; 0<=x &&         userLinearMovesService(j,i,x,i,'q',ptr_X);      x--); //movement towards 09:00
+                        for(int y=i-1, x=j-1; 0<=y && 0<=x && userLinearMovesService(j,i,x,y,'q',ptr_X); y--, x--); //movement towards 10:30
                         break;
-                    }
                     case 'p':                                                       //pawn issue
-                    {
                         if(0<i && i<6)                                                  //pawn with no chance at promotion
                         {
                             if(ptr_X[i+1][j]==' ')                                    userMovesService(j,i,j,i+1,'p',ptr_X);   //move forward by 1
@@ -1322,200 +1096,28 @@ void Move::makeUserMoves                                                        
                             }
                         }
                         break;
-                    }
                     case 'k':                                                       //king issue
-                    {
-                        if(0<=i-1 && (ptr_X[i-1][j]<'b' || 'r'<ptr_X[i-1][j]))                    //movement towards 12:00
-                        if(2<=abs(engineKingLocationX-userKingLocationX) || 2<=abs(engineKingLocationY+1-userKingLocationY))
+                        userUsualKingMovesService(j,i, 0,-1,ptr_X); //movement towards 12:00
+                        userUsualKingMovesService(j,i, 1,-1,ptr_X); //movement towards 01:30
+                        userUsualKingMovesService(j,i, 1, 0,ptr_X); //movement towards 03:00
+                        userUsualKingMovesService(j,i, 1, 1,ptr_X); //movement towards 04:30
+                        userUsualKingMovesService(j,i, 0, 1,ptr_X); //movement towards 06:00
+                        userUsualKingMovesService(j,i,-1, 1,ptr_X); //movement towards 07:30
+                        userUsualKingMovesService(j,i,-1, 0,ptr_X); //movement towards 09:00
+                        userUsualKingMovesService(j,i,-1,-1,ptr_X); //movement towards 10:30
+                        if(!color) //castling when the user play black
                         {
-                            globalType::chessboardPointer cOpy = copyChessboard(ptr_X);
-                            cOpy[i][j]=' ';
-                            cOpy[i-1][j]='k';
-                            if(isUserSquareCaptured(userKingLocationX, userKingLocationY-1, cOpy)==false)
-                            {
-                                userKingLocationY--;
-                                movements[engineMoveNumber].push_back(cOpy);
-                                userKingLocationY++;
-                            }
-                            else delete[]cOpy;
+                            userCastleService(2, ptr_X);
+                            userCastleService(6, ptr_X);
                         }
-                        if(0<=i-1 && j+1<=7 && (ptr_X[i-1][j+1]<'b' || 'r'<ptr_X[i-1][j+1]))      //movement towards 01:30
-                        if(2<=abs(engineKingLocationX-1-userKingLocationX) || 2<=abs(engineKingLocationY+1-userKingLocationY))
+                        if(color) //castling when the user play white
                         {
-                            globalType::chessboardPointer cOpy = copyChessboard(ptr_X);
-                            cOpy[i][j]=' ';
-                            cOpy[i-1][j+1]='k';
-                            if(isUserSquareCaptured(userKingLocationX+1, userKingLocationY-1, cOpy)==false)
-                            {
-                                userKingLocationX++;
-                                userKingLocationY--;
-                                movements[engineMoveNumber].push_back(cOpy);
-                                userKingLocationX--;
-                                userKingLocationY++;
-                            }
-                            else delete[]cOpy;
-                        }
-                        if(j+1<=7 && (ptr_X[i][j+1]<'b' || 'r'<ptr_X[i][j+1]))                    //movement towards 03:00
-                        if(2<=abs(engineKingLocationX-1-userKingLocationX) || 2<=abs(engineKingLocationY-userKingLocationY))
-                        {
-                            globalType::chessboardPointer cOpy = copyChessboard(ptr_X);
-                            cOpy[i][j]=' ';
-                            cOpy[i][j+1]='k';
-                            if(isUserSquareCaptured(userKingLocationX+1, userKingLocationY, cOpy)==false)
-                            {
-                                userKingLocationX++;
-                                movements[engineMoveNumber].push_back(cOpy);
-                                userKingLocationX--;
-                            }
-                            else delete[]cOpy;
-                        }
-                        if(i+1<=7 && j+1<=7 && (ptr_X[i+1][j+1]<'b' || 'r'<ptr_X[i+1][j+1]))      //movement towards 04:30
-                        if(2<=abs(engineKingLocationX-1-userKingLocationX) || 2<=abs(engineKingLocationY-1-userKingLocationY))
-                        {
-                            globalType::chessboardPointer cOpy = copyChessboard(ptr_X);
-                            cOpy[i][j]=' ';
-                            cOpy[i+1][j+1]='k';
-                            if(isUserSquareCaptured(userKingLocationX+1, userKingLocationY+1, cOpy)==false)
-                            {
-                                userKingLocationX++;
-                                userKingLocationY++;
-                                movements[engineMoveNumber].push_back(cOpy);
-                                userKingLocationX--;
-                                userKingLocationY--;
-                            }
-                            else delete[]cOpy;
-                        }
-                        if(i+1<=7 && (ptr_X[i+1][j]<'b' || 'r'<ptr_X[i+1][j]))                    //movement towards 06:00
-                        if(2<=abs(engineKingLocationX-userKingLocationX) || 2<=abs(engineKingLocationY-1-userKingLocationY))
-                        {
-                            globalType::chessboardPointer cOpy = copyChessboard(ptr_X);
-                            cOpy[i][j]=' ';
-                            cOpy[i+1][j]='k';
-                            if(isUserSquareCaptured(userKingLocationX, userKingLocationY+1, cOpy)==false)
-                            {
-                                userKingLocationY++;
-                                movements[engineMoveNumber].push_back(cOpy);
-                                userKingLocationY--;
-                            }
-                            else delete[]cOpy;
-                        }
-                        if(i+1<=7 && 0<=j-1 && (ptr_X[i+1][j-1]<'b' || 'r'<ptr_X[i+1][j-1]))      //movement towards 07:30
-                        if(2<=abs(engineKingLocationX+1-userKingLocationX) || 2<=abs(engineKingLocationY-1-userKingLocationY))
-                        {
-                            globalType::chessboardPointer cOpy = copyChessboard(ptr_X);
-                            cOpy[i][j]=' ';
-                            cOpy[i+1][j-1]='k';
-                            if(isUserSquareCaptured(userKingLocationX-1, userKingLocationY+1, cOpy)==false)
-                            {
-                                userKingLocationX--;
-                                userKingLocationY++;
-                                movements[engineMoveNumber].push_back(cOpy);
-                                userKingLocationX++;
-                                userKingLocationY--;
-                            }
-                            else delete[]cOpy;
-                        }
-                        if(0<=j-1 && (ptr_X[i][j-1]<'b' || 'r'<ptr_X[i][j-1]))                    //movement towards 09:00
-                        if(2<=abs(engineKingLocationX+1-userKingLocationX) || 2<=abs(engineKingLocationY-userKingLocationY))
-                        {
-                            globalType::chessboardPointer cOpy = copyChessboard(ptr_X);
-                            cOpy[i][j]=' ';
-                            cOpy[i][j-1]='k';
-                            if(isUserSquareCaptured(userKingLocationX-1, userKingLocationY, cOpy)==false)
-                            {
-                                userKingLocationX--;
-                                movements[engineMoveNumber].push_back(cOpy);
-                                userKingLocationX++;
-                            }
-                            else delete[]cOpy;
-                        }
-                        if(0<=i-1 && 0<=j-1 && (ptr_X[i-1][j-1]<'b' || 'r'<ptr_X[i-1][j-1]))      //movement towards 10:30
-                        if(2<=abs(engineKingLocationX+1-userKingLocationX) || 2<=abs(engineKingLocationY+1-userKingLocationY))
-                        {
-                            globalType::chessboardPointer cOpy = copyChessboard(ptr_X);
-                            cOpy[i][j]=' ';
-                            cOpy[i-1][j-1]='k';
-                            if(isUserSquareCaptured(userKingLocationX-1, userKingLocationY-1, cOpy)==false)
-                            {
-                                userKingLocationX--;
-                                userKingLocationY--;
-                                movements[engineMoveNumber].push_back(cOpy);
-                                userKingLocationX++;
-                                userKingLocationY++;
-                            }
-                            else delete[]cOpy;
-                        }
-                        if(!color)                                                                      //castling when the user play black
-                        {
-                            if(userKingMoved==false && userLeftRookMoved==false && ptr_X[0][1]==' ' && ptr_X[0][2]==' ' && ptr_X[0][3]==' ')       //long castle
-                            {
-                                globalType::chessboardPointer cOpy = copyChessboard(ptr_X);
-                                if(isUserSquareCaptured(2, 0, cOpy)==false && isUserSquareCaptured(3, 0, cOpy)==false && isUserSquareCaptured(4, 0, cOpy)==false)
-                                {
-                                    cOpy[0][0]=' ';
-                                    cOpy[0][4]=' ';
-                                    cOpy[0][2]='k';
-                                    cOpy[0][3]='r';
-                                    userKingLocationX-=2;
-                                    movements[engineMoveNumber].push_back(cOpy);
-                                    userKingLocationX+=2;
-                                }
-                                else delete[]cOpy;
-                            }
-                            if(userKingMoved==false && userRightRookMoved==false && ptr_X[0][5]==' ' && ptr_X[0][6]==' ')                          //short caste
-                            {
-                                globalType::chessboardPointer cOpy = copyChessboard(ptr_X);
-                                if(isUserSquareCaptured(4, 0, cOpy)==false && isUserSquareCaptured(5, 0, cOpy)==false && isUserSquareCaptured(6, 0, cOpy)==false)
-                                {
-                                    cOpy[0][7]=' ';
-                                    cOpy[0][4]=' ';
-                                    cOpy[0][6]='k';
-                                    cOpy[0][5]='r';
-                                    userKingLocationX+=2;
-                                    movements[engineMoveNumber].push_back(cOpy);
-                                    userKingLocationX-=2;
-                                }
-                                else delete[]cOpy;
-                            }
-                        }
-                        if(color)                                                                       //castling when the user play white
-                        {
-                            if(userKingMoved==false && userRightRookMoved==false && ptr_X[0][4]==' ' && ptr_X[0][5]==' ' && ptr_X[0][6]==' ')       //long castle
-                            {
-                                globalType::chessboardPointer cOpy = copyChessboard(ptr_X);
-                                if(isUserSquareCaptured(3, 0, cOpy)==false && isUserSquareCaptured(4, 0, cOpy)==false && isUserSquareCaptured(5, 0, cOpy)==false)
-                                {
-                                    cOpy[0][7]=' ';
-                                    cOpy[0][3]=' ';
-                                    cOpy[0][5]='k';
-                                    cOpy[0][4]='r';
-                                    userKingLocationX+=2;
-                                    movements[engineMoveNumber].push_back(cOpy);
-                                    userKingLocationX-=2;
-                                }
-                                else delete[]cOpy;
-                            }
-                            if(userKingMoved==false && userLeftRookMoved==false && ptr_X[0][1]==' ' && ptr_X[0][2]==' ')                          //short caste
-                            {
-                                globalType::chessboardPointer cOpy = copyChessboard(ptr_X);
-                                if(isUserSquareCaptured(1, 0, cOpy)==false && isUserSquareCaptured(2, 0, cOpy)==false && isUserSquareCaptured(3, 0, cOpy)==false)
-                                {
-                                    cOpy[0][0]=' ';
-                                    cOpy[0][3]=' ';
-                                    cOpy[0][1]='k';
-                                    cOpy[0][2]='r';
-                                    userKingLocationX-=2;
-                                    movements[engineMoveNumber].push_back(cOpy);
-                                    userKingLocationX+=2;
-                                }
-                                else delete[]cOpy;
-                            }
+                            userCastleService(1, ptr_X);
+                            userCastleService(5, ptr_X);
                         }
                         break;
-                    }
                 default: break;
-            }
-        }
+                }
     }
 //#########################################################################
     catch(const std::invalid_argument &e){
@@ -1528,7 +1130,60 @@ void Move::makeUserMoves                                                        
         throw;
     }
 }
-    void Move::userMovesService  (int fromX, int fromY, int toX, int toY, char bierka, globalType::chessboardPointer ptr_X){//2
+    bool Move::userLinearMovesService       (int fromX, int fromY, int toX, int toY, char piece, globalType::chessboardPointer ptr_X)
+{
+    if('b'<=ptr_X[toY][toX] && ptr_X[toY][toX]<='r')
+        return false;
+    if('B'<=ptr_X[toY][toX] && ptr_X[toY][toX]<='R')
+    {
+        userMovesService(fromX,fromY,toX,toY,piece,ptr_X);
+        return false;
+    }
+    if(ptr_X[toY][toX]==' ')
+    {
+        userMovesService(fromX,fromY,toX,toY,piece,ptr_X);
+        return true;
+    }
+}
+    void Move::userUsualKingMovesService(int fromX, int fromY, int directionX, int directionY, globalType::chessboardPointer ptr_X)
+{
+    int toX = fromX + directionX;
+    int toY = fromY + directionY;
+
+    if (0 <= toX && toX <= 7 && 0 <= toY && toY <= 7)
+    if(ptr_X[toY][toX] < 'b' || 'r' < ptr_X[toY][toX]) // is anything other than the engine piece on the target square
+    if(2 <= abs(userKingLocationX + directionX - engineKingLocationX) || 2 <= abs(userKingLocationY + directionY - engineKingLocationY)) // are the kings too close to each other
+    {
+        globalType::chessboardPointer cOpy = copyChessboard(ptr_X);
+        cOpy[fromY][fromX]=' ';
+        cOpy[toY]  [toX]  ='k';
+        if(isUserSquareCaptured(userKingLocationX + directionX, userKingLocationY + directionY, cOpy) == false)
+            movements[engineMoveNumber].push_back(cOpy);
+        else delete[]cOpy;
+    }
+}
+    void Move::userCastleService(int kingToX, globalType::chessboardPointer ptr_X)
+{
+    int kingFromX = (3 < kingToX)? (kingToX - 2): (kingToX + 2);
+    int rookFromX = (3 < kingToX)? 7: 0;
+    int rookToX   = (3 < kingToX)? (kingToX - 1): (kingToX + 1);
+
+    if((userKingMoved == false) && ((rookFromX == 0)? (userLeftRookMoved  == false): true) && ((rookFromX == 7)? (userRightRookMoved == false): true))
+    if((ptr_X[0][kingToX]==' ') && (ptr_X[0][rookToX]==' ') && ((abs(rookFromX - kingToX) == 2)? (ptr_X[0][(rookFromX + kingToX)/2]==' '): true))
+    {
+        globalType::chessboardPointer cOpy = copyChessboard(ptr_X);
+        if(isUserSquareCaptured(kingFromX, 0, cOpy) == false && isUserSquareCaptured(kingToX, 0, cOpy) == false && isUserSquareCaptured(rookToX, 0, cOpy) == false)
+        {
+            cOpy[0][rookFromX]=' ';
+            cOpy[0][kingFromX]=' ';
+            cOpy[0][kingToX]  ='k';
+            cOpy[0][rookToX]  ='r';
+            movements[engineMoveNumber].push_back(cOpy);
+        }
+        else delete[]cOpy;
+    }
+}
+    void Move::userMovesService             (int fromX, int fromY, int toX, int toY, char piece, globalType::chessboardPointer ptr_X){//2
 //==============================================================================================================
     try{
         if (ptr_X == nullptr)
@@ -1537,7 +1192,7 @@ void Move::makeUserMoves                                                        
             throw std::invalid_argument("Chessboard coordinates out of range.");
         globalType::chessboardPointer cOpy = copyChessboard(ptr_X);
         cOpy[fromY][fromX] = ' ';
-        cOpy[toY][toX] = bierka;
+        cOpy[toY][toX] = piece;
         makeUserMovesIfAllowed(fromX, fromY, cOpy);
     }
 //#########################################################################
@@ -1551,7 +1206,7 @@ void Move::makeUserMoves                                                        
         throw;
     }
 }
-        void Move::makeUserMovesIfAllowed                             (int &x, int &y, globalType::chessboardPointer cOpy){//1
+        void Move::makeUserMovesIfAllowed                                       (int &x, int &y, globalType::chessboardPointer  cOpy){//1
 //==============================================================================================================
     try{
         if (x < 0 || 7 < x || y < 0 || 7 < y)
@@ -1575,63 +1230,63 @@ void Move::makeUserMoves                                                        
         throw;
     }
 }
-            bool Move::isUserSquareCaptured               (const int &x, const int &y, globalType::chessboardPointer cOpy){//0+
+            bool Move::isUserSquareCaptured                         (const int &x, const int &y, globalType::chessboardPointer  cOpy){//0+
 //==============================================================================================================
     try{
         if (x < 0 || 7 < x || y < 0 || 7 < y)
             throw std::invalid_argument("Chessboard coordinates out of range.");
         if (cOpy == nullptr)
             throw std::invalid_argument("Nullptr of the chessboard.");
-        for(int i=1; 0<=y-i; i++)                                       //12:00 //BITE PRZEZ HETMANA / WIEZE / GONCA
+        for(int i=1; 0<=y-i; i++)                                       // movement towards 12:00 captured by Q/R/B
         {
             if(cOpy[y-i][x]==' ') continue;
             if(cOpy[y-i][x]=='Q' || cOpy[y-i][x]=='R') return true;
             else break;
         }
-        for(int i=1; 0<=y-i && x+i<=7; i++)                             //1:30
+        for(int i=1; 0<=y-i && x+i<=7; i++)                             // movement towards 01:30
         {
             if(cOpy[y-i][x+i]==' ') continue;
             if(cOpy[y-i][x+i]=='Q' || cOpy[y-i][x+i]=='B') return true;
             else break;
         }
-        for(int i=1; x+i<=7; i++)                                       //3:00
+        for(int i=1; x+i<=7; i++)                                       // movement towards 03:00
         {
             if(cOpy[y][x+i]==' ') continue;
             if(cOpy[y][x+i]=='Q' || cOpy[y][x+i]=='R') return true;
             else break;
         }
-        for(int i=1; y+i<=7 && x+i<=7; i++)                             //4:30
+        for(int i=1; y+i<=7 && x+i<=7; i++)                             // movement towards 04:30
         {
             if(cOpy[y+i][x+i]==' ') continue;
             if(cOpy[y+i][x+i]=='Q' || cOpy[y+i][x+i]=='B') return true;
             else break;
         }
-        for(int i=1; y+i<=7; i++)                                       //6:00
+        for(int i=1; y+i<=7; i++)                                       // movement towards 06:00
         {
             if(cOpy[y+i][x]==' ') continue;
             if(cOpy[y+i][x]=='Q' || cOpy[y+i][x]=='R') return true;
             else break;
         }
-        for(int i=1; y+i<=7 && 0<=x-i; i++)                             //7:30
+        for(int i=1; y+i<=7 && 0<=x-i; i++)                             // movement towards 07:30
         {
             if(cOpy[y+i][x-i]==' ') continue;
             if(cOpy[y+i][x-i]=='Q' || cOpy[y+i][x-i]=='B') return true;
             else break;
         }
-        for(int i=1; 0<=x-i; i++)                                       //9:00
+        for(int i=1; 0<=x-i; i++)                                       // movement towards 09:00
         {
             if(cOpy[y][x-i]==' ') continue;
             if(cOpy[y][x-i]=='Q' || cOpy[y][x-i]=='R') return true;
             else break;
         }
-        for(int i=1; 0<=y-i && 0<=x-i; i++)                             //10:30
+        for(int i=1; 0<=y-i && 0<=x-i; i++)                             // movement towards 10:30
         {
             if(cOpy[y-i][x-i]==' ') continue;
             if(cOpy[y-i][x-i]=='Q' || cOpy[y-i][x-i]=='B') return true;
             else break;
         }
 
-        if(0<=y-2 && x+1<=7 && cOpy[y-2][x+1]=='N') return true;                       //BITE PRZEZ SKOCZKA
+        if(0<=y-2 && x+1<=7 && cOpy[y-2][x+1]=='N') return true;                       //captured by knight
         if(0<=y-1 && x+2<=7 && cOpy[y-1][x+2]=='N') return true;
         if(y+1<=7 && x+2<=7 && cOpy[y+1][x+2]=='N') return true;
         if(y+2<=7 && x+1<=7 && cOpy[y+2][x+1]=='N') return true;
@@ -1640,7 +1295,7 @@ void Move::makeUserMoves                                                        
         if(0<=y-1 && 0<=x-2 && cOpy[y-1][x-2]=='N') return true;
         if(0<=y-2 && 0<=x-1 && cOpy[y-2][x-1]=='N') return true;
 
-        if(y<=5)                                                                    //BITE PRZEZ PIONKA
+        if(y<=5)                                                                    //captured by pawn
         {
             if(1<=x && cOpy[y+1][x-1]=='P') return true;
             if(x<=6 && cOpy[y+1][x+1]=='P') return true;
@@ -1654,7 +1309,7 @@ void Move::makeUserMoves                                                        
         throw x;
     }
 }
-globalType::chessboardPointer Move::copyChessboard                              (const globalType::chessboardPointer oryginal){//0+
+globalType::chessboardPointer Move::copyChessboard                                        (const globalType::chessboardPointer oryginal){//0+
 //==============================================================================================================
     try{
         if (oryginal == nullptr)
@@ -1677,7 +1332,7 @@ globalType::chessboardPointer Move::copyChessboard                              
         throw x;
     }
 }
-void Move::writeChessboard                                                      (const globalType::chessboardPointer ptr_X){//0+
+void Move::writeChessboard                                                                (const globalType::chessboardPointer ptr_X){//0+
 //==============================================================================================================
     try{
         if (ptr_X == nullptr)

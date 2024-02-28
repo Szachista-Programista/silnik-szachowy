@@ -65,16 +65,22 @@ class Move{
                     static double runSidewaysFromKing             (double x, double y)noexcept;
                     static double followUserKingToSide            (double x, double y)noexcept;
                     static double followUserKingToCorner          (double x, double y)noexcept;
-    void makeEngineMoves                                                             (globalType::chessboardPointer ptr_X);
-        void engineMovesService (int fromX, int fromY, int toX, int toY, char bierka, globalType::chessboardPointer ptr_X);
-            void makeEngineMovesIfAllowed                            (int &x, int &y, globalType::chessboardPointer cOpy);
-                bool isEngineSquareCaptured               (const int &x,const int &y, globalType::chessboardPointer cOpy);
-    void makeUserMoves                                                               (globalType::chessboardPointer ptr_X);
-        void userMovesService   (int fromX, int fromY, int toX, int toY, char bierka, globalType::chessboardPointer ptr_X);
-            void makeUserMovesIfAllowed                              (int &x, int &y, globalType::chessboardPointer cOpy);
-                bool isUserSquareCaptured                (const int &x, const int &y, globalType::chessboardPointer cOpy);
-    globalType::chessboardPointer copyChessboard                               (const globalType::chessboardPointer oryginal);
-    void writeChessboard                                                       (const globalType::chessboardPointer ptr_X);
+    void makeEngineMoves                                                                      (globalType::chessboardPointer ptr_X);
+        bool engineLinearMovesService   (int fromX, int fromY, int toX, int toY,   char piece, globalType::chessboardPointer ptr_X);
+        void engineUsualKingMovesService(int fromX, int fromY, int directionX, int directionY, globalType::chessboardPointer ptr_X);
+        void engineCastleService                                                 (int kingToX, globalType::chessboardPointer ptr_X);
+        void engineMovesService           (int fromX, int fromY, int toX, int toY, char piece, globalType::chessboardPointer ptr_X);
+            void makeEngineMovesIfAllowed                                     (int &x, int &y, globalType::chessboardPointer  cOpy);
+                bool isEngineSquareCaptured                        (const int &x,const int &y, globalType::chessboardPointer  cOpy);
+    void makeUserMoves                                                                        (globalType::chessboardPointer ptr_X);
+        bool userLinearMovesService       (int fromX, int fromY, int toX, int toY, char piece, globalType::chessboardPointer ptr_X);
+        void userUsualKingMovesService  (int fromX, int fromY, int directionX, int directionY, globalType::chessboardPointer ptr_X);
+        void userCastleService                                                   (int kingToX, globalType::chessboardPointer ptr_X);
+        void userMovesService             (int fromX, int fromY, int toX, int toY, char piece, globalType::chessboardPointer ptr_X);
+            void makeUserMovesIfAllowed                                       (int &x, int &y, globalType::chessboardPointer  cOpy);
+                bool isUserSquareCaptured                         (const int &x, const int &y, globalType::chessboardPointer  cOpy);
+    globalType::chessboardPointer copyChessboard                                        (const globalType::chessboardPointer oryginal);
+    void writeChessboard                                                                (const globalType::chessboardPointer ptr_X);
 };
 #endif//MOVE_H
 

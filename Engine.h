@@ -47,7 +47,7 @@ private:    void getEngineReadyForMove           (int userMoveCode);
                     void setUserKingSideLocation()noexcept;
                     void setUserKingCornerLocation()noexcept;
             void makeEndgameMove();
-                void setKindOfEndgame ()noexcept;
+                void setKindOfEndgame              ()noexcept;
                 void makeRooksAndQueensMateMove    ()noexcept;
                 void makeSingleRookOrQueenMateMove ()noexcept;
                 void makeUnspecifiedMateMove       ()noexcept;

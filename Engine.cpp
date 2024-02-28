@@ -3,7 +3,7 @@
 Engine::Engine(bool k): color{k}, movement{k}{//1
 //==============================================================================================================
     try{
-        globalType::gameStage        = globalType::opening;
+        globalType::gameStage        = globalType::middlegame;
         comparativeChessboardPointer = loadPiecesArrangement();
         workingChessboardPointer     = loadPiecesArrangement();
         setArrangements(workingChessboardPointer);
@@ -831,7 +831,7 @@ int Engine::makeMove                             (int userMoveCode){//3
         throw x;
     }
 }
-        void Engine::setKindOfEndgame ()noexcept{
+        void Engine::setKindOfEndgame              ()noexcept{
 //==============================================================================================================
     //int nrOfEnginePawns   {};
     //int nrOfEngineKnights {};
