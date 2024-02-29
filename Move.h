@@ -83,11 +83,3 @@ class Move{
     void writeChessboard                                                                (const globalType::chessboardPointer ptr_X);
 };
 #endif//MOVE_H
-
-
-
-
-
-
-
-

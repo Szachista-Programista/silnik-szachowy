@@ -40,23 +40,3 @@ private:    void addValuesOfCheckbox(std::vector<std::string> options);
                     void backlightOption(int optionNumber);
 };
 #endif//NOTICE_H
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
