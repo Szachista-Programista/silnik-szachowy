@@ -246,7 +246,7 @@ void Notebook::generateAndWriteNotation  (int moveCode)
         currentChessboard[moveFromY][moveToX]  = ' ';
     }
 }
-        void Notebook::markCommonMove()//DDDDDDDDDDDDDDDDDDDDDDDDD
+        void Notebook::markCommonMove()
 {
     if( ! moveMarked)
     {
@@ -265,73 +265,14 @@ void Notebook::generateAndWriteNotation  (int moveCode)
                     break;
                 case 'N': case 'n':
                 {
-                    lastMoveNotation += globalType::getCommuniqueCotent({38})[0];
-
-                    int secondKnightX,
-                        secondKnightY;
-                    bool isThereSecondKnight = false,
-                         isThereTwinKnight = false;
-                    for(int i=0; i<8; i++)
-                        for(int j=0; j<8; j++)
-                            if(!(i == moveFromY && j == moveFromX) && currentChessboard[i][j] == movedPiece)
-                            {
-                                isThereSecondKnight = true;
-                                secondKnightX = j;
-                                secondKnightY = i;
-                            }
-                    if(isThereSecondKnight)
-                    {
-                        if((abs(moveToX-secondKnightX) == 1 && abs(moveToY-secondKnightY) == 2)
-                        || (abs(moveToX-secondKnightX) == 2 && abs(moveToY-secondKnightY) == 1))
-                            isThereTwinKnight = true;
-
-                        if(isThereTwinKnight)
-                        {
-                            if(moveFromX == secondKnightX)
-                            {
-                                lastMoveNotation += getCoordinates(moveFromX, moveFromY);
-                                lastMoveNotation.erase(1,1);
-                            }
-                            else
-                            {
-                                lastMoveNotation += getCoordinates(moveFromX, moveFromY);
-                                lastMoveNotation.pop_back();
-                            }
-                        }
-                    }
+                    markKnightMove(movedPiece);
                     break;
                 }
                 case 'B': case 'b':
                     lastMoveNotation += globalType::getCommuniqueCotent({39})[0];
                     break;
                 case 'R': case 'r':
-                    lastMoveNotation += globalType::getCommuniqueCotent({40})[0];
-                    if(moveFromY == moveToY)  //horizontal movement
-                        for(int i=moveToX+((moveFromX<moveToX)? +1: -1); 0<=i && i<=7; (moveFromX<moveToX)? i++: i--)
-                        {
-                            if(currentChessboard[moveFromY][i] == ' ')
-                                continue;
-                            if(currentChessboard[moveFromY][i] == movedPiece)
-                            {
-                                lastMoveNotation += getCoordinates(moveFromX, moveFromY);
-                                lastMoveNotation.pop_back();
-                            }
-                            else
-                                break;
-                        }
-                    if(moveFromX == moveToX)  //vertical movement
-                        for(int i=moveToY+((moveFromY<moveToY)? +1: -1); 0<=i && i <=7; (moveFromY<moveToY)? i++: i--)
-                        {
-                            if(currentChessboard[i][moveFromX] == ' ')
-                                continue;
-                            if(currentChessboard[i][moveFromX] == movedPiece)
-                            {
-                                lastMoveNotation += getCoordinates(moveFromX, moveFromY);
-                                lastMoveNotation.erase(1,1);
-                            }
-                            else
-                                break;
-                        }
+                    markRookMove(movedPiece);
                     break;
                 case 'Q': case 'q':
                     lastMoveNotation += globalType::getCommuniqueCotent({41})[0];
@@ -354,6 +295,73 @@ void Notebook::generateAndWriteNotation  (int moveCode)
         currentChessboard[moveToY][moveToX] = movedPiece;
         currentChessboard[moveFromY][moveFromX]   = ' ';
     }
+}
+            void Notebook::markKnightMove(char movedPiece)
+{
+    lastMoveNotation += globalType::getCommuniqueCotent({38})[0];
+
+    int secondKnightX,
+        secondKnightY;
+    bool isThereSecondKnight = false,
+            isThereTwinKnight = false;
+    for(int i=0; i<8; i++)
+        for(int j=0; j<8; j++)
+            if(!(i == moveFromY && j == moveFromX) && currentChessboard[i][j] == movedPiece)
+            {
+                isThereSecondKnight = true;
+                secondKnightX = j;
+                secondKnightY = i;
+            }
+    if(isThereSecondKnight)
+    {
+        if((abs(moveToX-secondKnightX) == 1 && abs(moveToY-secondKnightY) == 2)
+        || (abs(moveToX-secondKnightX) == 2 && abs(moveToY-secondKnightY) == 1))
+            isThereTwinKnight = true;
+
+        if(isThereTwinKnight)
+        {
+            if(moveFromX == secondKnightX)
+            {
+                lastMoveNotation += getCoordinates(moveFromX, moveFromY);
+                lastMoveNotation.erase(1,1);
+            }
+            else
+            {
+                lastMoveNotation += getCoordinates(moveFromX, moveFromY);
+                lastMoveNotation.pop_back();
+            }
+        }
+    }
+}
+            void Notebook::markRookMove(char movedPiece)
+{
+    lastMoveNotation += globalType::getCommuniqueCotent({40})[0];
+    if(moveFromY == moveToY)  //horizontal movement
+        for(int i=moveToX+((moveFromX<moveToX)? +1: -1); 0<=i && i<=7; (moveFromX<moveToX)? i++: i--)
+        {
+            if(currentChessboard[moveFromY][i] == ' ')
+                continue;
+            if(currentChessboard[moveFromY][i] == movedPiece)
+            {
+                lastMoveNotation += getCoordinates(moveFromX, moveFromY);
+                lastMoveNotation.pop_back();
+            }
+            else
+                break;
+        }
+    if(moveFromX == moveToX)  //vertical movement
+        for(int i=moveToY+((moveFromY<moveToY)? +1: -1); 0<=i && i <=7; (moveFromY<moveToY)? i++: i--)
+        {
+            if(currentChessboard[i][moveFromX] == ' ')
+                continue;
+            if(currentChessboard[i][moveFromX] == movedPiece)
+            {
+                lastMoveNotation += getCoordinates(moveFromX, moveFromY);
+                lastMoveNotation.erase(1,1);
+            }
+            else
+                break;
+        } 
 }
             std::string Notebook::getCoordinates(int x, int y)
 {
