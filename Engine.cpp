@@ -194,7 +194,7 @@ bool Engine::canUserMakeSuchMove  (int userMoveCode)
         return false;
     }
 }
-    bool Engine::isAllowedMove()//DDDDDDDDDDD
+    bool Engine::isAllowedMove()
 {
     try
     {
@@ -204,110 +204,24 @@ bool Engine::canUserMakeSuchMove  (int userMoveCode)
             throw std::runtime_error("Engine movement coordinates out of range.");
         if (workingChessboardPointer == nullptr)
             throw std::runtime_error("Nullptr of the chessboard.");
-        globalType::chessboardPointer ptr_X = workingChessboardPointer;
-        switch(ptr_X[u.fromY][u.fromX])
+        switch(workingChessboardPointer[u.fromY][u.fromX])
         {
             case 'p':
-                if(u.fromY==1 && u.toY-u.fromY==2 && u.fromX==u.toX && ptr_X[u.fromY+1][u.toX]==' ' && ptr_X[u.toY][u.toX]==' ') return true;//move 2 forward
-                if(u.toY-u.fromY==1 && u.fromX==u.toX && ptr_X[u.toY][u.toX]==' ')                                               return true;//move 1 forward
-                if(u.toY-u.fromY==1 && u.fromX-u.toX==1 && 'B'<=ptr_X[u.toY][u.toX] && ptr_X[u.toY][u.toX]<='R')                 return true;//capture <<
-                if(u.toY-u.fromY==1 && u.toX-u.fromX==1 && 'B'<=ptr_X[u.toY][u.toX] && ptr_X[u.toY][u.toX]<='R')                 return true;//capture >>
-                if(ptr_X[e.toY][e.toX] == 'P' && e.fromY-e.toY == 2 && e.toX == u.toX && u.fromY == e.toY)
-                {
-                    if(u.toY-u.fromY==1 && u.fromX-u.toX==1 && ' ' == ptr_X[u.toY][u.toX]) return true;//En passant <<
-                    if(u.toY-u.fromY==1 && u.toX-u.fromX==1 && ' ' == ptr_X[u.toY][u.toX]) return true;//En passant >>
-                }
-                return false;
+                return isAllowedMoveByPawn();
             case 'n':
                 if((abs(u.fromX-u.toX)==2 && abs(u.fromY-u.toY)==1) || (abs(u.fromX-u.toX)==1 && abs(u.fromY-u.toY)==2))
                     return true;
-                return false;
+                else
+                    return false;
             case 'b':
             case 'q':
-                if(u.fromX-u.fromY==u.toX-u.toY) // slant movements (\)
-                {
-                    if(u.fromX<u.toX) //movement towards 04:30
-                        for(int x=u.fromX+1, y=u.fromY+1; x<u.toX && y<u.toY; x++, y++)
-                            if(ptr_X[y][x]!=' ')
-                                return false;
-                    if(u.fromX>u.toX) //movement towards 10:30
-                        for(int x=u.fromX-1, y=u.fromY-1; x>u.toX && y>u.toY; x--, y--)
-                            if(ptr_X[y][x]!=' ')
-                                return false;
+                if(isAllowedSlantMove())
                     return true;
-                }
-                if(u.fromX+u.fromY==u.toX+u.toY) // slant movements (/)
-                {
-                    if(u.fromX<u.toX) //movement towards 01:30
-                        for(int x=u.fromX+1, y=u.fromY-1; x<u.toX && y>u.toY; x++, y--)
-                            if(ptr_X[y][x]!=' ')
-                                return false;
-                    if(u.fromX>u.toX) //movement towards 07:30
-                        for(int x=u.fromX-1, y=u.fromY+1; x>u.toX && y<u.toY; x--, y++)
-                            if(ptr_X[y][x]!=' ')
-                                return false;
-                    return true;
-                }
             case 'r':
-                if(u.fromY == u.toY) //horizontal movements
-                {
-                    if(u.fromX>u.toX) //to left
-                        for(int x=u.fromX-1; x>u.toX; x--)
-                            if(ptr_X[u.fromY][x]!=' ')
-                                return false;
-                    if(u.fromX<u.toX) //to right
-                        for(int x=u.fromX+1; x<u.toX; x++)
-                            if(ptr_X[u.fromY][x]!=' ')
-                                return false;
-                    return true;
-                }
-                if(u.fromX == u.toX) //vertical movements
-                {
-                    if(u.fromY>u.toY)//up
-                        for(int y=u.fromY-1; y>u.toY; y--)
-                            if(ptr_X[y][u.fromX]!=' ')
-                                return false;
-                    if(u.fromY<u.toY)//down
-                        for(int y=u.fromY+1; y<u.toY; y++)
-                            if(ptr_X[y][u.fromX]!=' ')
-                                return false;
-                    return true;
-                }
-                return false;
+                return isAllowedNonslantMove();
             case 'k':
-                if(abs(u.fromX-u.toX)<=1 && abs(u.fromY-u.toY)<=1)//ordinary king's movement
-                if(0<=u.toY-1                ? ptr_X[u.toY-1][u.toX  ] != 'K': true)
-                if(0<=u.toY-1 && u.toX+1<=7  ? ptr_X[u.toY-1][u.toX+1] != 'K': true)
-                if(              u.toX+1<=7  ? ptr_X[u.toY  ][u.toX+1] != 'K': true)
-                if(u.toY+1<=7 && u.toX+1<=7  ? ptr_X[u.toY+1][u.toX+1] != 'K': true)
-                if(u.toY+1<=7                ? ptr_X[u.toY+1][u.toX  ] != 'K': true)
-                if(u.toY+1<=7 && 0<=u.toX-1  ? ptr_X[u.toY+1][u.toX-1] != 'K': true)
-                if(              0<=u.toX-1  ? ptr_X[u.toY  ][u.toX-1] != 'K': true)
-                if(u.toY+1<=7 && 0<=u.toX-1  ? ptr_X[u.toY+1][u.toX-1] != 'K': true)
-                    return true;
-                if(u.fromY==u.toY && abs(u.fromX - u.toX) == 2 && movement.userKingMoved==false)//castle
-                {
-                    if(color==0)//when user play black
-                    {
-                        if(u.toX==2 && movement.userLeftRookMoved ==false && ptr_X[0][1]==' ' && ptr_X[0][2]==' ' && ptr_X[0][3]==' ')//long castle
-                        if(!movement.isUserSquareCaptured(2, 0, ptr_X) && !movement.isUserSquareCaptured(3, 0, ptr_X) && !movement.isUserSquareCaptured(4, 0, ptr_X))
-                            return true;
-                        if(u.toX==6 && movement.userRightRookMoved==false && ptr_X[0][5]==' ' && ptr_X[0][6]==' ')//short castle
-                        if(!movement.isUserSquareCaptured(4, 0, ptr_X) && !movement.isUserSquareCaptured(5, 0, ptr_X) && !movement.isUserSquareCaptured(6, 0, ptr_X))
-                            return true;
-                    }
-                    if(color==1)//when user play white
-                    {
-                        if(u.toX==5 && movement.userRightRookMoved==false && ptr_X[0][4]==' ' && ptr_X[0][5]==' ' && ptr_X[0][6]==' ')//long castle
-                        if(!movement.isUserSquareCaptured(3, 0, ptr_X) && !movement.isUserSquareCaptured(4, 0, ptr_X) && !movement.isUserSquareCaptured(5, 0, ptr_X))
-                            return true;
-                        if(u.toX==1 && movement.userLeftRookMoved ==false && ptr_X[0][1]==' ' && ptr_X[0][2]==' ')//short castle
-                        if(!movement.isUserSquareCaptured(1, 0, ptr_X) && !movement.isUserSquareCaptured(2, 0, ptr_X) && !movement.isUserSquareCaptured(3, 0, ptr_X))
-                            return true;
-                    }
-                }
-                return false;
-                default: throw std::runtime_error("Wrong sign.");
+                return isAllowedMovebyKing();
+            default: throw std::runtime_error("Wrong sign.");
         }
     }
     catch(const std::runtime_error &e)
@@ -316,6 +230,115 @@ bool Engine::canUserMakeSuchMove  (int userMoveCode)
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
+}
+        bool Engine::isAllowedMoveByPawn()
+{
+    globalType::chessboardPointer ptr_X = workingChessboardPointer;
+    if(u.fromY==1 && u.toY-u.fromY==2 && u.fromX==u.toX && ptr_X[u.fromY+1][u.toX]==' ' && ptr_X[u.toY][u.toX]==' ') return true;//move 2 forward
+    if(u.toY-u.fromY==1 && u.fromX==u.toX && ptr_X[u.toY][u.toX]==' ')                                               return true;//move 1 forward
+    if(u.toY-u.fromY==1 && u.fromX-u.toX==1 && 'B'<=ptr_X[u.toY][u.toX] && ptr_X[u.toY][u.toX]<='R')                 return true;//capture <<
+    if(u.toY-u.fromY==1 && u.toX-u.fromX==1 && 'B'<=ptr_X[u.toY][u.toX] && ptr_X[u.toY][u.toX]<='R')                 return true;//capture >>
+    if(ptr_X[e.toY][e.toX] == 'P' && e.fromY-e.toY == 2 && e.toX == u.toX && u.fromY == e.toY)
+    {
+        if(u.toY-u.fromY==1 && u.fromX-u.toX==1 && ' ' == ptr_X[u.toY][u.toX]) return true;//En passant <<
+        if(u.toY-u.fromY==1 && u.toX-u.fromX==1 && ' ' == ptr_X[u.toY][u.toX]) return true;//En passant >>
+    }
+    return false;
+}
+        bool Engine::isAllowedSlantMove()
+{
+    globalType::chessboardPointer ptr_X = workingChessboardPointer;
+    if(u.fromX-u.fromY==u.toX-u.toY) // slant movements (\)
+    {
+        if(u.fromX<u.toX) //movement towards 04:30
+            for(int x=u.fromX+1, y=u.fromY+1; x<u.toX && y<u.toY; x++, y++)
+                if(ptr_X[y][x]!=' ')
+                    return false;
+        if(u.fromX>u.toX) //movement towards 10:30
+            for(int x=u.fromX-1, y=u.fromY-1; x>u.toX && y>u.toY; x--, y--)
+                if(ptr_X[y][x]!=' ')
+                    return false;
+        return true;
+    }
+    if(u.fromX+u.fromY==u.toX+u.toY) // slant movements (/)
+    {
+        if(u.fromX<u.toX) //movement towards 01:30
+            for(int x=u.fromX+1, y=u.fromY-1; x<u.toX && y>u.toY; x++, y--)
+                if(ptr_X[y][x]!=' ')
+                    return false;
+        if(u.fromX>u.toX) //movement towards 07:30
+            for(int x=u.fromX-1, y=u.fromY+1; x>u.toX && y<u.toY; x--, y++)
+                if(ptr_X[y][x]!=' ')
+                    return false;
+        return true;
+    }
+}
+        bool Engine::isAllowedNonslantMove()
+{
+    globalType::chessboardPointer ptr_X = workingChessboardPointer;
+    if(ptr_X[u.fromY][u.fromX] == 'b')
+        return false;
+    if(u.fromY == u.toY) //horizontal movements
+    {
+        if(u.fromX>u.toX) //to left
+            for(int x=u.fromX-1; x>u.toX; x--)
+                if(ptr_X[u.fromY][x]!=' ')
+                    return false;
+        if(u.fromX<u.toX) //to right
+            for(int x=u.fromX+1; x<u.toX; x++)
+                if(ptr_X[u.fromY][x]!=' ')
+                    return false;
+        return true;
+    }
+    if(u.fromX == u.toX) //vertical movements
+    {
+        if(u.fromY>u.toY)//up
+            for(int y=u.fromY-1; y>u.toY; y--)
+                if(ptr_X[y][u.fromX]!=' ')
+                    return false;
+        if(u.fromY<u.toY)//down
+            for(int y=u.fromY+1; y<u.toY; y++)
+                if(ptr_X[y][u.fromX]!=' ')
+                    return false;
+        return true;
+    }
+    return false;
+}
+        bool Engine::isAllowedMovebyKing()
+{
+    globalType::chessboardPointer ptr_X = workingChessboardPointer;
+    if(abs(u.fromX-u.toX)<=1 && abs(u.fromY-u.toY)<=1)//ordinary king's movement
+    if(0<=u.toY-1                ? ptr_X[u.toY-1][u.toX  ] != 'K': true)
+    if(0<=u.toY-1 && u.toX+1<=7  ? ptr_X[u.toY-1][u.toX+1] != 'K': true)
+    if(              u.toX+1<=7  ? ptr_X[u.toY  ][u.toX+1] != 'K': true)
+    if(u.toY+1<=7 && u.toX+1<=7  ? ptr_X[u.toY+1][u.toX+1] != 'K': true)
+    if(u.toY+1<=7                ? ptr_X[u.toY+1][u.toX  ] != 'K': true)
+    if(u.toY+1<=7 && 0<=u.toX-1  ? ptr_X[u.toY+1][u.toX-1] != 'K': true)
+    if(              0<=u.toX-1  ? ptr_X[u.toY  ][u.toX-1] != 'K': true)
+    if(u.toY+1<=7 && 0<=u.toX-1  ? ptr_X[u.toY+1][u.toX-1] != 'K': true)
+        return true;
+    if(u.fromY==u.toY && abs(u.fromX - u.toX) == 2 && movement.userKingMoved==false)//castle
+    {
+        if(color==0)//when user play black
+        {
+            if(u.toX==2 && movement.userLeftRookMoved ==false && ptr_X[0][1]==' ' && ptr_X[0][2]==' ' && ptr_X[0][3]==' ')//long castle
+            if(!movement.isUserSquareCaptured(2, 0, ptr_X) && !movement.isUserSquareCaptured(3, 0, ptr_X) && !movement.isUserSquareCaptured(4, 0, ptr_X))
+                return true;
+            if(u.toX==6 && movement.userRightRookMoved==false && ptr_X[0][5]==' ' && ptr_X[0][6]==' ')//short castle
+            if(!movement.isUserSquareCaptured(4, 0, ptr_X) && !movement.isUserSquareCaptured(5, 0, ptr_X) && !movement.isUserSquareCaptured(6, 0, ptr_X))
+                return true;
+        }
+        if(color==1)//when user play white
+        {
+            if(u.toX==5 && movement.userRightRookMoved==false && ptr_X[0][4]==' ' && ptr_X[0][5]==' ' && ptr_X[0][6]==' ')//long castle
+            if(!movement.isUserSquareCaptured(3, 0, ptr_X) && !movement.isUserSquareCaptured(4, 0, ptr_X) && !movement.isUserSquareCaptured(5, 0, ptr_X))
+                return true;
+            if(u.toX==1 && movement.userLeftRookMoved ==false && ptr_X[0][1]==' ' && ptr_X[0][2]==' ')//short castle
+            if(!movement.isUserSquareCaptured(1, 0, ptr_X) && !movement.isUserSquareCaptured(2, 0, ptr_X) && !movement.isUserSquareCaptured(3, 0, ptr_X))
+                return true;
+        }
+    }
+    return false;
 }
 int Engine::makeMove                             (int userMoveCode)
 {
