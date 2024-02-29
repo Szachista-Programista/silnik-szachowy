@@ -369,20 +369,3 @@ void Play::playWithUser()
     }
     chessboard.deleteCheckbox(210, 33);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

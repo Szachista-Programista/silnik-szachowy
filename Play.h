@@ -45,9 +45,3 @@ private:    bool userMoveServive();
             void notationSavingMenu();
 };
 #endif//PLAY_H
-
-
-
-
-
-

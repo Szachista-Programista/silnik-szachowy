@@ -123,23 +123,3 @@ namespace systemInfo {
     void delay(int milliseconds);
 }
 #endif//GLOBAL_DEFINITIONS_H
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
