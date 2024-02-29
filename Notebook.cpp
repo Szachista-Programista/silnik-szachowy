@@ -389,7 +389,7 @@ void Notebook::generateAndWriteNotation  (int moveCode)
     }
     return coordinates;
 }
-        bool Notebook::isThereCheck()noexcept//DDDDDDDDDDDDDDDDDDDD
+        bool Notebook::isThereCheck()noexcept
 {
     int x = ((!engineMove)? machineKingLocationX: userKingLocationX);
     int y = ((!engineMove)? machineKingLocationY: userKingLocationY);

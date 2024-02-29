@@ -561,7 +561,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
     else
         return 0.0;
 }
-                double Move::followUserKingToSide            (double x, double y)noexcept//DDDDDDDDDD
+                double Move::followUserKingToSide            (double x, double y)noexcept
 {
     double value{};
 
@@ -659,7 +659,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
 {
     return 0.0;
 }
-void Move::makeEngineMoves                                                                      (globalType::chessboardPointer ptr_X)//DDDDDD
+void Move::makeEngineMoves                                                                      (globalType::chessboardPointer ptr_X)
 {
     try
     {
@@ -889,7 +889,7 @@ void Move::makeEngineMoves                                                      
     }
     else delete[]cOpy;
 }
-            bool Move::isEngineSquareCaptured                        (const int &x,const int &y, globalType::chessboardPointer  cOpy)//DDDDD
+            bool Move::isEngineSquareCaptured                        (const int &x,const int &y, globalType::chessboardPointer  cOpy)
 {
     try
     {
@@ -969,7 +969,7 @@ void Move::makeEngineMoves                                                      
     }
     return false;
 }
-void Move::makeUserMoves                                                                        (globalType::chessboardPointer ptr_X)//DDDDD
+void Move::makeUserMoves                                                                        (globalType::chessboardPointer ptr_X)
 {
     try
     {
@@ -1177,7 +1177,7 @@ void Move::makeUserMoves                                                        
         movements[engineMoveNumber].push_back(cOpy);
     else delete[]cOpy;
 }
-            bool Move::isUserSquareCaptured                         (const int &x, const int &y, globalType::chessboardPointer  cOpy)//DDDDDDDDD
+            bool Move::isUserSquareCaptured                         (const int &x, const int &y, globalType::chessboardPointer  cOpy)
 {
     try
     {
