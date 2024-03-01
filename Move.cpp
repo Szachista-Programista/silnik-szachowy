@@ -256,7 +256,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
     int nrOfBishops     {};
     int nrOfOtherPieces {};
     try
-    {    
+    {
         for(int i=0; i<8; i++)
             for(int j=0; j<8; j++)
                 switch(ptr_X[i][j])
@@ -282,7 +282,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
-    }    
+    }
     if(2 < nrOfOtherPieces) return false;
     else if(nrOfKnights == 1 && nrOfBishops == 0) return true;
     else if(nrOfKnights == 0 && nrOfBishops == 1) return true;
@@ -498,7 +498,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
-    }    
+    }
     return materialStatus;
 }
                 double Move::goOppositeDirectionOfUserKing   (double x, double y)noexcept
@@ -659,7 +659,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
 {
     return 0.0;
 }
-void Move::makeEngineMoves                                                                      (globalType::chessboardPointer ptr_X)
+void Move::makeEngineMoves                                                        (globalType::chessboardPointer ptr_X)
 {
     try
     {
@@ -676,103 +676,112 @@ void Move::makeEngineMoves                                                      
     engineMoveNumber = -1 ;
     for(int i=0; i<8; i++)
         for (int j: {3,4,2,5,1,6,0,7})
-        {
             switch(ptr_X[i][j])
             {
                 case ' ': break;
-                case 'Q':                                                       //queen issue
-                    for(int y=i-1;        0<=y &&         engineLinearMovesService(j,i,j,y,'Q',ptr_X); y--     ); //movement towards 12:00
-                    for(int y=i-1, x=j+1; 0<=y && x<=7 && engineLinearMovesService(j,i,x,y,'Q',ptr_X); y--, x++); //movement towards 01:30
-                    for(int        x=j+1; x<=7 &&         engineLinearMovesService(j,i,x,i,'Q',ptr_X);      x++); //movement towards 03:00
-                    for(int y=i+1, x=j+1; y<=7 && x<=7 && engineLinearMovesService(j,i,x,y,'Q',ptr_X); y++, x++); //movement towards 04:30
-                    for(int y=i+1;        y<=7 &&         engineLinearMovesService(j,i,j,y,'Q',ptr_X); y++     ); //movement towards 06:00
-                    for(int y=i+1, x=j-1; y<=7 && 0<=x && engineLinearMovesService(j,i,x,y,'Q',ptr_X); y++, x--); //movement towards 07:30
-                    for(int        x=j-1; 0<=x &&         engineLinearMovesService(j,i,x,i,'Q',ptr_X);      x--); //movement towards 09:00
-                    for(int y=i-1, x=j-1; 0<=y && 0<=x && engineLinearMovesService(j,i,x,y,'Q',ptr_X); y--, x--); //movement towards 10:30
-                    break;
-                case 'N':                                                       //knight issue
-                    if(0<=i-2 && j+1<=7 && (ptr_X[i-2][j+1]<'B' || 'R'<ptr_X[i-2][j+1])) engineMovesService(j,i,j+1,i-2,'N',ptr_X);
-                    if(0<=i-1 && j+2<=7 && (ptr_X[i-1][j+2]<'B' || 'R'<ptr_X[i-1][j+2])) engineMovesService(j,i,j+2,i-1,'N',ptr_X);
-                    if(i+1<=7 && j+2<=7 && (ptr_X[i+1][j+2]<'B' || 'R'<ptr_X[i+1][j+2])) engineMovesService(j,i,j+2,i+1,'N',ptr_X);
-                    if(i+2<=7 && j+1<=7 && (ptr_X[i+2][j+1]<'B' || 'R'<ptr_X[i+2][j+1])) engineMovesService(j,i,j+1,i+2,'N',ptr_X);
-                    if(i+2<=7 && 0<=j-1 && (ptr_X[i+2][j-1]<'B' || 'R'<ptr_X[i+2][j-1])) engineMovesService(j,i,j-1,i+2,'N',ptr_X);
-                    if(i+1<=7 && 0<=j-2 && (ptr_X[i+1][j-2]<'B' || 'R'<ptr_X[i+1][j-2])) engineMovesService(j,i,j-2,i+1,'N',ptr_X);
-                    if(0<=i-1 && 0<=j-2 && (ptr_X[i-1][j-2]<'B' || 'R'<ptr_X[i-1][j-2])) engineMovesService(j,i,j-2,i-1,'N',ptr_X);
-                    if(0<=i-2 && 0<=j-1 && (ptr_X[i-2][j-1]<'B' || 'R'<ptr_X[i-2][j-1])) engineMovesService(j,i,j-1,i-2,'N',ptr_X);
-                    break;
-                case 'B':                                                       //bishop issue
-                    for(int y=i-1, x=j+1; 0<=y && x<=7 && engineLinearMovesService(j,i,x,y,'B',ptr_X); y--, x++); //movement towards 1:30
-                    for(int y=i+1, x=j+1; y<=7 && x<=7 && engineLinearMovesService(j,i,x,y,'B',ptr_X); y++, x++); //movement towards 4:30
-                    for(int y=i+1, x=j-1; y<=7 && 0<=x && engineLinearMovesService(j,i,x,y,'B',ptr_X); y++, x--); //movement towards 7:30
-                    for(int y=i-1, x=j-1; 0<=y && 0<=x && engineLinearMovesService(j,i,x,y,'B',ptr_X); y--, x--); //movement towards 10:30
-                    break;
-                case 'R':                                                       //rook issue
-                    for(int y=i-1; 0<=y && engineLinearMovesService(j,i,j,y,'R',ptr_X); y--); //movement towards 12:00
-                    for(int x=j+1; x<=7 && engineLinearMovesService(j,i,x,i,'R',ptr_X); x++); //movement towards 03:00
-                    for(int y=i+1; y<=7 && engineLinearMovesService(j,i,j,y,'R',ptr_X); y++); //movement towards 06:00
-                    for(int x=j-1; 0<=x && engineLinearMovesService(j,i,x,i,'R',ptr_X); x--); //movement towards 09:00
-                    break;
-                case 'P':                                                       // pawn issue
-                    if(1<i && i<7)                                                  // pawn with no chance at promotion
-                    {
-                        if(ptr_X[i-1][j]==' ')                                   engineMovesService(j,i,j,i-1,'P',ptr_X);    // move forward by 1
-                        if(i==6 && ptr_X[5][j]==' ' && ptr_X[4][j]==' ')         engineMovesService(j,i,j,4,'P',ptr_X);      // move forward by 2
-                        if(j!=0 && 'b'<=ptr_X[i-1][j-1] && ptr_X[i-1][j-1]<='r') engineMovesService(j,i,j-1,i-1,'P',ptr_X);  // left capture
-                        if(j!=7 && 'b'<=ptr_X[i-1][j+1] && ptr_X[i-1][j+1]<='r') engineMovesService(j,i,j+1,i-1,'P',ptr_X);  // right capture
-                    }
-                    if(i==1)                                                       // promotion
-                    {
-                        if(ptr_X[0][j]==' ')                                // just promotion with the creation of a
-                        {
-                            engineMovesService(j,1,j,0,'N',ptr_X);//knight
-                            engineMovesService(j,1,j,0,'B',ptr_X);//bishop
-                            engineMovesService(j,1,j,0,'R',ptr_X);//rook
-                            engineMovesService(j,1,j,0,'Q',ptr_X);//queen
-                        }
-                        if(j!=0 && 'b'<=ptr_X[0][j-1] && ptr_X[0][j-1]<='r')// promotion by left capture with the creation of a
-                        {
-                            engineMovesService(j,1,j-1,0,'N',ptr_X);//knight
-                            engineMovesService(j,1,j-1,0,'B',ptr_X);//bishop
-                            engineMovesService(j,1,j-1,0,'R',ptr_X);//rook
-                            engineMovesService(j,1,j-1,0,'Q',ptr_X);//queen
-                        }
-                        if(j!=7 && 'b'<=ptr_X[0][j+1] && ptr_X[0][j+1]<='r')// promotion by right capture with the creation of a
-                        {
-                            engineMovesService(j,1,j+1,0,'N',ptr_X);//knight
-                            engineMovesService(j,1,j+1,0,'B',ptr_X);//bishop
-                            engineMovesService(j,1,j+1,0,'R',ptr_X);//rook
-                            engineMovesService(j,1,j+1,0,'Q',ptr_X);//queen
-                        }
-                    }
-                    break;
-                case 'K':                                                       //king issue
-                {
-                    engineUsualKingMovesService(j,i, 0,-1,ptr_X); //movement towards 12:00
-                    engineUsualKingMovesService(j,i, 1,-1,ptr_X); //movement towards 01:30
-                    engineUsualKingMovesService(j,i, 1, 0,ptr_X); //movement towards 03:00
-                    engineUsualKingMovesService(j,i, 1, 1,ptr_X); //movement towards 04:30
-                    engineUsualKingMovesService(j,i, 0, 1,ptr_X); //movement towards 06:00
-                    engineUsualKingMovesService(j,i,-1, 1,ptr_X); //movement towards 07:30
-                    engineUsualKingMovesService(j,i,-1, 0,ptr_X); //movement towards 09:00
-                    engineUsualKingMovesService(j,i,-1,-1,ptr_X); //movement towards 10:30
-
-                    if(!color) //castling when the user play black
-                    {
-                        engineCastleService(2, ptr_X);
-                        engineCastleService(6, ptr_X);
-                    }
-                    if(color) //castling when the user play white
-                    {
-                        engineCastleService(1, ptr_X);
-                        engineCastleService(5, ptr_X);
-                    }
-                    break;
-                }
-            default: break;
+                case 'Q': makeEngineQueenMoves (j, i, ptr_X); break;
+                case 'N': makeEngineKnightMoves(j, i, ptr_X); break;
+                case 'B': makeEngineBishopMoves(j, i, ptr_X); break;
+                case 'R': makeEngineRookMoves  (j, i, ptr_X); break;
+                case 'P': makeEnginePawnMoves  (j, i, ptr_X); break;
+                case 'K': makeEngineKingMoves  (j, i, ptr_X); break;
+                default: break;
+            }
+}
+    void Move::makeEnginePawnMoves                          (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+{
+    if(1<fromY && fromY<7)                                                  // pawn with no chance at promotion
+    {
+        if(ptr_X[fromY-1][fromX]==' ')                                               engineMovesService(fromX,fromY,fromX,  fromY-1,'P',ptr_X);  // move forward by 1
+        if(fromY==6 && ptr_X[5][fromX]==' ' && ptr_X[4][fromX]==' ')                 engineMovesService(fromX,fromY,fromX,  4,      'P',ptr_X);  // move forward by 2
+        if(fromX!=0 && 'b'<=ptr_X[fromY-1][fromX-1] && ptr_X[fromY-1][fromX-1]<='r') engineMovesService(fromX,fromY,fromX-1,fromY-1,'P',ptr_X);  // left capture
+        if(fromX!=7 && 'b'<=ptr_X[fromY-1][fromX+1] && ptr_X[fromY-1][fromX+1]<='r') engineMovesService(fromX,fromY,fromX+1,fromY-1,'P',ptr_X);  // right capture
+    }
+    if(fromY==1)                                                       // promotion
+    {
+        if(ptr_X[0][fromX]==' ')                                // just promotion with the creation of a
+        {
+            engineMovesService(fromX,1,fromX,0,'N',ptr_X);//knight
+            engineMovesService(fromX,1,fromX,0,'B',ptr_X);//bishop
+            engineMovesService(fromX,1,fromX,0,'R',ptr_X);//rook
+            engineMovesService(fromX,1,fromX,0,'Q',ptr_X);//queen
+        }
+        if(fromX!=0 && 'b'<=ptr_X[0][fromX-1] && ptr_X[0][fromX-1]<='r')// promotion by left capture with the creation of a
+        {
+            engineMovesService(fromX,1,fromX-1,0,'N',ptr_X);//knight
+            engineMovesService(fromX,1,fromX-1,0,'B',ptr_X);//bishop
+            engineMovesService(fromX,1,fromX-1,0,'R',ptr_X);//rook
+            engineMovesService(fromX,1,fromX-1,0,'Q',ptr_X);//queen
+        }
+        if(fromX!=7 && 'b'<=ptr_X[0][fromX+1] && ptr_X[0][fromX+1]<='r')// promotion by right capture with the creation of a
+        {
+            engineMovesService(fromX,1,fromX+1,0,'N',ptr_X);//knight
+            engineMovesService(fromX,1,fromX+1,0,'B',ptr_X);//bishop
+            engineMovesService(fromX,1,fromX+1,0,'R',ptr_X);//rook
+            engineMovesService(fromX,1,fromX+1,0,'Q',ptr_X);//queen
         }
     }
 }
-    bool Move::engineLinearMovesService     (int fromX, int fromY, int toX, int toY, char piece, globalType::chessboardPointer ptr_X)
+    void Move::makeEngineKnightMoves                        (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+{
+    if(0<=fromY-2 && fromX+1<=7 && (ptr_X[fromY-2][fromX+1]<'B' || 'R'<ptr_X[fromY-2][fromX+1])) engineMovesService(fromX,fromY,fromX+1,fromY-2,'N',ptr_X);
+    if(0<=fromY-1 && fromX+2<=7 && (ptr_X[fromY-1][fromX+2]<'B' || 'R'<ptr_X[fromY-1][fromX+2])) engineMovesService(fromX,fromY,fromX+2,fromY-1,'N',ptr_X);
+    if(fromY+1<=7 && fromX+2<=7 && (ptr_X[fromY+1][fromX+2]<'B' || 'R'<ptr_X[fromY+1][fromX+2])) engineMovesService(fromX,fromY,fromX+2,fromY+1,'N',ptr_X);
+    if(fromY+2<=7 && fromX+1<=7 && (ptr_X[fromY+2][fromX+1]<'B' || 'R'<ptr_X[fromY+2][fromX+1])) engineMovesService(fromX,fromY,fromX+1,fromY+2,'N',ptr_X);
+    if(fromY+2<=7 && 0<=fromX-1 && (ptr_X[fromY+2][fromX-1]<'B' || 'R'<ptr_X[fromY+2][fromX-1])) engineMovesService(fromX,fromY,fromX-1,fromY+2,'N',ptr_X);
+    if(fromY+1<=7 && 0<=fromX-2 && (ptr_X[fromY+1][fromX-2]<'B' || 'R'<ptr_X[fromY+1][fromX-2])) engineMovesService(fromX,fromY,fromX-2,fromY+1,'N',ptr_X);
+    if(0<=fromY-1 && 0<=fromX-2 && (ptr_X[fromY-1][fromX-2]<'B' || 'R'<ptr_X[fromY-1][fromX-2])) engineMovesService(fromX,fromY,fromX-2,fromY-1,'N',ptr_X);
+    if(0<=fromY-2 && 0<=fromX-1 && (ptr_X[fromY-2][fromX-1]<'B' || 'R'<ptr_X[fromY-2][fromX-1])) engineMovesService(fromX,fromY,fromX-1,fromY-2,'N',ptr_X);
+}
+    void Move::makeEngineBishopMoves                        (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+{
+    for(int y=fromY-1, x=fromX+1; 0<=y && x<=7 && engineLinearMovesService(fromX,fromY,x,y,'B',ptr_X); y--, x++); //movement towards 1:30
+    for(int y=fromY+1, x=fromX+1; y<=7 && x<=7 && engineLinearMovesService(fromX,fromY,x,y,'B',ptr_X); y++, x++); //movement towards 4:30
+    for(int y=fromY+1, x=fromX-1; y<=7 && 0<=x && engineLinearMovesService(fromX,fromY,x,y,'B',ptr_X); y++, x--); //movement towards 7:30
+    for(int y=fromY-1, x=fromX-1; 0<=y && 0<=x && engineLinearMovesService(fromX,fromY,x,y,'B',ptr_X); y--, x--); //movement towards 10:30
+}
+    void Move::makeEngineRookMoves                          (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+{
+    for(int y=fromY-1; 0<=y && engineLinearMovesService(fromX,fromY,fromX,y,'R',ptr_X); y--); //movement towards 12:00
+    for(int x=fromX+1; x<=7 && engineLinearMovesService(fromX,fromY,x,fromY,'R',ptr_X); x++); //movement towards 03:00
+    for(int y=fromY+1; y<=7 && engineLinearMovesService(fromX,fromY,fromX,y,'R',ptr_X); y++); //movement towards 06:00
+    for(int x=fromX-1; 0<=x && engineLinearMovesService(fromX,fromY,x,fromY,'R',ptr_X); x--); //movement towards 09:00
+
+}
+    void Move::makeEngineQueenMoves                         (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+{
+    for(int y=fromY-1;            0<=y &&         engineLinearMovesService(fromX,fromY,fromX,y,    'Q',ptr_X); y--     ); //movement towards 12:00
+    for(int y=fromY-1, x=fromX+1; 0<=y && x<=7 && engineLinearMovesService(fromX,fromY,x,    y,    'Q',ptr_X); y--, x++); //movement towards 01:30
+    for(int            x=fromX+1; x<=7 &&         engineLinearMovesService(fromX,fromY,x,    fromY,'Q',ptr_X);      x++); //movement towards 03:00
+    for(int y=fromY+1, x=fromX+1; y<=7 && x<=7 && engineLinearMovesService(fromX,fromY,x    ,y,    'Q',ptr_X); y++, x++); //movement towards 04:30
+    for(int y=fromY+1;            y<=7 &&         engineLinearMovesService(fromX,fromY,fromX,y,    'Q',ptr_X); y++     ); //movement towards 06:00
+    for(int y=fromY+1, x=fromX-1; y<=7 && 0<=x && engineLinearMovesService(fromX,fromY,x,    y,    'Q',ptr_X); y++, x--); //movement towards 07:30
+    for(int            x=fromX-1; 0<=x &&         engineLinearMovesService(fromX,fromY,x,    fromY,'Q',ptr_X);      x--); //movement towards 09:00
+    for(int y=fromY-1, x=fromX-1; 0<=y && 0<=x && engineLinearMovesService(fromX,fromY,x,    y,    'Q',ptr_X); y--, x--); //movement towards 10:30
+}
+    void Move::makeEngineKingMoves                          (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+{
+    engineUsualKingMovesService(fromX,fromY, 0,-1,ptr_X); //movement towards 12:00
+    engineUsualKingMovesService(fromX,fromY, 1,-1,ptr_X); //movement towards 01:30
+    engineUsualKingMovesService(fromX,fromY, 1, 0,ptr_X); //movement towards 03:00
+    engineUsualKingMovesService(fromX,fromY, 1, 1,ptr_X); //movement towards 04:30
+    engineUsualKingMovesService(fromX,fromY, 0, 1,ptr_X); //movement towards 06:00
+    engineUsualKingMovesService(fromX,fromY,-1, 1,ptr_X); //movement towards 07:30
+    engineUsualKingMovesService(fromX,fromY,-1, 0,ptr_X); //movement towards 09:00
+    engineUsualKingMovesService(fromX,fromY,-1,-1,ptr_X); //movement towards 10:30
+
+    if(!color) //castling when the user play black
+    {
+        engineCastleService(2, ptr_X);
+        engineCastleService(6, ptr_X);
+    }
+    if(color) //castling when the user play white
+    {
+        engineCastleService(1, ptr_X);
+        engineCastleService(5, ptr_X);
+    }
+}
+        bool Move::engineLinearMovesService   (int fromX, int fromY, int toX, int toY, char piece,   globalType::chessboardPointer ptr_X)
 {
     try
     {
@@ -798,7 +807,7 @@ void Move::makeEngineMoves                                                      
         return true;
     }
 }
-    void Move::engineUsualKingMovesService(int fromX, int fromY, int directionX, int directionY, globalType::chessboardPointer ptr_X)
+        void Move::engineUsualKingMovesService(int fromX, int fromY, int directionX, int directionY, globalType::chessboardPointer ptr_X)
 {
     int toX = fromX + directionX;
     int toY = fromY + directionY;
@@ -814,7 +823,7 @@ void Move::makeEngineMoves                                                      
         engineKingLocationY = engineKingLocationY - directionY;
     }
 }
-    void Move::engineCastleService(int kingToX, globalType::chessboardPointer ptr_X)
+        void Move::engineCastleService                                                 (int kingToX, globalType::chessboardPointer ptr_X)
 {
     int kingFromY = 7;
     int kingFromX = (3 < kingToX)? (kingToX - 2): (kingToX + 2);
@@ -838,7 +847,7 @@ void Move::makeEngineMoves                                                      
         else delete[]cOpy;
     }
 }
-    void Move::engineMovesService           (int fromX, int fromY, int toX, int toY, char piece, globalType::chessboardPointer ptr_X)
+        void Move::engineMovesService         (int fromX, int fromY, int toX, int toY, char piece,   globalType::chessboardPointer ptr_X)
 {
     try
     {
@@ -858,7 +867,7 @@ void Move::makeEngineMoves                                                      
     cOpy[toY][toX] = piece;
     makeEngineMovesIfAllowed(fromX, fromY, cOpy);
 }
-        void Move::makeEngineMovesIfAllowed                                     (int &x, int &y, globalType::chessboardPointer  cOpy)
+            void Move::makeEngineMovesIfAllowed                                     (int &x, int &y, globalType::chessboardPointer  cOpy)
 {
     try
     {
@@ -889,7 +898,7 @@ void Move::makeEngineMoves                                                      
     }
     else delete[]cOpy;
 }
-            bool Move::isEngineSquareCaptured                        (const int &x,const int &y, globalType::chessboardPointer  cOpy)
+                bool Move::isEngineSquareCaptured                        (const int &x,const int &y, globalType::chessboardPointer  cOpy)
 {
     try
     {
@@ -953,7 +962,7 @@ void Move::makeEngineMoves                                                      
         else break;
     }
 
-    if(0<=y-2 && x+1<=7 && cOpy[y-2][x+1]=='n') return true;                       //BITE PRZEZ SKOCZKA
+    if(0<=y-2 && x+1<=7 && cOpy[y-2][x+1]=='n') return true;                       //captured by knight
     if(0<=y-1 && x+2<=7 && cOpy[y-1][x+2]=='n') return true;
     if(y+1<=7 && x+2<=7 && cOpy[y+1][x+2]=='n') return true;
     if(y+2<=7 && x+1<=7 && cOpy[y+2][x+1]=='n') return true;
@@ -962,14 +971,14 @@ void Move::makeEngineMoves                                                      
     if(0<=y-1 && 0<=x-2 && cOpy[y-1][x-2]=='n') return true;
     if(0<=y-2 && 0<=x-1 && cOpy[y-2][x-1]=='n') return true;
 
-    if(2<=y)                                                                    //BITE PRZEZ PIONKA
+    if(2<=y)                                                                    //captureb by pawn
     {
         if(1<=x && cOpy[y-1][x-1]=='p') return true;
         if(x<=6 && cOpy[y-1][x+1]=='p') return true;
     }
     return false;
 }
-void Move::makeUserMoves                                                                        (globalType::chessboardPointer ptr_X)
+void Move::makeUserMoves                                                          (globalType::chessboardPointer ptr_X)
 {
     try
     {
@@ -988,95 +997,109 @@ void Move::makeUserMoves                                                        
             switch(ptr_X[i][j])
             {
                 case ' ': break;
-                case 'n':                                                       //knight issue
-                    if(0<=i-2 && j+1<=7 && (ptr_X[i-2][j+1]<'b' || 'r'<ptr_X[i-2][j+1]))  userMovesService(j,i,j+1,i-2,'n',ptr_X);
-                    if(0<=i-1 && j+2<=7 && (ptr_X[i-1][j+2]<'b' || 'r'<ptr_X[i-1][j+2]))  userMovesService(j,i,j+2,i-1,'n',ptr_X);
-                    if(i+1<=7 && j+2<=7 && (ptr_X[i+1][j+2]<'b' || 'r'<ptr_X[i+1][j+2]))  userMovesService(j,i,j+2,i+1,'n',ptr_X);
-                    if(i+2<=7 && j+1<=7 && (ptr_X[i+2][j+1]<'b' || 'r'<ptr_X[i+2][j+1]))  userMovesService(j,i,j+1,i+2,'n',ptr_X);
-                    if(i+2<=7 && 0<=j-1 && (ptr_X[i+2][j-1]<'b' || 'r'<ptr_X[i+2][j-1]))  userMovesService(j,i,j-1,i+2,'n',ptr_X);
-                    if(i+1<=7 && 0<=j-2 && (ptr_X[i+1][j-2]<'b' || 'r'<ptr_X[i+1][j-2]))  userMovesService(j,i,j-2,i+1,'n',ptr_X);
-                    if(0<=i-1 && 0<=j-2 && (ptr_X[i-1][j-2]<'b' || 'r'<ptr_X[i-1][j-2]))  userMovesService(j,i,j-2,i-1,'n',ptr_X);
-                    if(0<=i-2 && 0<=j-1 && (ptr_X[i-2][j-1]<'b' || 'r'<ptr_X[i-2][j-1]))  userMovesService(j,i,j-1,i-2,'n',ptr_X);
-                    break;
-                case 'b':                                                       //bishop issue
-                    for(int y=i-1, x=j+1; 0<=y && x<=7 && userLinearMovesService(j,i,x,y,'b',ptr_X); y--, x++); //movement towards 1:30
-                    for(int y=i+1, x=j+1; y<=7 && x<=7 && userLinearMovesService(j,i,x,y,'b',ptr_X); y++, x++); //movement towards 4:30
-                    for(int y=i+1, x=j-1; y<=7 && 0<=x && userLinearMovesService(j,i,x,y,'b',ptr_X); y++, x--); //movement towards 7:30
-                    for(int y=i-1, x=j-1; 0<=y && 0<=x && userLinearMovesService(j,i,x,y,'b',ptr_X); y--, x--); //movement towards 10:30
-                    break;
-                case 'r':                                                       //rook issue
-                    for(int y=i-1; 0<=y && userLinearMovesService(j,i,j,y,'r',ptr_X); y--); //movement towards 12:00
-                    for(int x=j+1; x<=7 && userLinearMovesService(j,i,x,i,'r',ptr_X); x++); //movement towards 03:00
-                    for(int y=i+1; y<=7 && userLinearMovesService(j,i,j,y,'r',ptr_X); y++); //movement towards 06:00
-                    for(int x=j-1; 0<=x && userLinearMovesService(j,i,x,i,'r',ptr_X); x--); //movement towards 09:00
-                    break;
-                case 'q':                                                       //queen issue
-                    for(int y=i-1;        0<=y &&         userLinearMovesService(j,i,j,y,'q',ptr_X); y--     ); //movement towards 12:00
-                    for(int y=i-1, x=j+1; 0<=y && x<=7 && userLinearMovesService(j,i,x,y,'q',ptr_X); y--, x++); //movement towards 01:30
-                    for(int        x=j+1; x<=7 &&         userLinearMovesService(j,i,x,i,'q',ptr_X);      x++); //movement towards 03:00
-                    for(int y=i+1, x=j+1; y<=7 && x<=7 && userLinearMovesService(j,i,x,y,'q',ptr_X); y++, x++); //movement towards 04:30
-                    for(int y=i+1;        y<=7 &&         userLinearMovesService(j,i,j,y,'q',ptr_X); y++     ); //movement towards 06:00
-                    for(int y=i+1, x=j-1; y<=7 && 0<=x && userLinearMovesService(j,i,x,y,'q',ptr_X); y++, x--); //movement towards 07:30
-                    for(int        x=j-1; 0<=x &&         userLinearMovesService(j,i,x,i,'q',ptr_X);      x--); //movement towards 09:00
-                    for(int y=i-1, x=j-1; 0<=y && 0<=x && userLinearMovesService(j,i,x,y,'q',ptr_X); y--, x--); //movement towards 10:30
-                    break;
-                case 'p':                                                       //pawn issue
-                    if(0<i && i<6)                                                  //pawn with no chance at promotion
-                    {
-                        if(ptr_X[i+1][j]==' ')                                    userMovesService(j,i,j,i+1,'p',ptr_X);   //move forward by 1
-                        if(i==1 && ptr_X[2][j]==' ' && ptr_X[3][j]==' ')          userMovesService(j,1,j,3,'p',ptr_X);     //move forward by 2
-                        if(j!=0 && 'B'<=ptr_X[i+1][j-1] && ptr_X[i+1][j-1]<='R')  userMovesService(j,i,j-1,i+1,'p',ptr_X); //left capture
-                        if(j!=7 && 'B'<=ptr_X[i+1][j+1] && ptr_X[i+1][j+1]<='R')  userMovesService(j,i,j+1,i+1,'p',ptr_X); //right capture
-
-                    }
-                    if(i==6)                                                       //promotion
-                    {
-                        if(ptr_X[7][j]==' ')                              //just promotion with the creation of a
-                        {
-                            userMovesService(j,6,j,7,'n',ptr_X); //knight
-                            userMovesService(j,6,j,7,'b',ptr_X); //bishop
-                            userMovesService(j,6,j,7,'r',ptr_X); //rook
-                            userMovesService(j,6,j,7,'q',ptr_X); //queen
-                        }
-                        if(j!=0 && 'B'<=ptr_X[7][j-1] && ptr_X[7][j-1]<='R')//promotion by left capture with the creation of a
-                        {
-                            userMovesService(j,6,j-1,7,'n',ptr_X); //knight
-                            userMovesService(j,6,j-1,7,'b',ptr_X); //bishop
-                            userMovesService(j,6,j-1,7,'r',ptr_X); //rook
-                            userMovesService(j,6,j-1,7,'q',ptr_X); //queen
-                        }
-                        if(j!=7 && 'B'<=ptr_X[7][j+1] && ptr_X[7][j+1]<='R')//promotion by right capture with the creation of a
-                        {
-                            userMovesService(j,6,j+1,7,'n',ptr_X); //knight
-                            userMovesService(j,6,j+1,7,'b',ptr_X); //bishop
-                            userMovesService(j,6,j+1,7,'r',ptr_X); //rook
-                            userMovesService(j,6,j+1,7,'q',ptr_X); //queen
-                        }
-                    }
-                    break;
-                case 'k':                                                       //king issue
-                    userUsualKingMovesService(j,i, 0,-1,ptr_X); //movement towards 12:00
-                    userUsualKingMovesService(j,i, 1,-1,ptr_X); //movement towards 01:30
-                    userUsualKingMovesService(j,i, 1, 0,ptr_X); //movement towards 03:00
-                    userUsualKingMovesService(j,i, 1, 1,ptr_X); //movement towards 04:30
-                    userUsualKingMovesService(j,i, 0, 1,ptr_X); //movement towards 06:00
-                    userUsualKingMovesService(j,i,-1, 1,ptr_X); //movement towards 07:30
-                    userUsualKingMovesService(j,i,-1, 0,ptr_X); //movement towards 09:00
-                    userUsualKingMovesService(j,i,-1,-1,ptr_X); //movement towards 10:30
-                    if(!color) //castling when the user play black
-                    {
-                        userCastleService(2, ptr_X);
-                        userCastleService(6, ptr_X);
-                    }
-                    if(color) //castling when the user play white
-                    {
-                        userCastleService(1, ptr_X);
-                        userCastleService(5, ptr_X);
-                    }
-                    break;
+                case 'n': makeUserKnightMoves(j, i, ptr_X); break;
+                case 'b': makeUserBishopMoves(j, i, ptr_X); break;
+                case 'r': makeUserRookMoves  (j, i, ptr_X); break;
+                case 'q': makeUserQueenMoves (j, i, ptr_X); break;
+                case 'p': makeUserPawnMoves  (j, i, ptr_X); break;
+                case 'k': makeUserKingMoves  (j, i, ptr_X); break;
             }
 }
-    bool Move::userLinearMovesService       (int fromX, int fromY, int toX, int toY, char piece, globalType::chessboardPointer ptr_X)
+    void Move::makeUserPawnMoves                            (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+{
+    if(0<fromY && fromY<6)                                                  //pawn with no chance at promotion
+    {
+        if(ptr_X[fromY+1][fromX]==' ')                                                userMovesService(fromX,fromY,fromX,fromY+1,  'p',ptr_X); //move forward by 1
+        if(fromY==1 && ptr_X[2][fromX]==' ' && ptr_X[3][fromX]==' ')                  userMovesService(fromX,1,    fromX,3,        'p',ptr_X); //move forward by 2
+        if(fromX!=0 && 'B'<=ptr_X[fromY+1][fromX-1] && ptr_X[fromY+1][fromX-1]<='R')  userMovesService(fromX,fromY,fromX-1,fromY+1,'p',ptr_X); //left capture
+        if(fromX!=7 && 'B'<=ptr_X[fromY+1][fromX+1] && ptr_X[fromY+1][fromX+1]<='R')  userMovesService(fromX,fromY,fromX+1,fromY+1,'p',ptr_X); //right capture
+
+    }
+    if(fromY==6)                                                       //promotion
+    {
+        if(ptr_X[7][fromX]==' ')                              //just promotion with the creation of a
+        {
+            userMovesService(fromX,6,fromX,7,'n',ptr_X); //knight
+            userMovesService(fromX,6,fromX,7,'b',ptr_X); //bishop
+            userMovesService(fromX,6,fromX,7,'r',ptr_X); //rook
+            userMovesService(fromX,6,fromX,7,'q',ptr_X); //queen
+        }
+        if(fromX!=0 && 'B'<=ptr_X[7][fromX-1] && ptr_X[7][fromX-1]<='R')//promotion by left capture with the creation of a
+        {
+            userMovesService(fromX,6,fromX-1,7,'n',ptr_X); //knight
+            userMovesService(fromX,6,fromX-1,7,'b',ptr_X); //bishop
+            userMovesService(fromX,6,fromX-1,7,'r',ptr_X); //rook
+            userMovesService(fromX,6,fromX-1,7,'q',ptr_X); //queen
+        }
+        if(fromX!=7 && 'B'<=ptr_X[7][fromX+1] && ptr_X[7][fromX+1]<='R')//promotion by right capture with the creation of a
+        {
+            userMovesService(fromX,6,fromX+1,7,'n',ptr_X); //knight
+            userMovesService(fromX,6,fromX+1,7,'b',ptr_X); //bishop
+            userMovesService(fromX,6,fromX+1,7,'r',ptr_X); //rook
+            userMovesService(fromX,6,fromX+1,7,'q',ptr_X); //queen
+        }
+    }
+}
+    void Move::makeUserKnightMoves                          (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+{
+    if(0<=fromY-2 && fromX+1<=7 && (ptr_X[fromY-2][fromX+1]<'b' || 'r'<ptr_X[fromY-2][fromX+1]))  userMovesService(fromX,fromY,fromX+1,fromY-2,'n',ptr_X);
+    if(0<=fromY-1 && fromX+2<=7 && (ptr_X[fromY-1][fromX+2]<'b' || 'r'<ptr_X[fromY-1][fromX+2]))  userMovesService(fromX,fromY,fromX+2,fromY-1,'n',ptr_X);
+    if(fromY+1<=7 && fromX+2<=7 && (ptr_X[fromY+1][fromX+2]<'b' || 'r'<ptr_X[fromY+1][fromX+2]))  userMovesService(fromX,fromY,fromX+2,fromY+1,'n',ptr_X);
+    if(fromY+2<=7 && fromX+1<=7 && (ptr_X[fromY+2][fromX+1]<'b' || 'r'<ptr_X[fromY+2][fromX+1]))  userMovesService(fromX,fromY,fromX+1,fromY+2,'n',ptr_X);
+    if(fromY+2<=7 && 0<=fromX-1 && (ptr_X[fromY+2][fromX-1]<'b' || 'r'<ptr_X[fromY+2][fromX-1]))  userMovesService(fromX,fromY,fromX-1,fromY+2,'n',ptr_X);
+    if(fromY+1<=7 && 0<=fromX-2 && (ptr_X[fromY+1][fromX-2]<'b' || 'r'<ptr_X[fromY+1][fromX-2]))  userMovesService(fromX,fromY,fromX-2,fromY+1,'n',ptr_X);
+    if(0<=fromY-1 && 0<=fromX-2 && (ptr_X[fromY-1][fromX-2]<'b' || 'r'<ptr_X[fromY-1][fromX-2]))  userMovesService(fromX,fromY,fromX-2,fromY-1,'n',ptr_X);
+    if(0<=fromY-2 && 0<=fromX-1 && (ptr_X[fromY-2][fromX-1]<'b' || 'r'<ptr_X[fromY-2][fromX-1]))  userMovesService(fromX,fromY,fromX-1,fromY-2,'n',ptr_X);
+}
+    void Move::makeUserBishopMoves                          (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+{
+    for(int y=fromY-1, x=fromX+1; 0<=y && x<=7 && userLinearMovesService(fromX,fromY,x,y,'b',ptr_X); y--, x++); //movement towards 01:30
+    for(int y=fromY+1, x=fromX+1; y<=7 && x<=7 && userLinearMovesService(fromX,fromY,x,y,'b',ptr_X); y++, x++); //movement towards 04:30
+    for(int y=fromY+1, x=fromX-1; y<=7 && 0<=x && userLinearMovesService(fromX,fromY,x,y,'b',ptr_X); y++, x--); //movement towards 07:30
+    for(int y=fromY-1, x=fromX-1; 0<=y && 0<=x && userLinearMovesService(fromX,fromY,x,y,'b',ptr_X); y--, x--); //movement towards 10:30
+
+}
+    void Move::makeUserRookMoves                            (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+{
+    for(int y=fromY-1; 0<=y && userLinearMovesService(fromX,fromY,fromX,y,    'r',ptr_X); y--); //movement towards 12:00
+    for(int x=fromX+1; x<=7 && userLinearMovesService(fromX,fromY,x,    fromY,'r',ptr_X); x++); //movement towards 03:00
+    for(int y=fromY+1; y<=7 && userLinearMovesService(fromX,fromY,fromX,y,    'r',ptr_X); y++); //movement towards 06:00
+    for(int x=fromX-1; 0<=x && userLinearMovesService(fromX,fromY,x,    fromY,'r',ptr_X); x--); //movement towards 09:00
+}
+    void Move::makeUserQueenMoves                           (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+{
+    for(int y=fromY-1;            0<=y &&         userLinearMovesService(fromX,fromY,fromX,y,'q',ptr_X); y--     ); //movement towards 12:00
+    for(int y=fromY-1, x=fromX+1; 0<=y && x<=7 && userLinearMovesService(fromX,fromY,x,    y,'q',ptr_X); y--, x++); //movement towards 01:30
+    for(int            x=fromX+1; x<=7 &&         userLinearMovesService(fromX,fromY,x,fromY,'q',ptr_X);      x++); //movement towards 03:00
+    for(int y=fromY+1, x=fromX+1; y<=7 && x<=7 && userLinearMovesService(fromX,fromY,x,    y,'q',ptr_X); y++, x++); //movement towards 04:30
+    for(int y=fromY+1;            y<=7 &&         userLinearMovesService(fromX,fromY,fromX,y,'q',ptr_X); y++     ); //movement towards 06:00
+    for(int y=fromY+1, x=fromX-1; y<=7 && 0<=x && userLinearMovesService(fromX,fromY,x,    y,'q',ptr_X); y++, x--); //movement towards 07:30
+    for(int            x=fromX-1; 0<=x &&         userLinearMovesService(fromX,fromY,x,fromY,'q',ptr_X);      x--); //movement towards 09:00
+    for(int y=fromY-1, x=fromX-1; 0<=y && 0<=x && userLinearMovesService(fromX,fromY,x,    y,'q',ptr_X); y--, x--); //movement towards 10:30
+
+}
+    void Move::makeUserKingMoves                            (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+{
+    userUsualKingMovesService(fromX,fromY, 0,-1,ptr_X); //movement towards 12:00
+    userUsualKingMovesService(fromX,fromY, 1,-1,ptr_X); //movement towards 01:30
+    userUsualKingMovesService(fromX,fromY, 1, 0,ptr_X); //movement towards 03:00
+    userUsualKingMovesService(fromX,fromY, 1, 1,ptr_X); //movement towards 04:30
+    userUsualKingMovesService(fromX,fromY, 0, 1,ptr_X); //movement towards 06:00
+    userUsualKingMovesService(fromX,fromY,-1, 1,ptr_X); //movement towards 07:30
+    userUsualKingMovesService(fromX,fromY,-1, 0,ptr_X); //movement towards 09:00
+    userUsualKingMovesService(fromX,fromY,-1,-1,ptr_X); //movement towards 10:30
+    if(!color) //castling when the user play black
+    {
+        userCastleService(2, ptr_X);
+        userCastleService(6, ptr_X);
+    }
+    if(color) //castling when the user play white
+    {
+        userCastleService(1, ptr_X);
+        userCastleService(5, ptr_X);
+    }
+}
+        bool Move::userLinearMovesService   (int fromX, int fromY, int toX, int toY, char piece,   globalType::chessboardPointer ptr_X)
 {
     try
     {
@@ -1102,7 +1125,7 @@ void Move::makeUserMoves                                                        
         return true;
     }
 }
-    void Move::userUsualKingMovesService(int fromX, int fromY, int directionX, int directionY, globalType::chessboardPointer ptr_X)
+        void Move::userUsualKingMovesService(int fromX, int fromY, int directionX, int directionY, globalType::chessboardPointer ptr_X)
 {
     int toX = fromX + directionX;
     int toY = fromY + directionY;
@@ -1119,7 +1142,7 @@ void Move::makeUserMoves                                                        
         else delete[]cOpy;
     }
 }
-    void Move::userCastleService(int kingToX, globalType::chessboardPointer ptr_X)
+        void Move::userCastleService                                                 (int kingToX, globalType::chessboardPointer ptr_X)
 {
     int kingFromX = (3 < kingToX)? (kingToX - 2): (kingToX + 2);
     int rookFromX = (3 < kingToX)? 7: 0;
@@ -1140,7 +1163,7 @@ void Move::makeUserMoves                                                        
         else delete[]cOpy;
     }
 }
-    void Move::userMovesService             (int fromX, int fromY, int toX, int toY, char piece, globalType::chessboardPointer ptr_X)
+        void Move::userMovesService         (int fromX, int fromY, int toX, int toY, char piece,   globalType::chessboardPointer ptr_X)
 {
     try
     {
@@ -1158,8 +1181,9 @@ void Move::makeUserMoves                                                        
     cOpy[toY][toX] = piece;
     makeUserMovesIfAllowed(fromX, fromY, cOpy);
 }
-        void Move::makeUserMovesIfAllowed                                       (int &x, int &y, globalType::chessboardPointer  cOpy)
+            void Move::makeUserMovesIfAllowed                                     (int &x, int &y, globalType::chessboardPointer  cOpy)
 {
+
     try
     {
         if (x < 0 || 7 < x || y < 0 || 7 < y)
@@ -1177,7 +1201,7 @@ void Move::makeUserMoves                                                        
         movements[engineMoveNumber].push_back(cOpy);
     else delete[]cOpy;
 }
-            bool Move::isUserSquareCaptured                         (const int &x, const int &y, globalType::chessboardPointer  cOpy)
+                bool Move::isUserSquareCaptured                       (const int &x, const int &y, globalType::chessboardPointer  cOpy)
 {
     try
     {
@@ -1255,7 +1279,7 @@ void Move::makeUserMoves                                                        
     }
     return false;
 }
-globalType::chessboardPointer Move::copyChessboard                                        (const globalType::chessboardPointer oryginal)
+globalType::chessboardPointer Move::copyChessboard                                          (const globalType::chessboardPointer oryginal)
 {
     try
     {
@@ -1284,7 +1308,7 @@ globalType::chessboardPointer Move::copyChessboard                              
             cOpy[i][j] = oryginal[i][j];
     return cOpy;
 }
-void Move::writeChessboard                                                                (const globalType::chessboardPointer ptr_X)
+void Move::writeChessboard                                                                  (const globalType::chessboardPointer ptr_X)
 {
     try
     {
