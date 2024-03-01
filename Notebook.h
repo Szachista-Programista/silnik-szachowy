@@ -5,51 +5,51 @@
 #include "GlobalDefinitions.h"
 
 class Notebook{
-        bool color;
-        bool engineMove;
-        bool moveMarked;
-        bool gameOver = false;
+    bool color;
+    bool engineMove;
+    bool moveMarked;
+    bool gameOver = false;
 
-        int machineKingLocationX;
-        int machineKingLocationY;
-        int userKingLocationX;
-        int userKingLocationY;
+    int machineKingLocationX;
+    int machineKingLocationY;
+    int userKingLocationX;
+    int userKingLocationY;
 
-        int moveCode;
-        int moveFromX;
-        int moveFromY;
-        int moveToX;
-        int moveToY;
-        int additionalParameter;
+    int moveCode;
+    int moveFromX;
+    int moveFromY;
+    int moveToX;
+    int moveToY;
+    int additionalParameter;
 
-        int semiMoveNumber = 0;
-        int moveNumber;
+    int semiMoveNumber = 0;
+    int moveNumber;
 
-        int currentNotationLine    = 0;
-        int currentNotationColumn  = 0;
-        int previousNotationLine   = 0;
-        int previousNotationColumn = 0;
+    int currentNotationLine    = 0;
+    int currentNotationColumn  = 0;
+    int previousNotationLine   = 0;
+    int previousNotationColumn = 0;
 
-        std::string lastMoveNotation;
-        std::string gameResult;
-        std::string chessboardUpdateCode;
+    std::string lastMoveNotation;
+    std::string gameResult;
+    std::string chessboardUpdateCode;
 
-        std::string notationArray          [globalType::letterHeight];
+    std::string notationArray[globalType::letterHeight];
 
-        std::string pixelArtCharacterArray [globalType::numberOfChars]          [globalType::letterHeight];
-        std::string notationColumnArray    [globalType::numberOfNotationColumn] [globalType::columnHeight];
+    std::string pixelArtCharacterArray[globalType::numberOfChars]          [globalType::letterHeight];
+    std::string notationColumnArray   [globalType::numberOfNotationColumn] [globalType::columnHeight];
 
-        std::vector<std::string>entireNotation;
+    std::vector<std::string>entireNotation;
 
-        globalType::chessboardPointer previousChessboard;
+    globalType::chessboardPointer previousChessboard;
 public: globalType::chessboardPointer currentChessboard;
 //********************************************************************************
 public: Notebook(bool k);
 private:    globalType::chessboardPointer loadPiecesArrangement();
             void loadChars();
 public:~Notebook()noexcept;
-        void generateAndWriteNotation  (int moveCode);
-private:    void updateParameterValues (int moveCode);
+        void generateAndWriteNotation (int moveCode);
+private:    void updateParameterValues(int moveCode);
                 void decipherMoveCode();
                 void updateKingsLocation()noexcept;
             void markMoveAndWriteNotation();
@@ -58,7 +58,7 @@ private:    void updateParameterValues (int moveCode);
                 void markEnPassant()noexcept;
                 void markCommonMove();
                     void markKnightMove(char movedPiece);
-                    void markRookMove(char movedPiece);
+                    void markRookMove  (char movedPiece);
                     std::string getCoordinates(int x, int y);
                 bool isThereCheck()noexcept;
             void updateEntireNotation();
@@ -76,8 +76,8 @@ private:        void addNotationArrayContent(std::string content);
                     void addCharToNotationArray(char cHar);
                         int getCharIndex(char cHar);
                 void writeNotationArray(int line, int column, bool backlight);
-                void rewriteNotationToColumn ()noexcept;
-public: std::string getChessboardUpdateCode  ()noexcept;
+                void rewriteNotationToColumn()noexcept;
+public: std::string getChessboardUpdateCode()noexcept;
 private:    void generateChessboardUpdateCode()noexcept;
 public: std::string saveGameInNotebook();
 };

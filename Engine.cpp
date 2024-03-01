@@ -2,7 +2,7 @@
 
 Engine::Engine(bool k): color{k}, movement{k}
 {
-    globalType::gameStage        = globalType::middlegame;
+    globalType::gameStage        = globalType::opening;
     comparativeChessboardPointer = loadPiecesArrangement();
     workingChessboardPointer     = loadPiecesArrangement();
     setArrangements(workingChessboardPointer);
@@ -72,7 +72,7 @@ Engine::~Engine()noexcept
     controlNumbersOfArrangements.clear();
     arrangements.clear();
 }
-bool Engine::canUserMakeSuchMove  (int userMoveCode)
+bool Engine::canUserMakeSuchMove(int userMoveCode)
 {
     decipherUserMove(userMoveCode);
     if(!isPieceOfUserOnStartingSquare()   )return false;
@@ -81,7 +81,7 @@ bool Engine::canUserMakeSuchMove  (int userMoveCode)
     if(!isAllowedMove()                   )return false;
     return true;
 }
-    void Engine::decipherUserMove (int userMoveCode)
+    void Engine::decipherUserMove(int userMoveCode)
 {
     if(userMoveCode == 10000)
         u.toY = u.toX = u.fromY = u.fromX = promotionCode = 0;
@@ -343,7 +343,7 @@ bool Engine::canUserMakeSuchMove  (int userMoveCode)
     }
     return false;
 }
-int Engine::makeMove                             (int userMoveCode)
+int Engine::makeMove                         (int userMoveCode)
 {
     getEngineReadyForMove(userMoveCode);
     arrangeServiceAfterUserMove(userMoveCode);
@@ -358,13 +358,13 @@ int Engine::makeMove                             (int userMoveCode)
         arrangeServiceAfterEngineMove();
     return engineMoveCoding();
 }
-    void Engine::getEngineReadyForMove           (int userMoveCode)
+    void Engine::getEngineReadyForMove       (int userMoveCode)
 {
     movementNumber++;
     decipherUserMove(userMoveCode); // changes e.g. 4456 into u.fromY u.toY u.fromX u.toX
     markUserMoveOnChessboard(userMoveCode); // marks u.fromY u.toY u.fromX u.toX into comparativeChessboardPointer and workingChessboardPointer
 }
-        void Engine::markUserMoveOnChessboard    (int userMoveCode)
+        void Engine::markUserMoveOnChessboard(int userMoveCode)
 {
     try
     {
@@ -423,7 +423,7 @@ int Engine::makeMove                             (int userMoveCode)
         }
     }
 }
-    void Engine::arrangeServiceAfterUserMove     (int userMoveCode)
+    void Engine::arrangeServiceAfterUserMove (int userMoveCode)
 {
     if(userMoveCode == 10000)
         return;
@@ -546,7 +546,7 @@ int Engine::makeMove                             (int userMoveCode)
         movement.gameOverStalemateByEngine = true;
     }
 }
-    void Engine::makeOpeningMove      ()noexcept
+    void Engine::makeOpeningMove()noexcept
 {
     if(color)
         blackOpeningMove();
@@ -555,7 +555,7 @@ int Engine::makeMove                             (int userMoveCode)
     if(movementNumber == 3)
         globalType::gameStage = globalType::middlegame;
 }
-        void Engine::blackOpeningMove ()noexcept
+        void Engine::blackOpeningMove()noexcept
 {
     userPiecesMovedInOpening += workingChessboardPointer[u.toY][u.toX];
     switch(movementNumber)
@@ -595,7 +595,7 @@ int Engine::makeMove                             (int userMoveCode)
             break;
     }
 }
-        void Engine::whiteOpeningMove ()noexcept
+        void Engine::whiteOpeningMove()noexcept
 {
     if(1 < movementNumber)
         userPiecesMovedInOpening += workingChessboardPointer[u.toY][u.toX];
@@ -643,7 +643,7 @@ int Engine::makeMove                             (int userMoveCode)
     if( ! movement.gameOver)
         isItEndgameTime();
 }
-        void Engine::isItEndgameTime      ()noexcept
+        void Engine::isItEndgameTime()noexcept
 {
     int nrOfUserPawns   {};
     int nrOfUserKnights {};
@@ -734,7 +734,7 @@ int Engine::makeMove                             (int userMoveCode)
         throw x;
     }
 }
-        void Engine::setKindOfEndgame              ()noexcept
+        void Engine::setKindOfEndgame()noexcept
 {
     //int nrOfEnginePawns   {};
     //int nrOfEngineKnights {};
@@ -757,7 +757,7 @@ int Engine::makeMove                             (int userMoveCode)
     else if ( 1 == nrOfEngineRooks + nrOfEngineQueens ) {globalType::choosenEndgame = globalType::rookOrQueenMate;    return;}
     else                                                {globalType::choosenEndgame = globalType::unspecifiedMate;    return;}
 }
-        void Engine::makeRooksAndQueensMateMove    ()noexcept
+        void Engine::makeRooksAndQueensMateMove()noexcept
 {
     double dot1 = 0.1, dot04 = 0.04, dot01 = 0.01, dot004 = 0.004;
 
@@ -781,7 +781,7 @@ int Engine::makeMove                             (int userMoveCode)
 
     movement.findNextMove(workingChessboardPointer);
 }
-        void Engine::makeSingleRookOrQueenMateMove ()noexcept
+        void Engine::makeSingleRookOrQueenMateMove()noexcept
 {
     double dot1 = 0.1, dot04 = 0.04, dot01 = 0.01, zero = 0.0;
 
@@ -805,7 +805,7 @@ int Engine::makeMove                             (int userMoveCode)
 
     movement.findNextMove(workingChessboardPointer);
 }
-        void Engine::makeUnspecifiedMateMove       ()noexcept
+        void Engine::makeUnspecifiedMateMove()noexcept
 {
     double dot1 = 0.1, dot04 = 0.04, dot01 = 0.01, zero = 0.0;
 
@@ -829,14 +829,14 @@ int Engine::makeMove                             (int userMoveCode)
 
     movement.findNextMove(workingChessboardPointer);
 }
-    int  Engine::engineMoveCoding                  ()noexcept
+    int  Engine::engineMoveCoding()noexcept
 {
     findEngineMove(); //  finds e.fromY e.toY e.fromX e.toX by comparing workingChessboardPointer and comparativeChessboardPointer
     int engineMoveCode = encodeEngineMove(); // changes e.fromY e.toY e.fromX e.toX into e.g. 1526
     markEngineMoveOnChessboard(); //          comparativeChessboardPointer = workingChessboardPointer
     return engineMoveCode + isItGameOver();
 }
-        void Engine::findEngineMove                ()noexcept 
+        void Engine::findEngineMove()noexcept 
 {
     if(workingChessboardPointer == nullptr)
         return;
@@ -888,7 +888,7 @@ int Engine::makeMove                             (int userMoveCode)
         }
     }
 }
-        int  Engine::encodeEngineMove              ()noexcept
+        int  Engine::encodeEngineMove()noexcept
 {
     if(workingChessboardPointer == nullptr)
         return 0;
@@ -904,7 +904,7 @@ int Engine::makeMove                             (int userMoveCode)
         }
     return e.fromX*1000+e.fromY*100+e.toX*10+e.toY*1 + promotionCode;
 }
-        void Engine::markEngineMoveOnChessboard    ()noexcept
+        void Engine::markEngineMoveOnChessboard()noexcept
 {
     if(workingChessboardPointer == nullptr)
         return;
@@ -938,7 +938,7 @@ int Engine::makeMove                             (int userMoveCode)
         }
     }
 }
-        int  Engine::isItGameOver                  ()noexcept
+        int  Engine::isItGameOver()noexcept
 {
     if(movement.gameOverUserWin)
         return 60000;

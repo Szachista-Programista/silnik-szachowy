@@ -33,7 +33,7 @@ namespace globalType{
     KindOfEndgame choosenEndgame;
     UserKingSideLocation userKingSideLocation;
     UserKingCornerLocation userKingCornerLocation;
-    //********************************************************************************
+//********************************************************************************
     void readConfigFile()
     {
         std::ifstream reading;

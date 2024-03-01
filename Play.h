@@ -7,24 +7,24 @@
 #include "Notice.h"
 
 class Play{
-        bool color;
-        bool engineMoveUnderlighted;
-        bool correcSquareChosen;
-        bool correctMovementMade;
+    bool color;
+    bool engineMoveUnderlighted;
+    bool correcSquareChosen;
+    bool correctMovementMade;
 
-        int engineMoveCode;
-        int userMoveCode;
-        int userSquareChosenCoordinates;
-        int promotionCode;
+    int engineMoveCode;
+    int userMoveCode;
+    int userSquareChosenCoordinates;
+    int promotionCode;
 
-        Notice     notice;
-        Chessboard chessboard;
-        Engine     engine;
-        Notebook   notebook;
+    Notice     notice;
+    Chessboard chessboard;
+    Engine     engine;
+    Notebook   notebook;
 
-        std::string currentChessboardUpdateCode;
-        std::string previousChessboardUpdateCode;
-        std::string SquareUpdateCode;
+    std::string currentChessboardUpdateCode;
+    std::string previousChessboardUpdateCode;
+    std::string SquareUpdateCode;
 //********************************************************************************
 public: Play(bool k)noexcept;
         void playWithUser();
@@ -35,8 +35,8 @@ private:    bool userMoveServive();
                             void colorSettingMenu(globalType::Color &color);
                 std::string generateSquareUpdateCode()noexcept;
                 void updateChessboard(std::string updateCode, bool underlight);
-                    int  getPieceCode  (char cHar);
-                    bool getPieceColor (char cHar);
+                    int  getPieceCode (char cHar);
+                    bool getPieceColor(char cHar);
                 void offPreviousEngineMoveUnderlight();
                 bool isChosenSquareCorrect();
                 bool isUserMakesPromotion()noexcept;

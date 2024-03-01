@@ -4,24 +4,24 @@
 
 class Notice
 {
-        int noticeWidth;
-        int noticeHeight;
-        int longestOptionWidth;
-        int numberOfOptions;
+    int noticeWidth;
+    int noticeHeight;
+    int longestOptionWidth;
+    int numberOfOptions;
 
-        std::string communiqueArray        [globalType::communiqueHeight];
-        std::string checkboxArray          [globalType::checkboxHeight];
+    std::string communiqueArray[globalType::communiqueHeight];
+    std::string checkboxArray  [globalType::checkboxHeight];
 
-        std::string pixelArtCharacterArray [globalType::numberOfChars] [globalType::letterHeight];
-    //******************************************************************************************************
+    std::string pixelArtCharacterArray [globalType::numberOfChars] [globalType::letterHeight];
+//******************************************************************************************************
 public: Notice();
 private:    void loadChars();
 public: void setConsoleSize()noexcept;
         void communique(std::string text, int milliseconds = 0);
 private:    void clearCommuniqueArray()noexcept;
             void addTextToCommuniqueArray(std::string text);
-                void addCharToCommuniqueArray (char cHar);
-                    int getCharIndex          (char cHar);
+                void addCharToCommuniqueArray(char cHar);
+                    int getCharIndex         (char cHar);
             void writeCommunique();
 public: int checkbox(std::vector<std::string> options);
 private:    void addValuesOfCheckbox(std::vector<std::string> options);

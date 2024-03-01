@@ -27,7 +27,7 @@ Move::~Move()noexcept
             delete[]singeMove;
     movements.clear();
 }
-double Move::findNextMove                          (globalType::chessboardPointer &ptr_X)
+double Move::findNextMove          (globalType::chessboardPointer &ptr_X)
 {
     try
     {
@@ -47,7 +47,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
     setSearchingDepth();
     return findBestMove(ptr_X);
 }
-    void Move::verifyKingsLocation                 (globalType::chessboardPointer  ptr_X)
+    void Move::verifyKingsLocation (globalType::chessboardPointer  ptr_X)
 {
     try
     {
@@ -77,7 +77,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
                 break;
             }
 }
-    void Move::isRooksAndKingsMoved                (globalType::chessboardPointer  ptr_X)
+    void Move::isRooksAndKingsMoved(globalType::chessboardPointer  ptr_X)
 {
     try
     {
@@ -97,7 +97,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
     if(color? ptr_X[7][3] != 'K': ptr_X[7][4] != 'K') engineKingMoved = true;
     if(color? ptr_X[0][3] != 'k': ptr_X[0][4] != 'k') userKingMoved   = true;
 }
-    void Move::isEngineKingChecked                 (globalType::chessboardPointer  ptr_X)
+    void Move::isEngineKingChecked (globalType::chessboardPointer  ptr_X)
 {
     engineKingChecked = isEngineSquareCaptured(engineKingLocationX, engineKingLocationY, ptr_X);
 }
@@ -115,12 +115,12 @@ double Move::findNextMove                          (globalType::chessboardPointe
             lastMovementGeneration = 1;
     }
 }
-    double Move::findBestMove                      (globalType::chessboardPointer &ptr_X)
+    double Move::findBestMove                     (globalType::chessboardPointer &ptr_X)
 {
     if(movementGeneration <  lastMovementGeneration) return beginningSearchingTreeService(ptr_X);
     if(movementGeneration == lastMovementGeneration) return endingSearchingTreeService();
 }
-        double Move::beginningSearchingTreeService (globalType::chessboardPointer &ptr_X)
+        double Move::beginningSearchingTreeService(globalType::chessboardPointer &ptr_X)
 {
     try
     {
@@ -393,7 +393,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
     resetMovements();
     return bestMaterialStatus;
 }
-            double Move::countMiddlegameMaterialStatus         (const globalType::chessboardPointer  ptr_X)
+            double Move::countMiddlegameMaterialStatus(const globalType::chessboardPointer  ptr_X)
 {
     try
     {
@@ -447,7 +447,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
     }
     return materialStatus;
 }
-            double Move::countEndgameMaterialStatus            (const globalType::chessboardPointer  ptr_X)
+            double Move::countEndgameMaterialStatus   (const globalType::chessboardPointer  ptr_X)
 {
     try
     {
@@ -501,7 +501,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
     }
     return materialStatus;
 }
-                double Move::goOppositeDirectionOfUserKing   (double x, double y)noexcept
+                double Move::goOppositeDirectionOfUserKing  (double x, double y)noexcept
 {
     if(globalType::userKingSideLocation == globalType::engineRightSide)
         return 7.0-x;
@@ -512,7 +512,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
     if(globalType::userKingSideLocation == globalType::engineUpSide)
         return y;
 }
-                double Move::goToSideOfUserKing              (double x, double y)noexcept
+                double Move::goToSideOfUserKing             (double x, double y)noexcept
 {
     if(globalType::userKingSideLocation == globalType::engineRightSide)
         return x;
@@ -523,7 +523,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
     if(globalType::userKingSideLocation == globalType::engineUpSide)
         return 7.0-y;
 }
-                double Move::goToCornerOfUserKing            (double x, double y)noexcept
+                double Move::goToCornerOfUserKing           (double x, double y)noexcept
 {
     if(globalType::userKingCornerLocation == globalType::engineUpRightCorner)
         return (x + 7.0-y)/2.0;
@@ -534,7 +534,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
     if(globalType::userKingCornerLocation == globalType::engineUpLeftCorner)
         return (7.0-x + 7.0-y)/2.0;
 }
-                double Move::separateUserKingFromRestOfBoard (double x, double y)noexcept
+                double Move::separateUserKingFromRestOfBoard(double x, double y)noexcept
 {
     if(globalType::userKingSideLocation == globalType::engineRightSide)
         return (x == globalType::userKingX-1.0)? 1.0: 0.0;
@@ -545,7 +545,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
     if(globalType::userKingSideLocation == globalType::engineUpSide)
         return (y == globalType::userKingY+1.0)? 1.0: 0.0;
 }
-                double Move::runSidewaysFromKing             (double x, double y)noexcept
+                double Move::runSidewaysFromKing            (double x, double y)noexcept
 {
     if(abs(globalType::userKingX - x) <= 1.0 && abs(globalType::userKingY - y) <= 1.0)
         if(globalType::userKingSideLocation % 2)
@@ -561,7 +561,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
     else
         return 0.0;
 }
-                double Move::followUserKingToSide            (double x, double y)noexcept
+                double Move::followUserKingToSide           (double x, double y)noexcept
 {
     double value{};
 
@@ -626,7 +626,7 @@ double Move::findNextMove                          (globalType::chessboardPointe
         return value/2.0;
     }
 }
-                double Move::followUserKingToCorner          (double x, double y)noexcept
+                double Move::followUserKingToCorner         (double x, double y)noexcept
 {
     double value{};
 
@@ -655,11 +655,11 @@ double Move::findNextMove                          (globalType::chessboardPointe
         return value/2.0;
     }
 }
-                double Move::makeNothing                     (double x, double y)noexcept
+                double Move::makeNothing                    (double x, double y)noexcept
 {
     return 0.0;
 }
-void Move::makeEngineMoves                                                        (globalType::chessboardPointer ptr_X)
+void Move::makeEngineMoves(globalType::chessboardPointer ptr_X)
 {
     try
     {
@@ -688,7 +688,7 @@ void Move::makeEngineMoves                                                      
                 default: break;
             }
 }
-    void Move::makeEnginePawnMoves                          (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+    void Move::makeEnginePawnMoves  (int fromX, int fromY, globalType::chessboardPointer ptr_X)
 {
     if(1<fromY && fromY<7)                                                  // pawn with no chance at promotion
     {
@@ -722,7 +722,7 @@ void Move::makeEngineMoves                                                      
         }
     }
 }
-    void Move::makeEngineKnightMoves                        (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+    void Move::makeEngineKnightMoves(int fromX, int fromY, globalType::chessboardPointer ptr_X)
 {
     if(0<=fromY-2 && fromX+1<=7 && (ptr_X[fromY-2][fromX+1]<'B' || 'R'<ptr_X[fromY-2][fromX+1])) engineMovesService(fromX,fromY,fromX+1,fromY-2,'N',ptr_X);
     if(0<=fromY-1 && fromX+2<=7 && (ptr_X[fromY-1][fromX+2]<'B' || 'R'<ptr_X[fromY-1][fromX+2])) engineMovesService(fromX,fromY,fromX+2,fromY-1,'N',ptr_X);
@@ -733,14 +733,14 @@ void Move::makeEngineMoves                                                      
     if(0<=fromY-1 && 0<=fromX-2 && (ptr_X[fromY-1][fromX-2]<'B' || 'R'<ptr_X[fromY-1][fromX-2])) engineMovesService(fromX,fromY,fromX-2,fromY-1,'N',ptr_X);
     if(0<=fromY-2 && 0<=fromX-1 && (ptr_X[fromY-2][fromX-1]<'B' || 'R'<ptr_X[fromY-2][fromX-1])) engineMovesService(fromX,fromY,fromX-1,fromY-2,'N',ptr_X);
 }
-    void Move::makeEngineBishopMoves                        (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+    void Move::makeEngineBishopMoves(int fromX, int fromY, globalType::chessboardPointer ptr_X)
 {
     for(int y=fromY-1, x=fromX+1; 0<=y && x<=7 && engineLinearMovesService(fromX,fromY,x,y,'B',ptr_X); y--, x++); //movement towards 1:30
     for(int y=fromY+1, x=fromX+1; y<=7 && x<=7 && engineLinearMovesService(fromX,fromY,x,y,'B',ptr_X); y++, x++); //movement towards 4:30
     for(int y=fromY+1, x=fromX-1; y<=7 && 0<=x && engineLinearMovesService(fromX,fromY,x,y,'B',ptr_X); y++, x--); //movement towards 7:30
     for(int y=fromY-1, x=fromX-1; 0<=y && 0<=x && engineLinearMovesService(fromX,fromY,x,y,'B',ptr_X); y--, x--); //movement towards 10:30
 }
-    void Move::makeEngineRookMoves                          (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+    void Move::makeEngineRookMoves  (int fromX, int fromY, globalType::chessboardPointer ptr_X)
 {
     for(int y=fromY-1; 0<=y && engineLinearMovesService(fromX,fromY,fromX,y,'R',ptr_X); y--); //movement towards 12:00
     for(int x=fromX+1; x<=7 && engineLinearMovesService(fromX,fromY,x,fromY,'R',ptr_X); x++); //movement towards 03:00
@@ -748,7 +748,7 @@ void Move::makeEngineMoves                                                      
     for(int x=fromX-1; 0<=x && engineLinearMovesService(fromX,fromY,x,fromY,'R',ptr_X); x--); //movement towards 09:00
 
 }
-    void Move::makeEngineQueenMoves                         (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+    void Move::makeEngineQueenMoves (int fromX, int fromY, globalType::chessboardPointer ptr_X)
 {
     for(int y=fromY-1;            0<=y &&         engineLinearMovesService(fromX,fromY,fromX,y,    'Q',ptr_X); y--     ); //movement towards 12:00
     for(int y=fromY-1, x=fromX+1; 0<=y && x<=7 && engineLinearMovesService(fromX,fromY,x,    y,    'Q',ptr_X); y--, x++); //movement towards 01:30
@@ -759,7 +759,7 @@ void Move::makeEngineMoves                                                      
     for(int            x=fromX-1; 0<=x &&         engineLinearMovesService(fromX,fromY,x,    fromY,'Q',ptr_X);      x--); //movement towards 09:00
     for(int y=fromY-1, x=fromX-1; 0<=y && 0<=x && engineLinearMovesService(fromX,fromY,x,    y,    'Q',ptr_X); y--, x--); //movement towards 10:30
 }
-    void Move::makeEngineKingMoves                          (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+    void Move::makeEngineKingMoves  (int fromX, int fromY, globalType::chessboardPointer ptr_X)
 {
     engineUsualKingMovesService(fromX,fromY, 0,-1,ptr_X); //movement towards 12:00
     engineUsualKingMovesService(fromX,fromY, 1,-1,ptr_X); //movement towards 01:30
@@ -978,7 +978,7 @@ void Move::makeEngineMoves                                                      
     }
     return false;
 }
-void Move::makeUserMoves                                                          (globalType::chessboardPointer ptr_X)
+void Move::makeUserMoves(globalType::chessboardPointer ptr_X)
 {
     try
     {
@@ -1005,7 +1005,7 @@ void Move::makeUserMoves                                                        
                 case 'k': makeUserKingMoves  (j, i, ptr_X); break;
             }
 }
-    void Move::makeUserPawnMoves                            (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+    void Move::makeUserPawnMoves  (int fromX, int fromY, globalType::chessboardPointer ptr_X)
 {
     if(0<fromY && fromY<6)                                                  //pawn with no chance at promotion
     {
@@ -1040,7 +1040,7 @@ void Move::makeUserMoves                                                        
         }
     }
 }
-    void Move::makeUserKnightMoves                          (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+    void Move::makeUserKnightMoves(int fromX, int fromY, globalType::chessboardPointer ptr_X)
 {
     if(0<=fromY-2 && fromX+1<=7 && (ptr_X[fromY-2][fromX+1]<'b' || 'r'<ptr_X[fromY-2][fromX+1]))  userMovesService(fromX,fromY,fromX+1,fromY-2,'n',ptr_X);
     if(0<=fromY-1 && fromX+2<=7 && (ptr_X[fromY-1][fromX+2]<'b' || 'r'<ptr_X[fromY-1][fromX+2]))  userMovesService(fromX,fromY,fromX+2,fromY-1,'n',ptr_X);
@@ -1051,7 +1051,7 @@ void Move::makeUserMoves                                                        
     if(0<=fromY-1 && 0<=fromX-2 && (ptr_X[fromY-1][fromX-2]<'b' || 'r'<ptr_X[fromY-1][fromX-2]))  userMovesService(fromX,fromY,fromX-2,fromY-1,'n',ptr_X);
     if(0<=fromY-2 && 0<=fromX-1 && (ptr_X[fromY-2][fromX-1]<'b' || 'r'<ptr_X[fromY-2][fromX-1]))  userMovesService(fromX,fromY,fromX-1,fromY-2,'n',ptr_X);
 }
-    void Move::makeUserBishopMoves                          (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+    void Move::makeUserBishopMoves(int fromX, int fromY, globalType::chessboardPointer ptr_X)
 {
     for(int y=fromY-1, x=fromX+1; 0<=y && x<=7 && userLinearMovesService(fromX,fromY,x,y,'b',ptr_X); y--, x++); //movement towards 01:30
     for(int y=fromY+1, x=fromX+1; y<=7 && x<=7 && userLinearMovesService(fromX,fromY,x,y,'b',ptr_X); y++, x++); //movement towards 04:30
@@ -1059,14 +1059,14 @@ void Move::makeUserMoves                                                        
     for(int y=fromY-1, x=fromX-1; 0<=y && 0<=x && userLinearMovesService(fromX,fromY,x,y,'b',ptr_X); y--, x--); //movement towards 10:30
 
 }
-    void Move::makeUserRookMoves                            (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+    void Move::makeUserRookMoves  (int fromX, int fromY, globalType::chessboardPointer ptr_X)
 {
     for(int y=fromY-1; 0<=y && userLinearMovesService(fromX,fromY,fromX,y,    'r',ptr_X); y--); //movement towards 12:00
     for(int x=fromX+1; x<=7 && userLinearMovesService(fromX,fromY,x,    fromY,'r',ptr_X); x++); //movement towards 03:00
     for(int y=fromY+1; y<=7 && userLinearMovesService(fromX,fromY,fromX,y,    'r',ptr_X); y++); //movement towards 06:00
     for(int x=fromX-1; 0<=x && userLinearMovesService(fromX,fromY,x,    fromY,'r',ptr_X); x--); //movement towards 09:00
 }
-    void Move::makeUserQueenMoves                           (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+    void Move::makeUserQueenMoves (int fromX, int fromY, globalType::chessboardPointer ptr_X)
 {
     for(int y=fromY-1;            0<=y &&         userLinearMovesService(fromX,fromY,fromX,y,'q',ptr_X); y--     ); //movement towards 12:00
     for(int y=fromY-1, x=fromX+1; 0<=y && x<=7 && userLinearMovesService(fromX,fromY,x,    y,'q',ptr_X); y--, x++); //movement towards 01:30
@@ -1078,7 +1078,7 @@ void Move::makeUserMoves                                                        
     for(int y=fromY-1, x=fromX-1; 0<=y && 0<=x && userLinearMovesService(fromX,fromY,x,    y,'q',ptr_X); y--, x--); //movement towards 10:30
 
 }
-    void Move::makeUserKingMoves                            (int fromX, int fromY, globalType::chessboardPointer ptr_X)
+    void Move::makeUserKingMoves (int fromX, int fromY, globalType::chessboardPointer ptr_X)
 {
     userUsualKingMovesService(fromX,fromY, 0,-1,ptr_X); //movement towards 12:00
     userUsualKingMovesService(fromX,fromY, 1,-1,ptr_X); //movement towards 01:30

@@ -781,12 +781,12 @@ void Notebook::generateAndWriteNotation  (int moveCode)
     if(backlight)
         systemInfo::setConsoleColor(globalType::white);
 }
-        void Notebook::rewriteNotationToColumn ()noexcept
+        void Notebook::rewriteNotationToColumn()noexcept
 {
     for(int i=0; i<globalType::letterHeight; i++)
         notationColumnArray[currentNotationColumn][currentNotationLine * globalType::notationLineHeight + i] = notationArray[i];
 }
-std::string Notebook::getChessboardUpdateCode  ()noexcept
+std::string Notebook::getChessboardUpdateCode()noexcept
 {
     chessboardUpdateCode.clear();
     generateChessboardUpdateCode();

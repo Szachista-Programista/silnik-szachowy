@@ -1,6 +1,7 @@
 #include "Play.h"
 
-Play::Play(bool k)noexcept: color{k}, chessboard{k}, engine{k}, notebook{k}
+Play::Play(bool k)noexcept:
+color{k}, chessboard{k}, engine{k}, notebook{k}
 {}
 void Play::playWithUser()
 {
@@ -229,7 +230,7 @@ void Play::playWithUser()
         chessboard.updateSquare(x, y, piece, pieceColor, underlight);
     }
 }
-            int Play::getPieceCode   (char cHar)
+            int Play::getPieceCode  (char cHar)
 {
     try
     {
@@ -252,7 +253,7 @@ void Play::playWithUser()
         throw x;
     }
 }
-            bool Play::getPieceColor (char cHar)
+            bool Play::getPieceColor(char cHar)
 {
     try
     {

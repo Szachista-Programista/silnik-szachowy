@@ -108,7 +108,6 @@ namespace globalType{
     extern KindOfEndgame choosenEndgame;
     extern UserKingSideLocation userKingSideLocation;
     extern UserKingCornerLocation userKingCornerLocation;
-
 //********************************************************************************
     void readConfigFile();
     void writeConfigFile();
