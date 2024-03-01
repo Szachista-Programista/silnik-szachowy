@@ -30,6 +30,7 @@ private:    void decipherUserMove (int userMoveCode);
             bool isThisMoveExposesKingToCapture();
             bool isAllowedMove();
                 bool isAllowedMoveByPawn();
+                bool isAllowedMoveByKnight();
                 bool isAllowedSlantMove();
                 bool isAllowedNonslantMove();
                 bool isAllowedMovebyKing();

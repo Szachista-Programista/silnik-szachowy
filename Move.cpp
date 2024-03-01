@@ -1184,7 +1184,7 @@ void Move::makeUserMoves                                                        
         if (x < 0 || 7 < x || y < 0 || 7 < y)
             throw std::invalid_argument("Chessboard coordinates out of range.");
     }
-        catch(const std::invalid_argument &e)
+    catch(const std::invalid_argument &e)
     {
         globalType::errorType x;
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();

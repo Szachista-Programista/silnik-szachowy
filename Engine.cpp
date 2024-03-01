@@ -39,11 +39,11 @@ Engine::Engine(bool k): color{k}, movement{k}
                 {
                     if(i==0) {
                         if(j==3) chessboard[i][j] = color?'k':'q';
-                        if(j==4) chessboard[i][j] = color?'Q':'k';
+                        if(j==4) chessboard[i][j] = color?'q':'k';
                     }
                     if(i==7) {
                         if(j==3) chessboard[i][j] = color?'K':'Q';
-                        if(j==4) chessboard[i][j] = color?'q':'K';
+                        if(j==4) chessboard[i][j] = color?'Q':'K';
                     }
                 }
                 else
@@ -209,14 +209,11 @@ bool Engine::canUserMakeSuchMove  (int userMoveCode)
             case 'p':
                 return isAllowedMoveByPawn();
             case 'n':
-                if((abs(u.fromX-u.toX)==2 && abs(u.fromY-u.toY)==1) || (abs(u.fromX-u.toX)==1 && abs(u.fromY-u.toY)==2))
-                    return true;
-                else
-                    return false;
+                return isAllowedMoveByKnight();
             case 'b':
+                return isAllowedSlantMove();
             case 'q':
-                if(isAllowedSlantMove())
-                    return true;
+                return (isAllowedSlantMove() || isAllowedNonslantMove());
             case 'r':
                 return isAllowedNonslantMove();
             case 'k':
@@ -245,6 +242,13 @@ bool Engine::canUserMakeSuchMove  (int userMoveCode)
     }
     return false;
 }
+        bool Engine::isAllowedMoveByKnight()
+{
+    if((abs(u.fromX-u.toX)==2 && abs(u.fromY-u.toY)==1) || (abs(u.fromX-u.toX)==1 && abs(u.fromY-u.toY)==2))
+        return true;
+    else
+        return false;
+}
         bool Engine::isAllowedSlantMove()
 {
     globalType::chessboardPointer ptr_X = workingChessboardPointer;
@@ -272,12 +276,11 @@ bool Engine::canUserMakeSuchMove  (int userMoveCode)
                     return false;
         return true;
     }
+    return false;
 }
         bool Engine::isAllowedNonslantMove()
 {
     globalType::chessboardPointer ptr_X = workingChessboardPointer;
-    if(ptr_X[u.fromY][u.fromX] == 'b')
-        return false;
     if(u.fromY == u.toY) //horizontal movements
     {
         if(u.fromX>u.toX) //to left
