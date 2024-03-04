@@ -280,7 +280,7 @@ void Notebook::generateAndWriteNotation  (int moveCode)
                 case 'K': case 'k':
                     lastMoveNotation += globalType::getCommuniqueCotent({42})[0];
                     break;
-                default: std::cout<<">"<<movedPiece<<"<"<<moveFromX<<moveFromY; throw std::runtime_error("Wrong piece.");
+                default: throw std::runtime_error("Wrong piece.");
             }
         }
         catch(const std::runtime_error &e)
