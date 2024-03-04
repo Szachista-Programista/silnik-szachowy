@@ -126,6 +126,6 @@ void Game::start()
 {
     chessboard.deleteCheckbox(220, 53, pastFirstPlay);
     notice.communique(globalType::getCommuniqueCotent({18})[0],1);
-    systemInfo::delay(500);
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
     systemInfo::setCursorPosition(0, globalType::chessboardHeight);
 }

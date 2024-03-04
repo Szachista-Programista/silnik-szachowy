@@ -7,18 +7,18 @@
 #include <initializer_list>
 #include <algorithm>
 #include <stdexcept>
+#include <cstdlib>
 #include <chrono>
+#include <thread>
 #ifdef _WIN32
     #include <Windows.h>
     #include <conio.h>
 #elif __APPLE__
     #include <termios.h>
     #include <unistd.h>
-    #include <thread>
 #elif __linux__
     #include <termios.h>
     #include <unistd.h>
-    #include <thread>
 #else
     #error the program only supports(Windosw/Mac_OS/Linux)
 #endif
@@ -119,6 +119,5 @@ namespace systemInfo {
     void setCursorPosition(int x, int y);
     char getChar();
     void clearScreen()noexcept;
-    void delay(int milliseconds);
 }
 #endif//GLOBAL_DEFINITIONS_H

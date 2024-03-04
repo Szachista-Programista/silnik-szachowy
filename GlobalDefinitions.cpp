@@ -299,27 +299,4 @@ namespace systemInfo
             #error the program only supports(Windosw/Mac_OS/Linux)
         #endif
     }
-    void delay(int milliseconds)
-    {
-        try
-        {
-            if (milliseconds < 0)
-                throw std::invalid_argument("Negative delay time value.");
-        }
-        catch(const std::invalid_argument &e)
-        {
-            globalType::errorType x;
-            x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
-            throw x;
-        }
-            #ifdef _WIN32
-                Sleep(milliseconds);
-            #elif __APPLE__
-                this_thread::sleep_for(chrono::milliseconds(milliseconds));
-            #elif __linux__
-                this_thread::sleep_for(chrono::milliseconds(milliseconds));
-            #else
-                #error the program only supports(Windosw/Mac_OS/Linux)
-            #endif
-    }
 }
