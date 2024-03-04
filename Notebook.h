@@ -3,7 +3,17 @@
 #include <iomanip>
 #include <sstream>
 #include "GlobalDefinitions.h"
-
+/**
+ * @brief The Notebook class handles the generation and printing of chess notation
+ * for the current game.
+ * 
+ * This class is responsible for generating and printing chess notation
+ * for the current game. It receives information about each move made during
+ * the game and stores the notation in an array, displaying it on the screen.
+ * In summary, it handles the printing of game notation on the console and offers
+ * the option to save this notation to a text file at the end of the game,
+ * if desired by the user.
+ */
 class Notebook{
     bool color;
     bool engineMove;

@@ -1,7 +1,15 @@
 #ifndef CHESSBOARD_H
 #define CHESSBOARD_H
 #include "GlobalDefinitions.h"
-
+/**
+ * @brief The Chessboard class represents a chessboard for displaying and managing
+ * the game state. 
+ * 
+ * This class is responsible for displaying the chessboard on the console,
+ * refreshing the board within specified pixel ranges, loading the board state
+ * from a text file, drawing and erasing pieces on the board squares,
+ * and highlighting selected squares for moves.
+ */
 class Chessboard{
     bool color;
     char chessboardArray[globalType::chessboardHeight][globalType::chessboardwidth];

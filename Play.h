@@ -5,7 +5,20 @@
 #include "Engine.h"
 #include "Notebook.h"
 #include "Notice.h"
-
+/**
+ * @brief The Play class orchestrates a single game, managing multiple
+ * components such as Notice, Chessboard, Engine, and Notebook.
+ * 
+ * This class is responsible for managing a single game, handling user input
+ * for moves, and coordinating various components to execute the game logic.
+ * It utilizes the Engine class to validate and execute moves, displaying
+ * relevant messages using the Notice class based on the game situation.
+ * If a move is valid, it updates the chessboard using the Chessboard class
+ * and computes the next move by calling appropriate functions from the Engine class.
+ * Additionally, it generate and write the game notation using the Notebook class,
+ * documenting both user and AI moves. When the game concludes, it displays
+ * the result and, upon user request, saves the game notation to a text file. 
+ */
 class Play{
     bool color;
     bool engineMoveUnderlighted;

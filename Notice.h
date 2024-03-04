@@ -1,7 +1,11 @@
 #ifndef NOTICE_H
 #define NOTICE_H
 #include "GlobalDefinitions.h"
-
+/**
+* @brief The Notice class serves as a notifier for displaying messages and options
+* on the chessboard or console, providing notifications and user interaction
+* during the game.
+*/
 class Notice
 {
     int noticeWidth;

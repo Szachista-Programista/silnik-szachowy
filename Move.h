@@ -1,7 +1,15 @@
 #ifndef MOVE_H
 #define MOVE_H
 #include "GlobalDefinitions.h"
-
+/**
+ * @brief The Move class represents an artificial intelligence player that
+ * searches the entire game tree and selects the best move among the considered ones.
+ * 
+ * This class receives the move made by the user and generates the move to be made
+ * by the AI player in response. It searches the entire game tree to evaluate possible
+ * moves and selects the best one. In summary, it handles the generation of AI moves
+ * in response to user moves.
+ */
 class Move{
     friend class Engine;
 
