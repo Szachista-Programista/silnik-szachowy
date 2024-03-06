@@ -5,7 +5,7 @@ w szachy, który pozwoli Ci cieszyć się emocjonującymi rozgrywkami przeciwko 
 
 # O Autorze
 
-Jestem Krzysztof Kazanecki, a Silnik Szachowy jest moim pierwszym większym
+Jestem Krzysiek, a Silnik Szachowy jest moim pierwszym większym
 projektem napisanym w języku C++. Przez ostatnie pół roku poświęciłem mnóstwo
 czasu i wysiłku na samodzielną pracę nad tym projektem.
 
@@ -24,7 +24,7 @@ Jest to program, który umożliwia grę w szachy z komputerem. Dzięki intuicyjn
 interfejsowi użytkownika i prostemu menu, możesz łatwo rozpocząć grę i przetestować
 swoje umiejętności szachowe.
 
-#Oprawa graficzna
+# Oprawa graficzna
 
 Jednym z unikalnych elementów tego projektu jest jego oryginalna oprawa graficzna,
 która została stworzona bez użycia zewnętrznych bibliotek graficznych czy narzędzi.
@@ -79,7 +79,7 @@ doświadczeniem dla użytkownika mojego silnika szachowego.
   lub wyświetli stosowny komunikat w przypadku nieprawidłowego ruchu.
 - Korzystaj z opcji menu w trakcie gry, aby dostosować ustawienia kolorów lub
   wyjść z gry, a następnie zapisać notację partii w celu późniejszego zobaczenia.
-  Aby otworzyć menu, wcisnij w trakcie gry klawisz "Esc".
+  Aby otworzyć menu, wciśnij w trakcie gry klawisz "Esc".
 
 # Dlaczego warto spróbować?
 
@@ -87,7 +87,7 @@ doświadczeniem dla użytkownika mojego silnika szachowego.
 - Personalizacja kolorów i języków pozwala dostosować grę do swoich preferencji.
 - Doskonała zabawa i możliwość sprawdzenia swoich umiejętności szachowych w wygodnym środowisku.
 
-Ciesz sie gra w szachy i sprawdz, czy jestes lepszy od mojego programu!
+Ciesz się grą w szachy i sprawdź, czy jesteś lepszy od mojego programu!
 
 ██████████████████████████████████████████████  
 ██████████████████████████████████████████████  
