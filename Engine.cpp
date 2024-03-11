@@ -908,35 +908,9 @@ int Engine::makeMove                         (int userMoveCode)
 {
     if(workingChessboardPointer == nullptr)
         return;
-    char movedPiece;
-    movedPiece = workingChessboardPointer[e.fromY][e.fromX];
-
-    comparativeChessboardPointer[e.toY][e.toX] = workingChessboardPointer[e.toY][e.toX];
-    comparativeChessboardPointer[e.fromY][e.fromX]   = ' ';
-
-    if(movedPiece == 'K')//if it comes to castle
-    {
-        if(e.fromX == 3 && e.toX == 1) // O-O by black
-        {
-            comparativeChessboardPointer[7][0] == ' ';
-            comparativeChessboardPointer[7][2] == 'R';
-        }
-        if(e.fromX == 3 && e.toX == 5) // O-O-O by black
-        {
-            comparativeChessboardPointer[7][7] == ' ';
-            comparativeChessboardPointer[7][4] == 'R';
-        }
-        if(e.fromX == 4 && e.toX == 2) // O-O-O by white
-        {
-            comparativeChessboardPointer[7][0] == ' ';
-            comparativeChessboardPointer[7][3] == 'R';
-        }
-        if(e.fromX == 4 && e.toX == 6) // O-O by white
-        {
-            comparativeChessboardPointer[7][7] == ' ';
-            comparativeChessboardPointer[7][5] == 'R';
-        }
-    }
+    for(int i=0; i<8; i++)
+        for(int j=0; j<8; j++)
+            comparativeChessboardPointer[i][j] = workingChessboardPointer[i][j];
 }
         int  Engine::isItGameOver()noexcept
 {
