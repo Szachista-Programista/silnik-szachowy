@@ -311,26 +311,26 @@ void Play::playWithUser()
 }
         bool Play::isItGameover()
 {
-    int additionalParameter = engineMoveCode / 10000;
-    if( 0<= additionalParameter && additionalParameter <= 4)
+    int gameOverParameter = engineMoveCode / 100000;
+    if(!gameOverParameter)
         return false;
     try
     {
-        switch(additionalParameter)
+        switch(gameOverParameter)
         {
-            case 6:
+            case 1:
                 notice.communique(globalType::getCommuniqueCotent({22})[0]);
                 break;
-            case 7:
+            case 2:
                 notice.communique(globalType::getCommuniqueCotent({23})[0]);
                 break;
-            case 8:
+            case 3:
                 notice.communique(globalType::getCommuniqueCotent({24})[0]);
                 break;
-            case 9:
+            case 4:
                 notice.communique(globalType::getCommuniqueCotent({23})[0]);
                 break;
-            default: throw std::runtime_error("Wrong additional parameter.");
+            default: throw std::runtime_error("Wrong gameOverParameter.");
         }
 
     }

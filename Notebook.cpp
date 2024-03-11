@@ -130,8 +130,10 @@ void Notebook::generateAndWriteNotation  (int moveCode)
     moveCode /=10;
     moveFromX  = moveCode % 10;
     moveCode /=10;
-    additionalParameter = moveCode;
-    if(6 <= additionalParameter && additionalParameter <= 9)
+    promotionParameter = moveCode % 10;
+    moveCode /=10;
+    gameOverParameter  = moveCode;
+    if(gameOverParameter)
         gameOver = true;
     try
     {
@@ -164,13 +166,13 @@ void Notebook::generateAndWriteNotation  (int moveCode)
 }
     void Notebook::markMoveAndWriteNotation()
 {
-    if(additionalParameter == 6 || additionalParameter == 7)//the user has finished the game
+    if(gameOverParameter == 1 || gameOverParameter == 2)//the user has finished the game
         return;
     markCastle();
     markPawnPromotion();
     markEnPassant();
     markCommonMove();
-    if(additionalParameter == 8)//the engine caused checkmate
+    if(gameOverParameter == 3)//the engine caused checkmate
             lastMoveNotation += '#';
     else if(isThereCheck())
         lastMoveNotation += '+';
@@ -210,7 +212,7 @@ void Notebook::generateAndWriteNotation  (int moveCode)
 }
         void Notebook::markPawnPromotion()noexcept
 {
-    if(1 <= additionalParameter && additionalParameter <= 4) //promotion
+    if(promotionParameter) //promotion
     {
         moveMarked = true;
         currentChessboard[moveFromY][moveFromX] = ' ';
@@ -222,7 +224,7 @@ void Notebook::generateAndWriteNotation  (int moveCode)
         }
         lastMoveNotation += getCoordinates(moveToY, moveToY);
         lastMoveNotation += '=';
-        switch(additionalParameter)
+        switch(promotionParameter)
         {
             case 1: lastMoveNotation += globalType::getCommuniqueCotent({38})[0]; currentChessboard[moveToY][moveToX] = (engineMove?'N':'n'); break;
             case 2: lastMoveNotation += globalType::getCommuniqueCotent({39})[0]; currentChessboard[moveToY][moveToX] = (engineMove?'B':'b'); break;
@@ -472,7 +474,7 @@ void Notebook::generateAndWriteNotation  (int moveCode)
     if(semiMoveNumber % 2)
     {
         note<<std::right<<std::setw(3)<<moveNumber<<". "<<std::left<<std::setw(8)<<lastMoveNotation;
-        if(additionalParameter == 8 || additionalParameter == 9)
+        if(gameOverParameter == 3 || gameOverParameter == 4)
             note<<std::left<<std::setw(7)<<gameResult;
         entireNotation.push_back(note.str());
     }
@@ -480,7 +482,7 @@ void Notebook::generateAndWriteNotation  (int moveCode)
     {
         note<<std::left<<std::setw(7)<<lastMoveNotation;
         entireNotation[moveNumber-1] += note.str();
-        if(additionalParameter == 8 || additionalParameter == 9)
+        if(gameOverParameter == 3 || gameOverParameter == 4)
         {
             note.str("");
             note<<std::right<<std::setw(3)<<moveNumber + 1<<". "<<std::left<<std::setw(8)<<gameResult;
@@ -492,22 +494,22 @@ void Notebook::generateAndWriteNotation  (int moveCode)
 {
     try
     {
-        switch(additionalParameter)
+        switch(gameOverParameter)
         {
-            case 6:// user win
+            case 1:// user win
                 replacePlusWithHashtag();
                 lastMoveNotation = (semiMoveNumber%2)? "0.1": "1.0";
                 break;
-            case 7:// stalemate by user
+            case 2:// stalemate by user
                 lastMoveNotation = "1/2-1/2";
                 break;
-            case 8:// engine win
+            case 3:// engine win
                 gameResult = (semiMoveNumber%2)? "1.0": "0.1";
                 break;
-            case 9:// stalemate by engine
+            case 4:// stalemate by engine
                 gameResult = "1/2-1/2";
                 break;
-            default: throw std::runtime_error("Wrong additional parameter.");
+            default: throw std::runtime_error("Wrong gameOverParameter.");
         }
     }
     catch(const std::runtime_error &e)
@@ -520,10 +522,10 @@ void Notebook::generateAndWriteNotation  (int moveCode)
             void Notebook::replacePlusWithHashtag()
 {
     int index_edytowanego_stringa = moveNumber - ((semiMoveNumber % 2)? 2: 1);
-    int index_plusa = entireNotation[index_edytowanego_stringa].rfind('+');
+    int plusIndex = entireNotation[index_edytowanego_stringa].rfind('+');
     try
     {
-        if (index_plusa == std::string::npos)
+        if (plusIndex == std::string::npos)
             throw std::runtime_error("The '+' sign was not found in the edited text fragment.");
     }
     catch(const std::runtime_error &e)
@@ -532,7 +534,7 @@ void Notebook::generateAndWriteNotation  (int moveCode)
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    entireNotation[index_edytowanego_stringa][index_plusa] = '#';
+    entireNotation[index_edytowanego_stringa][plusIndex] = '#';
 }
     void Notebook::writeNotation()
 {
@@ -555,9 +557,9 @@ void Notebook::generateAndWriteNotation  (int moveCode)
             if(currentNotationColumn == 3)
                 undoNotationColumns();
         }
-        if(additionalParameter == 8 || additionalParameter == 9)
+        if(gameOverParameter == 3 || gameOverParameter == 4)
         {
-            additionalParameter = 0;
+            gameOverParameter = 0;
             semiMoveNumber++;
             moveNumber = (semiMoveNumber+1)/2;
             writeNotation();
@@ -584,7 +586,7 @@ void Notebook::generateAndWriteNotation  (int moveCode)
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    if(additionalParameter == 6)
+    if(gameOverParameter == 1)
     {
         addNotationArrayContent(entireNotation[moveNumber-2]);
         writeNotationArray(line, column, false);

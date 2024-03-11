@@ -30,7 +30,8 @@ class Notebook{
     int moveFromY;
     int moveToX;
     int moveToY;
-    int additionalParameter;
+    int gameOverParameter;
+    int promotionParameter;
 
     int semiMoveNumber = 0;
     int moveNumber;

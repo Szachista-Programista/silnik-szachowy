@@ -915,12 +915,12 @@ int Engine::makeMove                         (int userMoveCode)
         int  Engine::isItGameOver()noexcept
 {
     if(movement.gameOverUserWin)
-        return 60000;
+        return 100000;
     if(movement.gameOverStalemateByUser)
-        return 70000;
+        return 200000;
     if(movement.gameOverEngineWin)
-        return 80000;
+        return 300000;
     if(movement.gameOverStalemateByEngine)
-        return 90000;
+        return 400000;
     return 0;
 }
