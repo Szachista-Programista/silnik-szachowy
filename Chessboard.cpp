@@ -94,8 +94,8 @@ Chessboard::Chessboard(bool k): color{k}
     {
         if(coordX<0 || globalType::chessboardwidth<coordX || coordY<0 || globalType::chessboardHeight<coordY)
             throw std::invalid_argument("Wrong coordinates.");
-        if(cHar.size() != 40)
-            throw std::invalid_argument("Error in line length of 'coordinatesChars.txt' file.");
+        //if(cHar.size() != 40)
+            //throw std::invalid_argument("Error in line length of 'coordinatesChars.txt' file.");
     }
     catch(const std::invalid_argument &e)
     {

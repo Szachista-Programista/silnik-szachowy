@@ -45,8 +45,8 @@ namespace globalType{
                 throw std::ifstream::failure("The file 'config.txt' cannot be opened .");
             if (!getline(reading, data))
                 throw std::ifstream::failure("Error reading character from 'config.txt' file .");
-            if (data.size() != 5)
-                throw std::ifstream::failure("Wrong content of 'config.txt' file.");
+            //if (data.size() != 5)
+                //throw std::ifstream::failure("Wrong content of 'config.txt' file.");
         }
         catch(const std::ifstream::failure &e)
         {
@@ -102,8 +102,8 @@ namespace globalType{
                 for(int j=0, k=0; j<numberOfLanguages; j++, k++)
                     for(; line[k] != '$'; k++)
                     {
-                        if (k >= line.size())
-                            throw std::ifstream::failure("Unexpected line ending in 'communique.txt' file.");
+                        //if (k >= line.size())
+                            //throw std::ifstream::failure("Unexpected line ending in 'communique.txt' file.");
                         communiquesArray[i][j] += line[k];
                     }
             }

@@ -121,7 +121,7 @@ void Notebook::generateAndWriteNotation  (int moveCode)
     updateKingsLocation();
 }
         void Notebook::decipherMoveCode()
-{    
+{
     moveToY = moveCode % 10;
     moveCode /=10;
     moveToX = moveCode % 10;
@@ -290,7 +290,7 @@ void Notebook::generateAndWriteNotation  (int moveCode)
             globalType::errorType x;
             x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
             throw x;
-        }        
+        }
         if(moveWithCapture)
             lastMoveNotation += 'x';
         lastMoveNotation += getCoordinates(moveToX, moveToY);
@@ -363,7 +363,7 @@ void Notebook::generateAndWriteNotation  (int moveCode)
             }
             else
                 break;
-        } 
+        }
 }
             std::string Notebook::getCoordinates(int x, int y)
 {
@@ -731,7 +731,7 @@ void Notebook::generateAndWriteNotation  (int moveCode)
     if('0'<=cHar && cHar<='9')
         return cHar+4;
     try
-    {            
+    {
         switch(cHar)
         {
             case '.': return 62;

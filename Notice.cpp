@@ -429,7 +429,7 @@ int Notice::checkbox(std::vector<std::string> options)
             isDigitLoaded = true;
             continue;
         }
-        if(isDigitLoaded == true && cHar == 13)
+        if(isDigitLoaded == true && (cHar == 13 || cHar == 10))
             return chosenOption;
     }
 }
