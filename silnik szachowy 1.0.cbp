@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="silnik szachowy 1.0" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/silnik szachowy 1" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/silnik szachowy 1" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="Chessboard.cpp" />
+		<Unit filename="Chessboard.h" />
+		<Unit filename="Engine.cpp" />
+		<Unit filename="Engine.h" />
+		<Unit filename="Game.cpp" />
+		<Unit filename="Game.h" />
+		<Unit filename="GlobalDefinitions.cpp" />
+		<Unit filename="GlobalDefinitions.h" />
+		<Unit filename="Move.cpp" />
+		<Unit filename="Move.h" />
+		<Unit filename="Notebook.cpp" />
+		<Unit filename="Notebook.h" />
+		<Unit filename="Notice.cpp" />
+		<Unit filename="Notice.h" />
+		<Unit filename="Play.cpp" />
+		<Unit filename="Play.h" />
+		<Unit filename="ReadMe.md" />
+		<Unit filename="chars.txt" />
+		<Unit filename="chessboard.txt" />
+		<Unit filename="communique.txt" />
+		<Unit filename="config.txt" />
+		<Unit filename="coordinatesChars.txt" />
+		<Unit filename="main.cpp" />
+		<Unit filename="pieces.txt" />
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
