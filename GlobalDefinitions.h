@@ -20,7 +20,7 @@
     #include <termios.h>
     #include <unistd.h>
 #else
-    #error the program only supports(Windosw/Mac_OS/Linux)
+    #error the program only supports(Windows/Mac_OS/Linux)
 #endif
 
 namespace globalType{

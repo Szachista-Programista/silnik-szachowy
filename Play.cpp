@@ -11,11 +11,11 @@ void Play::playWithUser()
     chessboard.writeChessboardArray();
 
     if(color == false) //engine starts the game
-        engineMoveServive(10000);
-    while(userMoveServive() && engineMoveServive(userMoveCode)){}
+        engineMoveService(10000);
+    while(userMoveService() && engineMoveService(userMoveCode)){}
     notationSavingMenu();
 }
-    bool Play::userMoveServive()
+    bool Play::userMoveService()
 {
     while(true)
     {
@@ -298,7 +298,7 @@ void Play::playWithUser()
     int toY   =  userMoveCode      %10;
     return (notebook.currentChessboard[fromY][fromX] == 'p' && toY == 7);
 }
-    bool Play::engineMoveServive(int moveCode)
+    bool Play::engineMoveService(int moveCode)
 {
     engineMoveCode = engine.makeMove(moveCode);
     notebook.generateAndWriteNotation(engineMoveCode);

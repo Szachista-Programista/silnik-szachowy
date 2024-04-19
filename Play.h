@@ -41,7 +41,7 @@ class Play{
 //********************************************************************************
 public: Play(bool k)noexcept;
         void playWithUser();
-private:    bool userMoveServive();
+private:    bool userMoveService();
                 int loadCoordinates();
                     bool endgameMenu(char cHar);
                         void colorfullElementSettingMenu();
@@ -53,7 +53,7 @@ private:    bool userMoveServive();
                 void offPreviousEngineMoveUnderlight();
                 bool isChosenSquareCorrect();
                 bool isUserMakesPromotion()noexcept;
-            bool engineMoveServive(int moveCode);
+            bool engineMoveService(int moveCode);
                 bool isItGameover();
             void notationSavingMenu();
 };

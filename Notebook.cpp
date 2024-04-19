@@ -521,8 +521,8 @@ void Notebook::generateAndWriteNotation  (int moveCode)
 }
             void Notebook::replacePlusWithHashtag()
 {
-    int index_edytowanego_stringa = moveNumber - ((semiMoveNumber % 2)? 2: 1);
-    int plusIndex = entireNotation[index_edytowanego_stringa].rfind('+');
+    int editingStringIndex = moveNumber - ((semiMoveNumber % 2)? 2: 1);
+    int plusIndex = entireNotation[editingStringIndex].rfind('+');
     try
     {
         if (plusIndex == std::string::npos)
@@ -534,7 +534,7 @@ void Notebook::generateAndWriteNotation  (int moveCode)
         x.errorMessage = __PRETTY_FUNCTION__ + std::string(" >> error: ") + e.what();
         throw x;
     }
-    entireNotation[index_edytowanego_stringa][plusIndex] = '#';
+    entireNotation[editingStringIndex][plusIndex] = '#';
 }
     void Notebook::writeNotation()
 {

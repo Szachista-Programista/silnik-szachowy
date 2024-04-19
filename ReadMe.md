@@ -6,7 +6,7 @@ w szachy, który pozwoli Ci cieszyć się emocjonującymi rozgrywkami przeciwko 
 # O Autorze
 
 Jestem Krzysiek, a Silnik Szachowy jest moim pierwszym większym
-projektem napisanym w języku C++. Przez ostatnie pół roku poświęciłem mnóstwo
+projektem napisanym w języku C++. Przez pół roku poświęciłem sporo
 czasu i wysiłku na samodzielną pracę nad tym projektem.
 
 W trakcie tworzenia Silnika Szachowego postanowiłem postawić przed sobą wyzwanie i wymyślić
